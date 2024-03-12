@@ -1,0 +1,19 @@
+{
+  "/_not-found": "app/_not-found.js",
+  "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
+  "/(auth)/sign-up/[[...sign-up]]/page": "app/(auth)/sign-up/[[...sign-up]]/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(root)/addprinter/page": "app/(root)/addprinter/page.js",
+  "/(root)/(home)/page": "app/(root)/(home)/page.js",
+  "/(root)/cleaners/page": "app/(root)/cleaners/page.js",
+  "/(root)/parts/page": "app/(root)/parts/page.js",
+  "/(root)/cleanerprinter/page": "app/(root)/cleanerprinter/page.js",
+  "/(root)/printer/page": "app/(root)/printer/page.js",
+  "/(root)/printers/page": "app/(root)/printers/page.js",
+  "/(root)/settings/page": "app/(root)/settings/page.js",
+  "/(root)/techs/page": "app/(root)/techs/page.js",
+  "/(root)/user/page": "app/(root)/user/page.js",
+  "/(root)/users/page": "app/(root)/users/page.js",
+  "/(root)/techprinter/page": "app/(root)/techprinter/page.js",
+  "/(root)/warehouse/page": "app/(root)/warehouse/page.js"
+}
