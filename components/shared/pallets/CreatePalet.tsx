@@ -58,7 +58,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
         printers: values.printers,
         creator: JSON.parse(mongoUserId),
         path: usepathname,
-        
+        location: ''
       })
       
       setIsSubmitting(false); // Reset isSubmitting state

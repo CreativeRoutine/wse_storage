@@ -13,7 +13,7 @@ export async function createPalet(params:CreatePalet){
   try {
     connectToDatabase();
     const createdOn = new Date();
-    const { sn, barcode,  printers, creator, path} = params;
+    const { sn, barcode,  printers, creator, path, location} = params;
 
     // Создание нового палета
     const palet = await Pallet.create({
