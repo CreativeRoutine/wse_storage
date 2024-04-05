@@ -3,31 +3,37 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import AddPrinterForm from "@/components/shared/forms/AddPrinterForm";
+import Title from "@/components/shared/Title";
+import { getPrinters } from "@/lib/actions/printer.action";
+import { getUserById } from "@/lib/actions/user.action";
+import { redirect } from "next/navigation";
+import TechWorkPrinterForm from "@/components/shared/forms/TechWorkPrinterForm";
 
-const addPrinter = () => {
+const addPrinter = async () => {
+  // const {userId} = auth();
+  const userId = "12345"
+  if (!userId) redirect('/sign-in')
+  const mongoUser = await getUserById({userId});
+
+  const resultPrinters = await getPrinters({})
+  const printers = JSON.parse(JSON.stringify(resultPrinters))
+
   return (
     <>
-      <div className="py-4 px-8 mb-12 bg-slate-100 rounded-2xl flex items-center justify-between border-slate-200 shadow-md">
-        <h1 className="text-2xl font-semibold">Add Printer Page</h1>
-      </div>
+      <Title text="Add Printer" />
+      
 
-      <div className="bg-slate-100 rounded-2xl py-4 px-5">
-
-
-        <div className="flex flex-row gap-2">
-          {/* Column #1 */}
-          <div className="bg-slate-200 px-5 py-5 rounded-xl w-1/2">
-            <div className="mb-3">
-              <div className="mb-6 py-3 text-lg font-bold border-b-2 border-slate-800">
-                Warehouse's form
-              </div>
-
-              <AddPrinterForm />
-            </div>
-          </div>
-
-
+      <div className="flex bg-dark-600 rounded-xl border border-dark-350 p-4 gap-4">
+        <div className="w-1/2">
+          {/* <TechWorkPrinterForm mongoUserId={JSON.stringify(mongoUser._id)} /> */}
+          
         </div>
+
+
+        <div className="w-1/2">
+          {/* <AddPrinterForm mongoUserId={JSON.stringify(mongoUser._id)} /> */}
+        </div>
+
       </div>
     </>
   );

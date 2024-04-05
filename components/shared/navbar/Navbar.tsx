@@ -2,29 +2,31 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Input } from "@/components/ui/input"
+
 import MobileNav from "./MobileNav";
+import { Button } from "@/components/ui/button";
 // import NavbarDark from "@/components/dark_with_search";
 
 const Navbar = () => {
   return (
-    <nav className="flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
-      <Link href="/" className="flex items-center gap-1">
-        {/* <Image
-          src="/assets/images/site-logo.svg"
-          width={23}
-          height={23}
-          alt="DevFlow"
-        /> */}
+    <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500">
 
-        <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
-          WSE
-        </p>
-      </Link>
 
       {/* <GlobalSearch /> */}
+      <div className="flex flex-row h-12 w-[268px] relative">
+        <Image className="absolute left-5 top-3.5 stroke-3" width={18} height={18} src="/assets/icons/search.svg" alt="search"/>
+        <Input 
+        className="px-4 pl-12 h-12 text-base bg-dark-600 border-none shadow-md rounded-3xl focus:outline-none" 
+        placeholder="Search ..."
+        />
+        
+      </div>
 
-      <div className="flex-between gap-5">
-        ThemeCh
+      <div className=" text-white flex gap-3">
+          <Link href="/addpallet" className="bg-primary-500 hover:bg-dark-500 rounded-lg text-white px-4 py-4">Add Pallet</Link>
+          <Link href="/addprinter" className="bg-primary-500 hover:bg-dark-500 rounded-lg text-white px-4 py-4">Add Printer</Link>
+        {/* Theme Switch */}
         {/* <Theme /> */}
         {/* <SignedIn>
           <UserButton

@@ -7,16 +7,17 @@ import LeftSidebar from "@/components/shared/LeftSidebar";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <main className="background-light850_dark100 relative">
-        <Navbar />
-        <div className="flex">
-          <LeftSidebar />
+      <main className="bg-dark-100 pl-[395px]">
+        <LeftSidebar />
 
-          <section className=" size-full px-6 pb-6 pt-36 max-md:pb-14 sm:px-14">
-            <div className="mx-auto w-full ">{children}</div>
+        <div className="flex flex-col px-32">
+          <section className="sticky top-0 left-0 right-0 bg-dark-100 flex flex-col flex-1" >
+            <Navbar />
           </section>
 
-          {/* <RightSidebar /> */}
+          <section className="pt-16">
+            <div className="mx-auto w-full ">{children}</div>
+          </section>
         </div>
       </main>
     </>

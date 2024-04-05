@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+
 import {
   Form,
   FormControl,
@@ -14,12 +15,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  //   CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import { addPrinterSchema } from "@/lib/validations";
-import { createPrinterModel } from '@/lib/actions/printer.action';
+import { addWorkSchema } from "@/lib/validations";
+import { createWorkModel } from '@/lib/actions/work.action';
 import {useRouter, usePathname} from 'next/navigation';
 
 const type:any = 'create';
@@ -28,7 +43,7 @@ interface Props {
   mongoUserId: string;
 }
 
-export default  function AddPrinterForm({mongoUserId}:Props) {
+export default  function AddWorkForm({mongoUserId}:Props) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -36,31 +51,25 @@ export default  function AddPrinterForm({mongoUserId}:Props) {
 
 
   // 1. Define your form.
-  // addPrinterSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof addPrinterSchema>>({
-    resolver: zodResolver(addPrinterSchema),
+  // addWorkSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof addWorkSchema>>({
+    resolver: zodResolver(addWorkSchema),
     defaultValues: {
-      make: "",
-      model: "",
-      pnum: "",
+      name: "",
     },
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
+  async function onSubmit(values: z.infer<typeof addWorkSchema>) {
     setIsSubmitting(true);
 
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await createPrinterModel({
-        make: values.make,
-        model: values.model,
-        pnum: values.pnum,
+      await createWorkModel({
+        name: values.name,
         path: usepathname,
       })
-
-
 
       form.reset({}); // Reset form fields
       
@@ -77,7 +86,6 @@ export default  function AddPrinterForm({mongoUserId}:Props) {
     <div className="bg-secondary-200 px-8 mb-6 py-6 w-full rounded-xl border border-dark-350 shadow-lg">
 
     <div className="mb-4">
-      <div className="mb-3 text-lg text-slate-300 font-semibold">Add Printer:</div>
       {/* ======================================================================= */}
     <Form {...form}>    
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full mx-auto">
@@ -85,62 +93,16 @@ export default  function AddPrinterForm({mongoUserId}:Props) {
         {/* Item #1 */}
         <FormField
           control={form.control}
-          name="make"
+          name="name"
           render={({ field }) => (
             // First Input
             <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer make:</FormLabel>
+              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Work name:</FormLabel>
               <FormControl>
                 <div className="flex flex-row gap-2">
                   <Input
                     className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="Ex. 402"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Item #2 */}
-        <FormField
-          control={form.control}
-          name="model"
-          render={({ field }) => (
-            // First Input
-            <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer model:</FormLabel>
-              <FormControl>
-                <div className="flex flex-row gap-2">                  
-                <Input
-                    className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="DN"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Item #3 */}
-        <FormField
-          control={form.control}
-          name="pnum"
-          render={({ field }) => (
-            // First Input
-            <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Product number:</FormLabel>
-              <FormControl>
-                <div className="flex flex-row gap-2">                  
-                <Input
-                    className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="product number"
+                    placeholder="E.g. Change top rolls"
                     {...field}
                   />
                 </div>
@@ -159,7 +121,7 @@ export default  function AddPrinterForm({mongoUserId}:Props) {
               </>
             ) : (
               <>
-              {type === 'edit' ? 'Edit printer' : 'Add printer'}
+              {type === 'edit' ? 'Edit work' : 'Add work'}
               </>
             )}
           </Button>

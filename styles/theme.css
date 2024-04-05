@@ -92,7 +92,7 @@
   }
 
   .light-border {
-    @apply border-light-800 dark:border-dark-300;
+    @apply bg-dark-300 dark:bg-dark-300;
   }
 
   .light-border-2 {
@@ -192,7 +192,7 @@
   }
 
   .primary-gradient {
-    background: linear-gradient(129deg, #1452fd 0%, #4b7bff 100%);
+    background: linear-gradient(179deg, rgba(94, 92, 230) 0%, rgba(173, 170, 248) 100%);
   }
 
   .dark-gradient {

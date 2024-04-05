@@ -1,0 +1,101 @@
+"use client"
+
+import React, {useState} from 'react'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { findPrinterBySnSchema } from '@/lib/validations';
+import { findPrinterBySn } from '@/lib/actions/printer.action';
+
+const FindPrinterBySn = () => {
+  const type:any = 'search';
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 1. Define your form.
+  // findPrinterBySnSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof findPrinterBySnSchema>>({
+    resolver: zodResolver(findPrinterBySnSchema),
+    defaultValues: {
+      sn: "",
+    },
+  });
+
+  // 2. Define a submit handler.
+  async function onSubmit(values: z.infer<typeof findPrinterBySnSchema>) {
+    setIsSubmitting(true);
+    try {
+
+      // this function took from lib/actions/printer.action.ts to create a new printer model
+      await findPrinterBySn({
+        sn: values.sn,
+        // path: usepathname,
+      })
+
+
+
+      form.reset({}); // Reset form fields
+      
+      setIsSubmitting(false); // Reset isSubmitting state
+      // defined as a hook
+      // router.push("/settings")
+    } catch (error) {
+      console.error(error); 
+    }
+  }
+
+  return (
+    <>
+      <Form {...form}>    
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full mx-auto flex flex-row gap-2 justify-between items-center align-center mb-4">
+
+          {/* Item #1 */}
+          <FormField
+            control={form.control}
+            name="sn"
+            render={({ field }) => (
+              // First Input
+              <FormItem className='w-2/3'>
+                <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Search / Add printer:</FormLabel>
+                <FormControl>
+                  <div className="flex flex-row gap-2">
+                    <Input
+                      className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                      placeholder="Serial number"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="bg-primary-500 text-white mt-3 w-1/3" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                {type === 'search' ? 'Searching ...' : 'Searching ...'}
+              </>
+            ) : (
+              <>
+              {type === 'search' ? 'Search' : 'Search'}
+              </>
+            )}
+          </Button>
+        </form>
+      </Form>
+    </>
+  )
+}
+
+export default FindPrinterBySn

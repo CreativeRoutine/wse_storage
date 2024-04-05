@@ -18,15 +18,24 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          500: "#FF7000",
-          100: "#FFF1E6",
+          500: "#5E5CE6",// primary purple 
+          100: "#ABA8F8", // light purple
+        },
+        secondary: {
+          500: "#E1ff01", // Accent
+          300: "#1e1e1e", // alternative dark
+          200: "#2A2A2A", // alternative lighter dark
+          100: "#353535", // alternative light dark
+          
         },
         dark: {
-          100: "#000000",
-          200: "#0F1117",
-          300: "#151821",
-          400: "#212734",
-          500: "#101012",
+          100: "#101011", // bg
+          200: "#1B1B1B", // sidebar bg
+          300: "#1D1D1C", // border
+          350: "#2F3030", // border greenish
+          400: "#151515", // input bg
+          500: "#383838", // text
+          600: "#222222" // input bg
         },
         light: {
           900: "#FFFFFF",
@@ -34,7 +43,7 @@ module.exports = {
           850: "#FDFDFD",
           700: "#DCE3F1",
           500: "#7B8EC8",
-          400: "#858EAD",
+          400: "#A3A3A3", // text
         },
         "accent-blue": "#1DA1F2",
       },

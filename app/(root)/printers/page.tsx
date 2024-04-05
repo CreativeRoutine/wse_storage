@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Key } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PrintersList } from "@/constants";
+import {getPrinters} from "@/lib/actions/printer.action";
 import {
   Card,
   CardContent,
@@ -12,13 +13,15 @@ import {
 } from "@/components/ui/card";
 
 import { Badge } from "@/components/ui/badge";
+import Title from "@/components/shared/Title";
 
-const Printers = () => {
+export default async function Printers (){
+
+  const printers = await getPrinters({})
+
   return (
     <>
-      <div className="py-4 px-6 bg-slate-100 rounded-md flex items-center justify-between mb-4 text-xl">
-        <h1 className="text-2xl font-bold">Printers page</h1>
-      </div>
+      <Title text="Printers page" />
 
       {/* STATISTIC TODAY */}
       <div className="flex flex-row gap-4 mb-4">
@@ -165,11 +168,11 @@ const Printers = () => {
         </div>
 
         <div className="w-full">
-          {PrintersList.map((printer) => {
+          {printers.printers.map((printer) => {
             return (
               <div
                 className="flex flex-row justify-center items-center pt-3 pb-3 px-6 border-b border-slate-200 hover:bg-slate-300"
-                key={printer.id}
+                key={printer._id as Key}
               >
                 <span className="w-[80px] flex flex-col justify-center items-center">
                   <Image
@@ -179,12 +182,12 @@ const Printers = () => {
                     alt="Printer"
                     className=""
                   />
-                  {printer.make}
+                  {printer.pnum}
                 </span>
                 <span className="flex flex-1 justify-center pl-3">
-                  {printer.techStart} / {printer.techEnd}
+                  {/* {printer.techStart} / {printer.techEnd} */}
                 </span>
-                <span className="flex flex-1 justify-center ">
+                {/* <span className="flex flex-1 justify-center ">
                   {printer.techTime <= 35 ? (
                     <span className="rounded-full bg-lime-300 px-4 py-2">
                       {printer.techTime} mins.
@@ -198,9 +201,9 @@ const Printers = () => {
                       {printer.techTime} mins.
                     </span>
                   )}
-                </span>
+                </span> */}
 
-                <span className="flex flex-1 justify-center ">
+                {/* <span className="flex flex-1 justify-center ">
                   {printer.cleanerTime} mins.
                 </span>
                 <span className="flex flex-1 justify-end  pr-2">
@@ -214,10 +217,10 @@ const Printers = () => {
                   <span className="text-slate-400 text-xs pl-2 font-normal">
                     USD{" "}
                   </span>
-                </span>
+                </span> */}
                 <span className="flex flex-1 justify-end ">
                   <Link
-                    href="/printer"
+                    href={`/printers/${printer.barcode}`}
                     className="px-4 py-3 bg-transparent font-bold border-2 border-slate-600 rounded-full hover:border-none hover:bg-sky-600 hover:text-white"
                   >
                     Full info
@@ -230,6 +233,4 @@ const Printers = () => {
       </div>
     </>
   );
-};
-
-export default Printers;
+}

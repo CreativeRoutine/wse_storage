@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(root)/settings/page._tsx", "database/part.model._ts", "components/shared/forms/AddPalletForm._tsx", "components/shared/forms/AddPartForm._tsx", "components/shared/forms/AddUserForm._tsx", "components/shared/forms/AddWorkForm._tsx", "components/shared/forms/ChechSN._tsx", "components/shared/forms/CleanerForm._tsx", "components/shared/forms/FindPrinterBySn._tsx", "components/shared/forms/TechForm._tsx", "components/shared/forms/TechWorkPrinterForm._tsx"],
   "exclude": ["node_modules"]
 }

@@ -197,20 +197,21 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const Home = () => {
+
+export default async function  Home () {
+  
   return (
     <>
       {/* STATISTIC TODAY */}
       <div className="flex flex-row gap-4">
         {/* Card #1 */}
-        <Card className="w-1/3 border-none shadow-md bg-teal-50  ">
+        <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
           <CardHeader>
-            <CardTitle className="mb-3 flex justify-between">
+            <CardTitle className="flex justify-between text-white">
               Techs
               <div className="flex items-center justify-center w-6 h-6 rounded-xl">
                 <Link href="/" key="tech">
                   <Image
-                    // src="/assets/icons/eye.svg"
                     src="/assets/icons/arrow-up-right.svg"
                     width={20}
                     height={30}
@@ -220,12 +221,12 @@ const Home = () => {
                 </Link>
               </div>
             </CardTitle>
-            <CardDescription className="text-slate-600">
+            <CardDescription className="text-slate-300">
               Printers refurbished today
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-between items-end">
-            <p className="text-emerald-600 font-bold text-6xl">15</p>
+            <p className="text-emerald-400 font-bold text-6xl">15</p>
             <Badge className="px-5 py-2 bg-green-100 text-green-800">
               <Image
                 // src="/assets/icons/eye.svg"
@@ -241,9 +242,9 @@ const Home = () => {
         </Card>
 
         {/* Card #2 */}
-        <Card className="w-1/3 border-none shadow-md bg-sky-50  bg-blend-soft-light">
+        <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
           <CardHeader>
-            <CardTitle className="mb-3 flex justify-between">
+            <CardTitle className="mb-3 flex justify-between text-white">
               Cleaners
               <div className="flex items-center justify-center w-6 h-6 rounded-xl">
                 <Link href="/" key="tech">
@@ -258,7 +259,7 @@ const Home = () => {
                 </Link>
               </div>
             </CardTitle>
-            <CardDescription className="text-slate-600">
+            <CardDescription className="text-slate-300">
               Printers cleaned today
             </CardDescription>
           </CardHeader>
@@ -286,9 +287,9 @@ const Home = () => {
         </Card>
 
         {/* Card #3 */}
-        <Card className="w-1/3 border-none shadow-md bg-purple-50  bg-blend-soft-light">
+        <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
           <CardHeader>
-            <CardTitle className="mb-3 flex justify-between">
+            <CardTitle className="mb-3 flex justify-between text-white">
               Done all time
               <div className="flex items-center justify-center w-6 h-6 rounded-xl">
                 <Link href="/" key="tech">
@@ -303,7 +304,7 @@ const Home = () => {
                 </Link>
               </div>
             </CardTitle>
-            <CardDescription className="text-slate-600">
+            <CardDescription className="text-slate-300">
               Done all time
             </CardDescription>
           </CardHeader>
@@ -543,4 +544,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+

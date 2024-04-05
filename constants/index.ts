@@ -801,6 +801,16 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Home",
   },
   {
+    imgURL: "/assets/icons/storage.svg",
+    route: "/storage",
+    label: "Storage",
+  },
+  {
+    imgURL: "/assets/icons/printer.svg",
+    route: "/printers",
+    label: "Printers",
+  },
+  {
     imgURL: "/images/icons/users.svg",
     route: "/users",
     label: "Users",
@@ -810,16 +820,11 @@ export const sidebarLinks: SidebarLink[] = [
     route: "/parts",
     label: "Parts",
   },
-  {
-    imgURL: "/assets/icons/printer.svg",
-    route: "/printers",
-    label: "Printers",
-  },
-  {
-    imgURL: "/assets/icons/gear.svg",
-    route: "/settings",
-    label: "Settings",
-  },
+  // {
+  //   imgURL: "/assets/icons/gear.svg",
+  //   route: "/settings",
+  //   label: "Settings",
+  // },
   // {
   //   imgURL: "/images/icons/suitcase.svg",
   //   route: "/jobs",
