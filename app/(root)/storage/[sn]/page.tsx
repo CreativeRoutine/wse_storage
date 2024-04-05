@@ -9,6 +9,7 @@ import { getPrinters } from '@/lib/actions/printer.action';
 const page = async ({ params }: { params: { sn: string } }) => {
   
   const currentSN = params.sn;
+  // console.log("JSONed", typeof JSON.stringify(currentSN))
   const getPaletData = await getPalet({ currentSN });
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
   console.log(getPaletDataPlain);

@@ -1,11 +1,7 @@
 
 import React from "react";
 import Title from "@/components/shared/Title";
-import CreatePalet from "@/components/shared/pallets/CreatePalet";
-import DisplayPallets from "@/components/shared/displays/DisplayPallets";
 import { getPallets } from "@/lib/actions/pallet.action";
-import AddPrinterToPalet from "@/components/shared/pallets/AddPrinterToPalet";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const Storage = async () => {
@@ -30,11 +26,11 @@ const Storage = async () => {
                   <div className="font-semibold">Printers inside</div>
                   <div className="font-bold text-sky-400">{pallet.printers.length}</div>
                 </div>
-                {/* <Button type="submit" > */}
-                  <Link href={`/storage/${pallet.sn}`} className="flex justify-center items-center rounded-lg bg-primary-500 text-white mt-3 p-4">
+                
+                  <Link href={`/storage/${JSON.parse(JSON.stringify(pallet.sn))}`} className="flex justify-center items-center rounded-lg bg-primary-500 text-white mt-3 p-4">
                     Edit Pallet
                   </Link>
-                {/* </Button> */}
+                
               </div>
             )
           }
