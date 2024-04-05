@@ -7,7 +7,7 @@ import Title from "@/components/shared/Title";
 import { getPrinters } from "@/lib/actions/printer.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
-import TechWorkPrinterForm from "@/components/shared/forms/TechWorkPrinterForm";
+
 
 const addPrinter = async () => {
   // const {userId} = auth();
