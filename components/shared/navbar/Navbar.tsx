@@ -24,8 +24,8 @@ const Navbar = () => {
       </div>
 
       <div className=" text-white flex gap-3">
-          <Link href="/addpallet" className="bg-primary-500 hover:bg-dark-500 rounded-lg text-white px-4 py-4">Add Pallet</Link>
-          <Link href="/addprinter" className="bg-primary-500 hover:bg-dark-500 rounded-lg text-white px-4 py-4">Add Printer</Link>
+          <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Add Pallet</Link>
+          <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Start Printer</Link>
         {/* Theme Switch */}
         {/* <Theme /> */}
         {/* <SignedIn>

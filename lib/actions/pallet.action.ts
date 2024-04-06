@@ -53,36 +53,27 @@ export async function createPalet(params:CreatePalet){
   }
 }
 
-export async function getPalet(currentSN:GetPalet){
+export async function getPalet(params:GetPalet){
   try{
     connectToDatabase();
 
-    // const { currentSN } = params.currentSN;
-    
-
+    const { currentSN } = params;
     const sns:any = [];
-
-    const pallets = await Pallet.find({sn:currentSN.currentSN}).lean();
-
+    const pallets = await Pallet.find({sn:currentSN}).lean();
     const currentPallet = JSON.parse(JSON.stringify(pallets[0].printers));
-    
-    
+
     for (const printer of currentPallet) {
       const printersSn = await Printer.findOne({_id: printer}).lean();
-
       sns.push(printersSn?.sn); // Fix: Access the 'sn' property using optional chaining operator
     }
 
-
-
-
-    
     return({pallets, sns})
     
   }catch(error){
     console.log("Pallet couldn't load. Error:", error);
   } 
 }
+
 
 
 

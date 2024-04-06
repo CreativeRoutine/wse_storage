@@ -820,11 +820,11 @@ export const sidebarLinks: SidebarLink[] = [
     route: "/parts",
     label: "Parts",
   },
-  // {
-  //   imgURL: "/assets/icons/gear.svg",
-  //   route: "/settings",
-  //   label: "Settings",
-  // },
+  {
+    imgURL: "/assets/icons/gear.svg",
+    route: "/settings",
+    label: "Settings",
+  },
   // {
   //   imgURL: "/images/icons/suitcase.svg",
   //   route: "/jobs",

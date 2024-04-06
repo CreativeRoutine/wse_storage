@@ -1,4 +1,5 @@
 import React from "react";
+
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,11 +21,13 @@ const addPrinter = async () => {
 
   return (
     <>
-      <Title text="Add Printer" />
+      <Title text="Work with printer" />
       
-
       <div className="flex bg-dark-600 rounded-xl border border-dark-350 p-4 gap-4">
         <div className="w-1/2">
+          
+          <AddPrinterForm />
+
           {/* <TechWorkPrinterForm mongoUserId={JSON.stringify(mongoUser._id)} /> */}
           
         </div>

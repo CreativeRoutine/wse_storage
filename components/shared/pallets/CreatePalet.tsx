@@ -29,16 +29,19 @@ interface Props {
 
 export default function CreatePalet ({ mongoUserId }: Props){
 
+  // Create state for: barcode, productNumber, sn
+
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
-    // 1. Define your form.
+  // 1. Define your form.
   // addPalletSchema took from lib/validations.ts to validate the form
   const form = useForm<z.infer<typeof addPalletSchema>>({
     resolver: zodResolver(addPalletSchema),
     defaultValues: {
-      sn:"",
+      ponumber:"",
       barcode:"",
       printers: [],
     },
@@ -52,13 +55,11 @@ export default function CreatePalet ({ mongoUserId }: Props){
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
       await createPalet({
-        sn: values.sn,
+        ponumber: values.ponumber,
         barcode: values.barcode,
-        // location: values.location,
         printers: values.printers,
         creator: JSON.parse(mongoUserId),
         path: usepathname,
-        location: ''
       })
       
       setIsSubmitting(false); // Reset isSubmitting state
@@ -76,6 +77,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
   ) => {
     if (e.key === "Enter" && field.name === "printers") {
       e.preventDefault();
+      console.log(e, field.value)
 
       const tagInput = e.target as HTMLInputElement;
       const tagValue = tagInput.value.trim();
@@ -122,16 +124,16 @@ export default function CreatePalet ({ mongoUserId }: Props){
 
                 <FormField
                   control={form.control}
-                  name="sn"
+                  name="ponumber"
                   render={({ field }) => (
                     // First Input
                     <FormItem>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Serial number:</FormLabel>
+                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">PO number:</FormLabel>
                       <FormControl>
                         <div className="flex">
                           <Input
-                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="5-12 symbols"
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="PO number"
                             {...field}
                           />
                         </div>
@@ -152,8 +154,8 @@ export default function CreatePalet ({ mongoUserId }: Props){
                       <FormControl>
                         <div className="flex">
                           <Input
-                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="5-8 symbols"
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="Barcode"
                             {...field}
                           />
                         </div>
@@ -198,7 +200,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
                   name="printers"
                   render={({ field }) => (
                       <FormItem className="flex w-full flex-col">
-                        <FormLabel className="text-base text-slate-300 font-semibold">Printers:</FormLabel>
+                        <FormLabel className="text-base text-slate-300 font-semibold">Serial number:</FormLabel>
                         <FormControl className="mt-3.5">
                           <>
                             <Input

@@ -3,22 +3,16 @@ import React, {Key} from 'react'
 import Title from '@/components/shared/Title'
 import { getPalet  } from '@/lib/actions/pallet.action'
 import Link from 'next/link'
-import AddPrinterToPalet from '@/components/shared/pallets/AddPrinterToPalet';
-import { getPrinters } from '@/lib/actions/printer.action';
 
 const page = async ({ params }: { params: { sn: string } }) => {
   
   const currentSN = params.sn;
-  // console.log("JSONed", typeof JSON.stringify(currentSN))
-  const getPaletData = await getPalet({ currentSN });
+  const getPaletData = await getPalet({ currentSN});
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  console.log(getPaletDataPlain);
-  // const getPrintersData = await getPrinters({});
-  // console.log(getPrintersData);
 
   return (
     <>
-      <Title text="Add Printers to pallet" />
+      <Title text="Pallet with printers inside" />
 
       <div className="flex  bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
         <div className='w-full flex p-4 gap-4'>

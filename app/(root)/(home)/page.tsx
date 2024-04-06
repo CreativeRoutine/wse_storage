@@ -195,7 +195,6 @@ const printers = [
 
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 
 export default async function  Home () {
@@ -203,7 +202,7 @@ export default async function  Home () {
   return (
     <>
       {/* STATISTIC TODAY */}
-      <div className="flex flex-row gap-4">
+      <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
         {/* Card #1 */}
         <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
           <CardHeader>
@@ -315,8 +314,8 @@ export default async function  Home () {
       </div>
 
       {/* PRINTERS' LIST FOR TODAY */}
-      <div className="  flex flex-row justify-start gap-5 py-2 mt-[64px] mb-[8px]">
-        {/* <Button className="bg-slate-500 text-white">Printers</Button> */}
+      {/* <div className="flex w-full gap-4 bg-dark-600 rounded-xl border border-dark-350  m-4">
+        
         <Select>
           <SelectTrigger className="w-[180px] primary-gradient text-white px-7 py-6 outline-none font-bold text-lg">
             <SelectValue
@@ -354,9 +353,9 @@ export default async function  Home () {
             <SelectItem value="4015">4015</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
 
-      <div className=" mx-auto flex flex-col">
+      <div className="flex gap-4 mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
         <Table>
           {/* TABLE HEAD */}
           <TableHeader className="bg-black text-white rounded--md">

@@ -13,11 +13,11 @@ const Storage = async () => {
     <>
       <Title text="Storage" />
       
-      <div className="flex flex-row gap-2 bg-dark-600 rounded-xl border border-dark-350 p-4">
+      <div className="flex flex-wrap gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
         {
           pallets.map((pallet:any) => {
             return(
-              <div key={pallet._id} className="w-1/2 max-w-1/2 flex flex-col bg-secondary-200 px-8 mb-6 py-6 rounded-xl border border-dark-350 shadow-lg">
+              <div key={pallet._id} className="flex flex-col w-1/3 max-w-1/3 bg-secondary-200 px-6 mb-2 py-8 rounded-xl border border-dark-350 shadow-lg">
                 <div className="flex justify-between w-full text-white mb-3">
                   <div className="font-semibold">Location:</div>
                   <div className="font-bold text-lime-400">{pallet.location}</div>

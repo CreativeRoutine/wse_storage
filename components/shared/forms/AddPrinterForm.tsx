@@ -14,7 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -75,98 +81,115 @@ export default  function AddPrinterForm({mongoUserId}:Props) {
   // 3. Render the form.
   return (
     <div className="bg-secondary-200 px-8 mb-6 py-6 w-full rounded-xl border border-dark-350 shadow-lg">
+      <Select>
+        <SelectTrigger className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus">
+          <SelectValue
+            placeholder="Tech Name"
+            className="outline-none font-bold"
+          />
+        </SelectTrigger>
+        <SelectContent className="bg-dark-600 text-white border-0 pt-2 pb-2 outline-none font-bold text-base">
+          <SelectItem value="name1" className="">
+            Name 1
+          </SelectItem>
+          <SelectItem value="name2">Name 2</SelectItem>
+        </SelectContent>
+      </Select>
 
-    <div className="mb-4">
-      <div className="mb-3 text-lg text-slate-300 font-semibold">Add Printer:</div>
-      {/* ======================================================================= */}
-    <Form {...form}>    
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full mx-auto">
-
-        {/* Item #1 */}
-        <FormField
-          control={form.control}
-          name="make"
-          render={({ field }) => (
-            // First Input
-            <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer make:</FormLabel>
-              <FormControl>
-                <div className="flex flex-row gap-2">
-                  <Input
-                    className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="Ex. 402"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Item #2 */}
-        <FormField
-          control={form.control}
-          name="model"
-          render={({ field }) => (
-            // First Input
-            <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer model:</FormLabel>
-              <FormControl>
-                <div className="flex flex-row gap-2">                  
-                <Input
-                    className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="DN"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Item #3 */}
-        <FormField
-          control={form.control}
-          name="pnum"
-          render={({ field }) => (
-            // First Input
-            <FormItem>
-              <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Product number:</FormLabel>
-              <FormControl>
-                <div className="flex flex-row gap-2">                  
-                <Input
-                    className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                    placeholder="product number"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <Input
+        className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+        placeholder="Find by Serial number"
+      />
 
 
-        <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                {type === 'edit' ? 'Editing ...' : 'Adding ...'}
-              </>
-            ) : (
-              <>
-              {type === 'edit' ? 'Edit printer' : 'Add printer'}
-              </>
+      <Form {...form}>    
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-full mx-auto">
+
+          {/* Item #1 */}
+          <FormField
+            control={form.control}
+            name="make"
+            render={({ field }) => (
+              // First Input
+              <FormItem>
+                <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer make:</FormLabel>
+                <FormControl>
+                  <div className="flex flex-row gap-2">
+                    <Input
+                      className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                      placeholder="Ex. 402"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
             )}
-          </Button>
-      </form>
-    </Form>
+          />
 
-    </div>
+          {/* Item #2 */}
+          <FormField
+            control={form.control}
+            name="model"
+            render={({ field }) => (
+              // First Input
+              <FormItem>
+                <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Printer model:</FormLabel>
+                <FormControl>
+                  <div className="flex flex-row gap-2">                  
+                  <Input
+                      className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                      placeholder="DN"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Item #3 */}
+          <FormField
+            control={form.control}
+            name="pnum"
+            render={({ field }) => (
+              // First Input
+              <FormItem>
+                <FormLabel className="mb-3 text-lg text-slate-300 font-semibold">Product number:</FormLabel>
+                <FormControl>
+                  <div className="flex flex-row gap-2">                  
+                  <Input
+                      className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                      placeholder="product number"
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+
+          <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  {type === 'edit' ? 'Editing ...' : 'Finishing ...'}
+                </>
+              ) : (
+                <>
+                {type === 'edit' ? 'Edit printer' : 'Finish work'}
+                </>
+              )}
+            </Button>
+        </form>
+      </Form>
+
+
 
 
     </div>
