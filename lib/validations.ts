@@ -1,3 +1,4 @@
+import { get } from "http";
 import * as z from "zod";
 
 // ===================  User  ===================
@@ -22,8 +23,7 @@ export const addLocationToPalletSchema = z.object({
 })
 
 export const addCostToPalletSchema = z.object({
-  // price: z.number().min(2).max(8),
-  price: z.number(),
+  price: z.string().min(2).max(7),
 })
 
 

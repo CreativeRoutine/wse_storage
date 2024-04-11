@@ -84,7 +84,7 @@ export interface UpdatePaletLocation{
 }
 
 export interface UpdatePaletCost{
-  price: number;
+  price: string;
   paletBarcode: string;
   path: string;
 }

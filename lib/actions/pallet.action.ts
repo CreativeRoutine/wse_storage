@@ -82,6 +82,8 @@ export async function updatePaletCost(params:UpdatePaletCost){
   try {
     connectToDatabase();
     const { price, paletBarcode, path} = params;
+  
+    console.log(typeof price)
 
     const pallet = await Pallet.findOne({ barcode: paletBarcode });
     if (!pallet) {

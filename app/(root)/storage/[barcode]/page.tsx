@@ -41,7 +41,7 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                         </div>
                         <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
                           <div className="text-slate-400">Price: </div>
-                          <div className="text-white font-bold"> {pallet.price ? (<div className="text-lime-500 font-bold">USD {pallet.price}</div>  ) : (<div className='text-red-400 text-xl font-bold'>Not set </div>  )  }</div>
+                          <div className="text-white font-bold">{pallet.price ? (<div className="text-lime-500 font-bold"><span className='text-sm font-normal'>USD</span> {pallet.price}</div>  ) : (<div className='text-red-400 text-xl font-bold'>Not set </div>  )  }</div>
                         </div>
                         <div className="w-full  mb-2 py-2 flex justify-between">
                           {

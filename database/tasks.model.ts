@@ -1,6 +1,6 @@
 import {Schema, model, models, Document} from 'mongoose';
 
-export interface WorkAdd extends Document {
+export interface TaskAdd extends Document {
     name: string;
     // locker: string;
     // printers: Schema.Types.ObjectId[];
@@ -10,7 +10,7 @@ export interface WorkAdd extends Document {
     // completedAt: Date;
 }
 
-const WorkSchema = new Schema({
+const TaskSchema = new Schema({
     name: {type: String, required: true},
     // locker: {type: String, required: true},
     // printers: [{type: Schema.Types.ObjectId, ref: 'Printer', required: false}],
@@ -20,6 +20,6 @@ const WorkSchema = new Schema({
     // completedAt: {type: Date, default: Date.now, required: false},
 })
 
-const Work = models.Work || model('Work', WorkSchema);
+const Task = models.Task || model('Task', TaskSchema);
 
-export default Work;
+export default Task;

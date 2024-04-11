@@ -40,14 +40,16 @@ export default  function AddCostToPallet ({barcode}:Props){
   const form = useForm<z.infer<typeof addCostToPalletSchema>>({
     resolver: zodResolver(addCostToPalletSchema),
     defaultValues: {
-      price: 0,
+      price: "0",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof addCostToPalletSchema>,) {
     setIsSubmitting(true);
-    
+    // const numericPrice = parseFloat(values.price); // Convert price to a number
+
+    console.log(typeof values.price)
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
@@ -57,8 +59,7 @@ export default  function AddCostToPallet ({barcode}:Props){
         path: usepathname,
       })
 
-      form.reset({}); // Reset form fields
-      
+      form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${barcode}`)
@@ -98,7 +99,8 @@ export default  function AddCostToPallet ({barcode}:Props){
 
                         <FormMessage />
                       </FormItem>
-                    )}
+                    )
+                  }
                   />
                   <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
