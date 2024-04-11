@@ -8,8 +8,10 @@ const page = async ({ params }: { params: { barcode: string } }) => {
 
     const barcode = params.barcode;
 
-    const printer = await getPrinter({ barcode });
-
+    const printer = await getPrinter({
+      barcode,
+      // sn: ''
+    });
 
   return (
     <>

@@ -114,7 +114,7 @@ export async function getPrinters(params: GetPrintersParams){
 
 export async function getPrinter(params: GetPrinterParams){
   
-  const serialNUmber = params.sn;
+  const barcode = params.barcode;
 
   try {
     // Connect to the database
@@ -122,7 +122,7 @@ export async function getPrinter(params: GetPrinterParams){
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     // .lean() 
-    const printer = await Printer.find({sn: serialNUmber}).lean()
+    const printer = await Printer.find({barcode: barcode}).lean()
 
     // //.populate({path: "tags", model: Tag})
     // //.populate({path: 'author', model: User}) 

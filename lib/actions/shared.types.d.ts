@@ -36,7 +36,7 @@ export interface GetPrintersParams {
 }
 
 export interface GetPrinterParams{
-  sn: string;
+  // sn: string;
   barcode: string;
 }
 
