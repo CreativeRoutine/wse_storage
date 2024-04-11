@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const formatTime = (createdOn: Date, look: string) : string => {
+export const formatTime = (createdOn: Date, look: string) => {
 
 
 
