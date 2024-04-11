@@ -18,6 +18,7 @@ import Title from "@/components/shared/Title";
 export default async function Printers (){
 
   const printers = await getPrinters({})
+  // console.log("getPrinters function ==>", printers)
 
   return (
     <>

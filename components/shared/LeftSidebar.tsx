@@ -16,7 +16,7 @@ const LeftSidebar = () => {
 
     <>
       <section id="sidebar" className="bg-dark-200 custom-scrollbar fixed left-0 top-0 flex h-screen flex-col justify-start overflow-y-auto border-r border-dark-300 pt-12 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[395px]">
-       {/* Logo */}
+
         <Link className="logo flex flex-col justify-start items-center pl-10 pr-10" href="/" >
           <div className="flex self-start flex-row items-center">
           <div className="flex justify-center items-center h-10 w-10 bg-primary-500 rounded-lg">
@@ -45,11 +45,10 @@ const LeftSidebar = () => {
 
           return (
             item.route === "/settings" ? (
-              <>
+              <div key={item.label}>
               <div className="border-b-2 border-dark-500 h-[2px] w-full mt-3 mb-3"></div>
               <Link
               href={item.route}
-              key={item.label}
               className={`${
                 isActive
                   ? "primary-gradient rounded-lg text-light-900"
@@ -69,7 +68,7 @@ const LeftSidebar = () => {
                 {item.label}
               </p>
             </Link>
-              </>
+              </div>
             ) : (
               <Link
               href={item.route}

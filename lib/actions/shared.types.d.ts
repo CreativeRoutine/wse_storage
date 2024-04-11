@@ -1,14 +1,15 @@
 import { Schema } from "mongoose";
 import { IUser } from "@/database/user.model";
+import { ISupplier } from "@/database/supplier.model";
 
 // /////////////////////
 // PRINTER TYPES
 // /////////////////////
-export interface CreateProductPrinterParams {
+export interface CreatePrinterParams {
   sn: string;
-  pnum: string;
+  productNumber: string;
   barcode: string;
-  paletSn: string;
+  paletBarcode: string;
   path: string;
 }
 
@@ -69,11 +70,22 @@ export interface DeletePartsParams {
 // PALLET TYPES
 // /////////////////////
 export interface CreatePalet{
-  sn: string;
+  ponumber: Schema.Types.ObjectId | ISupplier;
   barcode: string; 
-  location : string;
-  printers : string[];
-  creator: Schema.Types.ObjectId | IUser;
+  createdOn: Date;
+  user: Schema.Types.ObjectId | IUser;
+  path: string;
+}
+
+export interface UpdatePaletLocation{
+  location: string;
+  paletBarcode: string;
+  path: string;
+}
+
+export interface UpdatePaletCost{
+  price: number;
+  paletBarcode: string;
   path: string;
 }
 
@@ -92,9 +104,9 @@ export interface SetPricePalet{
 }
 
 export interface GetPalet{
-  currentSN: string;
+  barcode: string;
   paletId?: string;
-  sn: string;
+  // sn: string;
 }
 
 

@@ -1,9 +1,9 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreateProductPrinterParams, CreatePrinterModelParams, DeletePrinterModelParams, FindPrinterBySnParams, GetPrintersParams, GetPrinterParams } from "./shared.types";
-import Printer from "@/database/makes.model";
-import ProductPrinter from "@/database/printer.model";
+import {  CreatePrinterParams, CreatePrinterModelParams, DeletePrinterModelParams, FindPrinterBySnParams, GetPrintersParams, GetPrinterParams } from "./shared.types";
+// import Printer from "@/database/makes.model";
+import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import { updatePalet } from "./pallet.action";
 import Pallet from "@/database/pallet.model";
@@ -48,26 +48,43 @@ import Pallet from "@/database/pallet.model";
 
 // CreatePrinterModelParams took from shared.types.d.ts 
 // to create a new printer model 
-export async function createPrinter(params: CreateProductPrinterParams) {
+
+
+
+export async function createPrinter(params: CreatePrinterParams) {
   try {
     connectToDatabase();
 
-    const { sn, pnum, barcode, paletSn, path } = params;
+    const { sn, productNumber, barcode, paletBarcode, path } = params;
 
-    const existingPrinter = await ProductPrinter.findOne({ sn });
+    // Поиск существующего принтера
+    const existingPrinter = await Printer.findOne({ sn, productNumber, barcode });
     if (existingPrinter) {
-      // If a printer with the same make and model exists, return an error message
       return "This printer already exists in the database";
     }
 
-    // Create a new printer
-    const newPrinter = await ProductPrinter.create({ sn, pnum, paletSn, barcode });
+    // Поиск паллета по штрихкоду
+    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    if (!pallet) {
+      return "Pallet not found";
+    }
+
+    // Создание нового принтера с _id паллета
+    const newPrinter = await Printer.create({
+      sn, 
+      productNumber, 
+      barcode,
+      pallet: pallet._id, // Используем _id найденного паллета
+    });
+
+    // После успешного создания принтера, обновляем документ паллета, добавляя _id нового принтера в массив printers
+    await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: newPrinter._id } });
+
+
     revalidatePath(path);
 
-    // Convert the new printer to a plain JavaScript object
-    
+    // Преобразование нового принтера в простой JavaScript объект
     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
     
     return newPrinterPlain;
   } catch (error) {
@@ -83,7 +100,7 @@ export async function getPrinters(params: GetPrintersParams){
     await connectToDatabase();
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await ProductPrinter.find({}).lean()
+    const printers = await Printer.find({}).lean()
 
     // //.populate({path: "tags", model: Tag})
     // //.populate({path: 'author', model: User}) 
@@ -105,7 +122,7 @@ export async function getPrinter(params: GetPrinterParams){
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     // .lean() 
-    const printer = await ProductPrinter.find({sn: serialNUmber}).lean()
+    const printer = await Printer.find({sn: serialNUmber}).lean()
 
     // //.populate({path: "tags", model: Tag})
     // //.populate({path: 'author', model: User}) 

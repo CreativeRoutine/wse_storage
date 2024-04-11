@@ -3,76 +3,102 @@
 import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import { connectToDatabase } from "../mongoose"
-import { CreatePalet, GetPalet, UpdatePalet, CreatePalletModelParams, DeletePalletParams, GetPalletsParams, SetPricePalet} from "./shared.types";
+import { CreatePalet, GetPalet, UpdatePalet, CreatePalletModelParams, DeletePalletParams, GetPalletsParams, SetPricePalet, UpdatePaletLocation, UpdatePaletCost} from "./shared.types";
 import { revalidatePath } from "next/cache";
-import { any } from "zod";
+import Supplier from "@/database/supplier.model";
+// import { any } from "zod";
 
 
-export async function createPalet(params:CreatePalet){
-
+export async function createPalet(params: CreatePalet) {
   try {
     connectToDatabase();
-    const createdOn = new Date();
-    const { sn, barcode,  printers, creator, path, location} = params;
 
-    // Создание нового палета
-    const palet = await Pallet.create({
-      sn,
-      barcode,
-      creator,
-      createdOn
-    });
+    const { ponumber, barcode, user, path, createdOn } = params;
 
-    // Массив для хранения обработанных серийных номеров принтеров
-    const printerDocuments = [];
+    const existingPallet = await Pallet.findOne({ barcode: barcode });
+    if (!existingPallet) {
+      // Создание нового палета
+      const newPalet = await Pallet.create({
+        ponumber,
+        barcode,
+        user,
+        createdOn
+      });
 
-    // Обработка каждого серийного номера принтера
-    for (const printerSn of printers) {
-      const existingPrinter = await Printer.findOneAndUpdate(
-        // Поиск принтера по серийному номеру
-        { sn: printerSn },
-        // Если принтер найден, обновляем его данные, добавляя идентификатор палета
-        { $push: { palets: palet._id } },
-        // Настройки для создания принтера, если он не найден
-        { upsert: true, new: true }
+      // Используем _id нового палета для добавления в массив pallets поставщика
+      const supplier = await Supplier.findOneAndUpdate(
+        { ponumber: ponumber },
+        { $push: { pallets: newPalet._id } }, // Добавляем _id палета
+        { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
       );
-
-      printerDocuments.push(existingPrinter._id);
+    } else {
+      return "This pallet already exists in the database";
     }
 
-    // Обновление палета серийными номерами принтеров
-    await Pallet.findByIdAndUpdate(palet._id, {
-      $push: { printers: { $each: printerDocuments } }
-    });
-      
     revalidatePath(path);
-    
   } catch (error) {
     console.log("Error:", error);
-    return "An error occurred while creating the printer";
+    return "An error occurred while creating the pallet";
   }
 }
 
-export async function getPalet(params:GetPalet){
-  try{
+export async function getPalet(params: GetPalet) {
+  try {
+    await connectToDatabase();
+
+    const { barcode } = params;
+
+    // Загрузка паллетов с заполнением информации о принтерах
+    const pallets = await Pallet.find({ barcode: barcode })
+    .populate({ path: "printers", model: Printer, select: "barcode sn productNumber" })
+    .lean();
+
+    return { pallets };
+  } catch (error) {
+    console.log("This Pallet couldn't load. Error:", error);
+    return { error: "This Pallet couldn't load." };
+  }
+}
+
+export async function updatePaletPlace(params:UpdatePaletLocation){
+  try {
     connectToDatabase();
+    const { location, paletBarcode, path} = params;
 
-    const { currentSN } = params;
-    const sns:any = [];
-    const pallets = await Pallet.find({sn:currentSN}).lean();
-    const currentPallet = JSON.parse(JSON.stringify(pallets[0].printers));
-
-    for (const printer of currentPallet) {
-      const printersSn = await Printer.findOne({_id: printer}).lean();
-      sns.push(printersSn?.sn); // Fix: Access the 'sn' property using optional chaining operator
+    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    if (!pallet) {
+      return "This printer already exists in the database";
     }
 
-    return({pallets, sns})
-    
-  }catch(error){
-    console.log("Pallet couldn't load. Error:", error);
-  } 
+    await Pallet.findOneAndUpdate(pallet._id, { $set: { location: location } });
+    revalidatePath(path);
+  } catch (error) {
+      console.log("Error:", error);
+  }
+
 }
+
+export async function updatePaletCost(params:UpdatePaletCost){
+  try {
+    connectToDatabase();
+    const { price, paletBarcode, path} = params;
+
+    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    if (!pallet) {
+      return "This printer already exists in the database";
+    }
+
+    await Pallet.findOneAndUpdate(pallet._id, { $set: { price: price } });
+    revalidatePath(path);
+  } catch (error) {
+      console.log("Error:", error);
+  }
+
+}
+
+
+
+
 
 
 

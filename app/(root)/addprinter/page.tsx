@@ -26,7 +26,7 @@ const addPrinter = async () => {
       <div className="flex bg-dark-600 rounded-xl border border-dark-350 p-4 gap-4">
         <div className="w-1/2">
           
-          <AddPrinterForm />
+          {/* <AddPrinterForm /> */}
 
           {/* <TechWorkPrinterForm mongoUserId={JSON.stringify(mongoUser._id)} /> */}
           

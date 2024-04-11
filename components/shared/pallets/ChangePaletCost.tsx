@@ -17,11 +17,9 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import { createPrinter } from '@/lib/actions/printer.action';
-import { addPrinterSchema } from '@/lib/validations';
+import { addCostToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
-import { updatePalet } from '@/lib/actions/pallet.action';
+import { updatePaletCost } from '@/lib/actions/pallet.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
 
 const type:any = 'create';
@@ -31,44 +29,33 @@ interface Props {
   mongoUserId: string;
 }
 
-export default  function AddPrinterToPalet ({barcode}:Props){
+export default  function AddCostToPallet ({barcode}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
   // 1. Define your form.
-  // addPrinterSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof addPrinterSchema>>({
-    resolver: zodResolver(addPrinterSchema),
+  // addCostToPalletSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof addCostToPalletSchema>>({
+    resolver: zodResolver(addCostToPalletSchema),
     defaultValues: {
-      sn: "",
-      productNumber: "",
-      barcode: "",
+      price: 0,
     },
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof addPrinterSchema>,) {
+  async function onSubmit(values: z.infer<typeof addCostToPalletSchema>,) {
     setIsSubmitting(true);
     
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await createPrinter({
-        sn: values.sn, 
-        productNumber: values.productNumber,
-        barcode: values.barcode,
+      await updatePaletCost({
+        price: values.price, 
         paletBarcode: barcode,
         path: usepathname,
       })
-
-      // add function which will update the pallet with the new printers
-      // await updatePalet({
-      //   paletSn: sn,
-      //   printerSn: values.sn,
-      //   path: usepathname,
-      // })
 
       form.reset({}); // Reset form fields
       
@@ -86,7 +73,6 @@ export default  function AddPrinterToPalet ({barcode}:Props){
       <div className="bg-secondary-200 px-8 py-6  rounded-xl border border-dark-350 shadow-lg">
         <div className="">
           <div className=" text-lg text-slate-300 font-semibold">
-
           {
             <>
               <Form {...form}>  
@@ -95,7 +81,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
                   {/* Item #1 */}
                   <FormField
                     control={form.control}
-                    name="sn"
+                    name="price"
                     render={({ field }) => (
                       // First Input
                       <FormItem>
@@ -104,7 +90,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
                           <div className="flex flex-row gap-2">
                             <Input
                               className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="Serial number"
+                              placeholder="100..."
                               {...field}
                             />
                           </div>
@@ -114,64 +100,17 @@ export default  function AddPrinterToPalet ({barcode}:Props){
                       </FormItem>
                     )}
                   />
-
-                  {/* Item #2 */}
-                  <FormField
-                    control={form.control}
-                    name="productNumber"
-                    render={({ field }) => (
-                      // First Input
-                      <FormItem>
-                        
-                        <FormControl>
-                          <div className="flex flex-row gap-2">                  
-                          <Input
-                              className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="Product number"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Item #3 */}
-                  <FormField
-                    control={form.control}
-                    name="barcode"
-                    render={({ field }) => (
-                      // First Input
-                      <FormItem>
-                        
-                        <FormControl>
-                          <div className="flex flex-row gap-2">                  
-                          <Input
-                              className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="barcode"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
                   <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
-                          {'Adding ...'}
+                          {'Changing ...'}
                         </>
                       ) : (
                         <>
-                        {'Add printer'}
+                        {'Add Price'}
                         </>
                       )}
-                    </Button>
+                  </Button>
                 </form>
               </Form>
             </>

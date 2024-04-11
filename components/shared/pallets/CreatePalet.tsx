@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from '@/components/ui/badge';
 import  Image from 'next/image';
 
-
 const type:any = 'create';
 
 interface Props {
@@ -43,7 +42,6 @@ export default function CreatePalet ({ mongoUserId }: Props){
     defaultValues: {
       ponumber:"",
       barcode:"",
-      printers: [],
     },
   });
 
@@ -52,14 +50,16 @@ export default function CreatePalet ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addPalletSchema>) {
     setIsSubmitting(true);
 
+    const createdOn = new Date();
+
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
       await createPalet({
-        ponumber: values.ponumber,
-        barcode: values.barcode,
-        printers: values.printers,
-        creator: JSON.parse(mongoUserId),
+        ponumber: JSON.parse(JSON.stringify(values.ponumber)),
+        barcode: JSON.parse(JSON.stringify(values.barcode)),
+        user: JSON.parse(mongoUserId),
         path: usepathname,
+        createdOn: createdOn
       })
       
       setIsSubmitting(false); // Reset isSubmitting state
@@ -71,42 +71,42 @@ export default function CreatePalet ({ mongoUserId }: Props){
     }
   }
 
-  const handleInputKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    field: any
-  ) => {
-    if (e.key === "Enter" && field.name === "printers") {
-      e.preventDefault();
-      console.log(e, field.value)
+  // const handleInputKeyDown = (
+  //   e: React.KeyboardEvent<HTMLInputElement>,
+  //   field: any
+  // ) => {
+  //   if (e.key === "Enter" && field.name === "printers") {
+  //     e.preventDefault();
+  //     console.log(e, field.value)
 
-      const tagInput = e.target as HTMLInputElement;
-      const tagValue = tagInput.value.trim();
+  //     const tagInput = e.target as HTMLInputElement;
+  //     const tagValue = tagInput.value.trim();
 
-      if (tagValue !== "") {
-        if (tagValue.length > 15) {
-          return form.setError("printers", {
-            type: "required",
-            message: "Tag must be less than 15 characters.",
-          });
-        }
+  //     if (tagValue !== "") {
+  //       if (tagValue.length > 15) {
+  //         return form.setError("printers", {
+  //           type: "required",
+  //           message: "Tag must be less than 15 characters.",
+  //         });
+  //       }
 
-        // here we check if the tag is already in the array
-        if (!field.value.includes(tagValue as never)) {
-          form.setValue("printers", [...field.value, tagValue]);
-          tagInput.value = "";
-          form.clearErrors("printers");
-        }
-      } else {
-        form.trigger();
-      }
-    }
-  };
+  //       // here we check if the tag is already in the array
+  //       if (!field.value.includes(tagValue as never)) {
+  //         form.setValue("printers", [...field.value, tagValue]);
+  //         tagInput.value = "";
+  //         form.clearErrors("printers");
+  //       }
+  //     } else {
+  //       form.trigger();
+  //     }
+  //   }
+  // };
 
-  const handlePrinterRemove = (printer: string, field: any) => {
-    const newPrinters = field.value.filter((t: string) => t !== printer);
+  // const handlePrinterRemove = (printer: string, field: any) => {
+  //   const newPrinters = field.value.filter((t: string) => t !== printer);
 
-    form.setValue("printers", newPrinters);
-  };
+  //   form.setValue("printers", newPrinters);
+  // };
 
 
   return (
@@ -118,7 +118,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
 
             <div className='flex gap-6'>
-              <div className="w-1/2">
+              <div className="w-full">
 
                 <div className="mb-4 text-lg text-slate-300 font-semibold">Add Pallet:</div>
 
@@ -190,12 +190,12 @@ export default function CreatePalet ({ mongoUserId }: Props){
                 /> */}
               </div>
 
-              <div className="w-1/2">
+              {/* <div className="w-1/2"> */}
 
-                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printers:</div>
+                {/* <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printers:</div> */}
 
                 {/* Item #3 */}
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="printers"
                   render={({ field }) => (
@@ -237,10 +237,10 @@ export default function CreatePalet ({ mongoUserId }: Props){
                         </FormDescription>
                       <FormMessage className="text-red-500" />
                     </FormItem>
-                  )}
-                />
+                  )} */}
+                {/* /> */}
                 {/* <Button type="button" className="bg-primary-500 text-white text-md mt-3" onClick={()=>handleAddPrinter("sdfs")}>Add printer</Button> */}
-              </div>
+              {/* </div> */}
             </div>
 
 

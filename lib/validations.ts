@@ -11,19 +11,28 @@ export const AddUserSchema = z.object({
 // ===================  Pallet  ===================
 
 export const addPalletSchema = z.object({
-  barcode: z.string().min(5).max(12),
   ponumber: z.string().min(3).max(24),
-  printers: z.array(z.string().min(1).max(15)).min(1).max(99),  
+  barcode: z.string().min(5).max(12),
+  // user: z.string().min(3).max(24),
+  // printers: z.array(z.string().min(1).max(15)).min(1).max(99),  
 })
 
+export const addLocationToPalletSchema = z.object({
+  location: z.string().min(5).max(16),
+})
+
+export const addCostToPalletSchema = z.object({
+  // price: z.number().min(2).max(8),
+  price: z.number(),
+})
 
 
 
 // ===================  Printer  ===================
 
-export const productPrinterSchema = z.object({
+export const addPrinterSchema = z.object({
   sn: z.string().min(5).max(12), 
-  pnum: z.string().min(3).max(12),
+  productNumber: z.string().min(3).max(12),
   barcode: z.string().min(3).max(12),
   // paletSn: z.string().min(3).max(12),
 })
@@ -31,14 +40,6 @@ export const productPrinterSchema = z.object({
 export const updatePaletCostSchema = z.object({
   sn: z.string().min(5).max(12), 
   paletCost: z.string().min(1).max(7),
-})
-
-export const addPrinterSchema = z.object({
-  make: z.string().min(2).max(8), 
-  model: z.string().min(1).max(4),
-  pnum: z.string().min(3).max(12),
-  // user: z.string().min(3).max(12),
-  // printers: z.array(z.string().min(1).max(15)).min(1).max(20),
 })
 
 export const addPartSchema = z.object({

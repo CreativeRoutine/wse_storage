@@ -2,11 +2,12 @@ import { Schema, model, models, Document } from "mongoose";
 
 export interface IPrinter extends Document {
     // id: number;
-    // sn: Schema.Types.ObjectId[];
+    sn: string;
     // palletSn: Schema.Types.ObjectId;
     pnum: string;
-    make: string;
-    pModel: string;
+    // make: string;
+    barcode: string;
+    // pModel: string;
     pallet: Schema.Types.ObjectId;
     // tech: Schema.Types.ObjectId[];
     // techStart: Date;
@@ -22,11 +23,12 @@ export interface IPrinter extends Document {
 
 const PrinterSchema = new Schema({
     // id: { type: Number, required: true, unique: true},
-    // sn: { type: Schema.Types.ObjectId, required: true, unique: true},
+    sn: { type: String, required: true },
     // palletSn: { type: Schema.Types.ObjectId, ref: 'Pallet', required: true },
     pnum: { type: String, required: true },
-    make: { type: String, required: true},
-    pModel: { type: String, required: true },
+    // make: { type: String, required: false},
+    barcode: { type: String, required: true },
+    // pModel: { type: String, required: true },
     pallet: { type: Schema.Types.ObjectId, ref: 'Pallet', required: true },
     // tech: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     // techStart: { type: Date, default: Date.now , required: true },
