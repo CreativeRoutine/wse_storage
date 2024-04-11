@@ -51,7 +51,7 @@ export default  function AddCostToPallet ({barcode}:Props){
 
     console.log(typeof values.price)
     try {
-      
+
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await updatePaletCost({
         price: values.price, 

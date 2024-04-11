@@ -1,7 +1,6 @@
 import React, { Key } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { PrintersList } from "@/constants";
 import {getPrinters} from "@/lib/actions/printer.action";
 import {
   Card,
