@@ -1,9 +1,5 @@
 import React from "react";
 
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import AddPrinterForm from "@/components/shared/forms/AddPrinterForm";
 import Title from "@/components/shared/Title";
 import { getPrinters } from "@/lib/actions/printer.action";
 import { getUserById } from "@/lib/actions/user.action";

@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { PrintersList } from "@/constants";
 import {
   Table,
   TableBody,
@@ -312,49 +311,6 @@ export default async function  Home () {
           </CardContent>
         </Card>
       </div>
-
-      {/* PRINTERS' LIST FOR TODAY */}
-      {/* <div className="flex w-full gap-4 bg-dark-600 rounded-xl border border-dark-350  m-4">
-        
-        <Select>
-          <SelectTrigger className="w-[180px] primary-gradient text-white px-7 py-6 outline-none font-bold text-lg">
-            <SelectValue
-              placeholder="by Date"
-              className="outline-none font-bold"
-            />
-          </SelectTrigger>
-          <SelectContent className="bg-white text-sky-600 pt-2 pb-2 outline-none font-bold text-base">
-            <SelectItem value="oldest" className="">
-              Oldest
-            </SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select>
-          <SelectTrigger className="w-[180px] primary-gradient text-white px-7 py-6 outline-none font-bold text-lg">
-            <SelectValue placeholder="by Printers" className="outline-none" />
-          </SelectTrigger>
-          <SelectContent className="bg-white text-sky-600 pt-2 pb-2 outline-none font-bold">
-            <SelectItem value="1320">1320</SelectItem>
-            <SelectItem value="1350">1350</SelectItem>
-            <SelectItem value="2055">2055</SelectItem>
-            <SelectItem value="401">401</SelectItem>
-            <SelectItem value="402">402</SelectItem>
-            <SelectItem value="404">404</SelectItem>
-            <SelectItem value="426">426</SelectItem>
-            <SelectItem value="451">451</SelectItem>
-            <SelectItem value="452">452</SelectItem>
-            <SelectItem value="477">477</SelectItem>
-            <SelectItem value="501">501</SelectItem>
-            <SelectItem value="553">553</SelectItem>
-            <SelectItem value="1102">1102</SelectItem>
-            <SelectItem value="1525">1525</SelectItem>
-            <SelectItem value="4015">4015</SelectItem>
-          </SelectContent>
-        </Select>
-      </div> */}
-
       <div className="flex gap-4 mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
         <Table>
           {/* TABLE HEAD */}
