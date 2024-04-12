@@ -18,6 +18,8 @@ export default async function Printers (){
 
   const printers = await getPrinters({})
 
+  console.log(printers)
+
   return (
     <>
       <Title text="Printers page" />
@@ -29,18 +31,7 @@ export default async function Printers (){
           <CardHeader>
             <CardTitle className="mb-3 flex justify-between">
               Done today:
-              {/* <div className="flex items-center justify-center w-6 h-6 rounded-xl">
-                <Link href="/" key="tech">
-                  <Image
-                    // src="/assets/icons/eye.svg"
-                    src="/assets/icons/arrow-up-right.svg"
-                    width={20}
-                    height={30}
-                    alt="Tech"
-                    className="fill-green-500 stroke-slate-500"
-                  />
-                </Link>
-              </div> */}
+              
             </CardTitle>
             <CardDescription className="text-slate-600">
               Printers refurbished today
@@ -52,7 +43,6 @@ export default async function Printers (){
               <div className="text-sm text-slate-500 mb-1">Average time</div>
               <div className="flex text-lg">
                 <Image
-                  // src="/assets/icons/eye.svg"
                   src="/assets/icons/stopwatch.svg"
                   width={20}
                   height={20}
@@ -70,18 +60,6 @@ export default async function Printers (){
           <CardHeader>
             <CardTitle className="mb-3 flex justify-between">
               Done this week:
-              {/* <div className="flex items-center justify-center w-6 h-6 rounded-xl">
-                <Link href="/" key="tech">
-                  <Image
-                    // src="/assets/icons/eye.svg"
-                    src="/assets/icons/arrow-up-right.svg"
-                    width={20}
-                    height={30}
-                    alt="Tech"
-                    className="fill-green-500 stroke-slate-500"
-                  />
-                </Link>
-              </div> */}
             </CardTitle>
             <CardDescription className="text-slate-600">
               Printers refurbished this week
@@ -93,7 +71,6 @@ export default async function Printers (){
               <div className="text-sm text-slate-500 mb-1">Average time</div>
               <div className="flex text-lg">
                 <Image
-                  // src="/assets/icons/eye.svg"
                   src="/assets/icons/stopwatch.svg"
                   width={20}
                   height={20}
@@ -111,18 +88,6 @@ export default async function Printers (){
           <CardHeader>
             <CardTitle className="mb-3 flex justify-between">
               Total:
-              {/* <div className="flex items-center justify-center w-6 h-6 rounded-xl">
-                <Link href="/" key="tech">
-                  <Image
-                    // src="/assets/icons/eye.svg"
-                    src="/assets/icons/arrow-up-right.svg"
-                    width={20}
-                    height={30}
-                    alt="Tech"
-                    className="fill-green-500 stroke-slate-500"
-                  />
-                </Link>
-              </div> */}
             </CardTitle>
             <CardDescription className="text-slate-600">
               Total printers made / returns
@@ -136,7 +101,6 @@ export default async function Printers (){
               <div className="text-sm text-slate-500 mb-1">Returns</div>
               <div className="flex text-lg">
                 <Image
-                  // src="/assets/icons/eye.svg"
                   src="/assets/icons/pie.svg"
                   width={20}
                   height={20}
@@ -186,37 +150,6 @@ export default async function Printers (){
                 <span className="flex flex-1 justify-center pl-3">
                   {/* {printer.techStart} / {printer.techEnd} */}
                 </span>
-                {/* <span className="flex flex-1 justify-center ">
-                  {printer.techTime <= 35 ? (
-                    <span className="rounded-full bg-lime-300 px-4 py-2">
-                      {printer.techTime} mins.
-                    </span>
-                  ) : printer.techTime >= 36 && printer.techTime <= 60 ? (
-                    <span className="rounded-full bg-yellow-500 px-4 py-2">
-                      {printer.techTime} mins.
-                    </span>
-                  ) : (
-                    <span className="rounded-full bg-red-500 text-white px-4 py-2">
-                      {printer.techTime} mins.
-                    </span>
-                  )}
-                </span> */}
-
-                {/* <span className="flex flex-1 justify-center ">
-                  {printer.cleanerTime} mins.
-                </span>
-                <span className="flex flex-1 justify-end  pr-2">
-                  {printer.techTime + printer.cleanerTime} mins.
-                </span>
-                <span className="flex flex-1 justify-center ">
-                  {printer.partsReplaced.length}
-                </span>
-                <span className="flex flex-1 justify-center items-end font-bold">
-                  {printer.price}
-                  <span className="text-slate-400 text-xs pl-2 font-normal">
-                    USD{" "}
-                  </span>
-                </span> */}
                 <span className="flex flex-1 justify-end ">
                   <Link
                     href={`/printers/${printer.barcode}`}

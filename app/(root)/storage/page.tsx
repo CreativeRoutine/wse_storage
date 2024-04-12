@@ -9,6 +9,8 @@ const Storage = async () => {
 
   const resultPallets = await getPallets({})
   const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
+
+  console.log(pallets)
   
   return (
     <>

@@ -7,10 +7,10 @@ import { getUserById } from "@/lib/actions/user.action";
 
 const AddPallet = async () => {
 
-  const userId = '12345'
-  if(!userId) redirect('/sign-in')
+  // const userId = '12345'
+  // if(!userId) redirect('/sign-in')
 
-  const mongoUser = await getUserById({userId})
+  // const mongoUser = await getUserById({userId})
 
   return (
     <>
@@ -18,7 +18,7 @@ const AddPallet = async () => {
       
       <div className="flex bg-dark-600 rounded-xl border border-dark-350 p-4">
         <div className="w-full mt-1">
-          <CreatePalet mongoUserId={JSON.stringify(mongoUser._id)} />
+          <CreatePalet mongoUserId={"12345"} />
         </div>
       </div>
     </>
