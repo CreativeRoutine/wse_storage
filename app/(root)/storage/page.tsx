@@ -1,4 +1,4 @@
-
+"use server"
 import React from "react";
 import Title from "@/components/shared/Title";
 import { getPallets } from "@/lib/actions/pallet.action";
