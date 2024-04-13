@@ -15,7 +15,7 @@ export const connectToDatabase = async () => {
     await mongoose.connect(process.env.MONGODB_URL, {
       dbName: "WSE",
       serverSelectionTimeoutMS: 40000, 
-      // socketTimeoutMS: 45000, 
+      socketTimeoutMS: 45000, 
     });
     isConnected = true;
     console.log("MongoDB connected");
