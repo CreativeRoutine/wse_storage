@@ -7,12 +7,12 @@ import { getPallets } from "@/lib/actions/pallet.action";
 
 const DisplayPallets = async () => {
 
-    const resultPallets = await getPallets({})
-    const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
+    // const resultPallets = await getPallets({})
+    // const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
     // console.log(JSON.parse(JSON.stringify(pallets)))
   return (
     <div className="grid grid-cols-3 gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
-        {
+        {/* {
           pallets ? (
             pallets.map((pallet:any) => {
               return(
@@ -45,10 +45,10 @@ const DisplayPallets = async () => {
               )
             }
           )
-          ) : (
+          ) : ( */}
             <div>No data to show</div>
-          )
-        }
+          {/* )
+        } */}
       </div>
   )
 }

@@ -3,7 +3,7 @@ import React from "react";
 import Title from "@/components/shared/Title";
 import DisplayPallets from "@/components/shared/DisplayPallets";
 
-const Storage = async () => {
+const Storage = () => {
 
     return (
       <>
