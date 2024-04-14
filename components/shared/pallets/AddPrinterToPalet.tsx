@@ -21,8 +21,6 @@ import { Button } from "@/components/ui/button";
 import { createPrinter } from '@/lib/actions/printer.action';
 import { addPrinterSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
-import { updatePalet } from '@/lib/actions/pallet.action';
-// import { updatePalet } from '@/lib/actions/pallet.action';
 
 const type:any = 'create';
 
@@ -62,13 +60,6 @@ export default  function AddPrinterToPalet ({barcode}:Props){
         paletBarcode: barcode,
         path: usepathname,
       })
-
-      // add function which will update the pallet with the new printers
-      // await updatePalet({
-      //   paletSn: sn,
-      //   printerSn: values.sn,
-      //   path: usepathname,
-      // })
 
       form.reset({}); // Reset form fields
       
