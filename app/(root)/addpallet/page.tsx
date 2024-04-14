@@ -5,6 +5,7 @@ import CreatePalet from "@/components/shared/pallets/CreatePalet";
 import { redirect } from "next/navigation";
 import { getUserById } from "@/lib/actions/user.action";
 
+
 const AddPallet = async () => {
 
   // const userId = '12345'
