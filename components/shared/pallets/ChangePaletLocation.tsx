@@ -21,8 +21,6 @@ import { Button } from "@/components/ui/button";
 import { updatePaletPlace } from '@/lib/actions/pallet.action';
 import { addLocationToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
-import { updatePalet } from '@/lib/actions/pallet.action';
-// import { updatePalet } from '@/lib/actions/pallet.action';
 
 const type:any = 'create';
 
