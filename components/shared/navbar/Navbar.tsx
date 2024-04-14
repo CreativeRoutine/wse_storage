@@ -3,12 +3,21 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Input } from "@/components/ui/input"
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 import MobileNav from "./MobileNav";
 import { Button } from "@/components/ui/button";
 // import NavbarDark from "@/components/dark_with_search";
 
 const Navbar = () => {
+  
+
   return (
     <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500">
 
@@ -41,6 +50,17 @@ const Navbar = () => {
             }}
           />
         </SignedIn> */}
+        
+          <SignedIn>
+          {/* Mount the UserButton component */}
+          <UserButton afterSignOutUrl="/" />
+        </SignedIn>
+        <SignedOut>
+          {/* Signed out users get sign in button */}
+          <SignInButton/>
+        </SignedOut>
+          
+        
         <MobileNav />
       </div>
     </nav>

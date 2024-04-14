@@ -1,5 +1,4 @@
 "use server"
-
 import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import { connectToDatabase } from "../mongoose"
@@ -39,6 +38,24 @@ export async function createPalet(params: CreatePalet) {
   } catch (error) {
     console.log("Error:", error);
     return "An error occurred while creating the pallet";
+  }
+}
+
+export async function getPallets(params:GetPalletsParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    const pallets = await Pallet.find({}).lean();
+
+    // //.populate({path: "tags", model: Tag})
+    // //.populate({path: 'author', model: User}) 
+    return{pallets}
+
+  } catch (error) {
+    
+    throw error;
   }
 }
 
@@ -102,62 +119,24 @@ export async function updatePaletCost(params:UpdatePaletCost){
 
 
 
+// export async function updatePalet(params:UpdatePalet){
+//   try {
+//     connectToDatabase();
+//     const { paletSn,printerSn, path} = params;
+
+//     const existingPallet = await Pallet.findOne({ sn: paletSn });
+//     if (!existingPallet) {
+//       return "This printer already exists in the database";
+//     }
+
+//     const updatedPallet = await Pallet.findOneAndUpdate({ sn: paletSn }, { $push: { printers: printerSn } }, { new: true });
+//     revalidatePath(path);
+//   } catch (error) {
+//       console.log("Error:", error);
+//   }
+// }
 
 
-
-
-
-
-
-export async function updatePalet(params:UpdatePalet){
-  try {
-    connectToDatabase();
-    const { paletSn,printerSn, path} = params;
-
-    const existingPallet = await Pallet.findOne({ sn: paletSn });
-    if (!existingPallet) {
-      return "This printer already exists in the database";
-    }
-
-    const updatedPallet = await Pallet.findOneAndUpdate({ sn: paletSn }, { $push: { printers: printerSn } }, { new: true });
-    revalidatePath(path);
-  } catch (error) {
-      console.log("Error:", error);
-  }
-}
-
-export async function setPaletCost(params:SetPricePalet){
-  console.log("pallet action reached")
-
-  try {
-    connectToDatabase();
-    console.log("palle action turned on")
-    const { sn, paletCost, path} = params;
-
-    const existingPallet = await Pallet.findOne({ sn: sn });
-    if (!existingPallet) {
-      return "This palet is not exists in the database";
-    }
-
-    const updatedPallet = await Pallet.findOneAndUpdate({ sn: sn }, { $push: {paletCost: paletCost} }, { new: true });
-    revalidatePath(path);
-  } catch (error) {
-      console.log("Error:", error);
-  }
-}
-
-
-
-export async function getAllPalets(){
-  try{
-    connectToDatabase();
-    const pallets = await Pallet.find({}).lean();
-    return{pallets}
-
-  } catch(error){
-    console.log("Can't receive all palets from server. Error:", error);
-  }
-}
 
 
 
@@ -169,49 +148,33 @@ export async function getAllPalets(){
 
 // CreatePalletModelParams took from shared.types.d.ts 
 // to create a new printer model 
-export async function createPalletModel(params:CreatePalletModelParams) {
-  try {
-    connectToDatabase();
+// export async function createPalletModel(params:CreatePalletModelParams) {
+//   try {
+//     connectToDatabase();
     
-      console.log("THIS IS PARAMS: ", params)
-      const { sn, locker,  path} = params;
+//       console.log("THIS IS PARAMS: ", params)
+//       const { sn, locker,  path} = params;
 
-      const createdAt = new Date();
+//       const createdAt = new Date();
 
-      const existingPallet = await Pallet.findOne({ sn, locker, createdAt });
-      if (existingPallet) {
-        // If a printer with the same make and model exists, return an error message
-        return "This printer already exists in the database";
-    }
+//       const existingPallet = await Pallet.findOne({ sn, locker, createdAt });
+//       if (existingPallet) {
+//         // If a printer with the same make and model exists, return an error message
+//         return "This printer already exists in the database";
+//     }
 
-    const newPallet = await Pallet.create({ sn, locker, createdAt });
+//     const newPallet = await Pallet.create({ sn, locker, createdAt });
       
-    revalidatePath(path);
-  } catch (error) {
-      // Log any errors
-      console.log("Error:", error);
-      // Return an error message
-      return "An error occurred while creating the printer";
-  }
-}
+//     revalidatePath(path);
+//   } catch (error) {
+//       // Log any errors
+//       console.log("Error:", error);
+//       // Return an error message
+//       return "An error occurred while creating the printer";
+//   }
+// }
 
-export async function getPallets(params:GetPalletsParams) {
-  try {
-    // Connect to the database
-    await connectToDatabase();
 
-    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const pallets = await Pallet.find({}).lean();
-
-    // //.populate({path: "tags", model: Tag})
-    // //.populate({path: 'author', model: User}) 
-    return{pallets}
-
-  } catch (error) {
-    
-    throw error;
-  }
-}
 
 export async function deletePallet(params:DeletePalletParams) {
   try {
