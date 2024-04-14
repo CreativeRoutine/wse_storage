@@ -1,15 +1,10 @@
 "use server"
 import React from "react";
 import Title from "@/components/shared/Title";
-import { getPallets } from "@/lib/actions/pallet.action";
 import DisplayPallets from "@/components/shared/DisplayPallets";
 
 const Storage = async () => {
 
-  const resultPallets = await getPallets({})
-  const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
-  
-  if(pallets){
     return (
       <>
         <Title text="Storage" />
@@ -20,17 +15,10 @@ const Storage = async () => {
           </div>
         </div>
   
-        <DisplayPallets pallets={pallets}/>
+        <DisplayPallets />
         
       </>
     );
-  } else{
-    return( 
-      <>
-      <div>NOTHING TO DISPLAY</div>
-      </>
-     )
-  }
 };
 
 export default Storage;

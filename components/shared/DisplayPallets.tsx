@@ -1,12 +1,14 @@
+"use server"
+
 import React from 'react'
 import {formatTime} from "@/lib/utils";
 import Link from "next/link";
+import { getPallets } from "@/lib/actions/pallet.action";
 
-interface Props{
-    pallets: any;
-}
+const DisplayPallets = async () => {
 
-const DisplayPallets = ({pallets}:Props) => {
+    const resultPallets = await getPallets({})
+    const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
     // console.log(JSON.parse(JSON.stringify(pallets)))
   return (
     <div className="grid grid-cols-3 gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
