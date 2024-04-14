@@ -7,9 +7,10 @@ export default authMiddleware({
   // publicRoutes: ['/anyone-can-visit-this-route'],
   publicRoutes: [
     "/",
+    "/api/webhook",
 
   ],
-  // ignoredRoutes: ["/api/webhook", "/api/chatgpt"],
+  ignoredRoutes: ["/api/webhook", "/api/chatgpt"],
 });
  
 export const config = {
