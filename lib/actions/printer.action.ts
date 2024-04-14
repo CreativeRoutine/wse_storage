@@ -1,11 +1,10 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, CreatePrinterModelParams, DeletePrinterModelParams, FindPrinterBySnParams, GetPrintersParams, GetPrinterParams } from "./shared.types";
-// import Printer from "@/database/makes.model";
+import {  CreatePrinterParams, GetPrintersParams, GetPrinterParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
-import { updatePalet } from "./pallet.action";
+
 import Pallet from "@/database/pallet.model";
 
 // export async function createPrinter(params:any) {
