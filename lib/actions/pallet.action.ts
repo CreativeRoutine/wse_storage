@@ -2,7 +2,7 @@
 import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import { connectToDatabase } from "../mongoose"
-import { CreatePalet, GetPalet, UpdatePalet, CreatePalletModelParams, DeletePalletParams, GetPalletsParams, SetPricePalet, UpdatePaletLocation, UpdatePaletCost} from "./shared.types";
+import { CreatePalet, GetPalet, DeletePalletParams, GetPalletsParams, UpdatePaletLocation, UpdatePaletCost} from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Supplier from "@/database/supplier.model";
 // import { any } from "zod";
