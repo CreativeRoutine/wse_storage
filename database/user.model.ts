@@ -5,10 +5,13 @@ export interface IUser extends Document {
   admin: boolean;
   supervisor: boolean;
   name: string;
+  username?: string;
+  email?: string;
   department: string;
   password?: string;
   printers: Schema.Types.ObjectId[];
   joinedAt: Date;
+  picture?: string;
   reputation?: number;
 }
 
@@ -17,10 +20,13 @@ const UserSchema = new Schema({
   admin: { type: Boolean, default: false },
   supervisor: { type: Boolean, default: false },
   name: { type: String, required: true, unique: true},
+  username: { type: String },
+  email: { type: String },
   department: { type: String, required: true },
   password: { type: String },
   printers: [{ type: Schema.Types.ObjectId, ref: "Printer" }],
   joinedAt: { type: Date, default: Date.now },
+  picture: { type: String },
   reputation: { type: Number, default: 0 },
 });
 
