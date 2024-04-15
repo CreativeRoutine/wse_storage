@@ -7,7 +7,7 @@ export interface IUser extends Document {
   name: string;
   username?: string;
   email?: string;
-  department: string;
+  department?: string;
   password?: string;
   printers: Schema.Types.ObjectId[];
   joinedAt: Date;
