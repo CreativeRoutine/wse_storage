@@ -22,7 +22,7 @@ const UserSchema = new Schema({
   name: { type: String, required: true, unique: true},
   username: { type: String },
   email: { type: String },
-  department: { type: String, required: true },
+  department: { type: String},
   password: { type: String },
   printers: [{ type: Schema.Types.ObjectId, ref: "Printer" }],
   joinedAt: { type: Date, default: Date.now },
