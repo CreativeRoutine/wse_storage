@@ -16,8 +16,8 @@ interface Props {
     _id: string;
     params: any;
 }
+const page = async ({ params }: { params: { _id: string } }) => {
 
-const page = async (params:Props) => {
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -28,7 +28,7 @@ const page = async (params:Props) => {
     return(<VisitorNotification />)
   }
 
-  const { _id } = params.params;
+  const _id  = params._id;
   const userRequest = await getUserBy_Id({ _id });
   const user = JSON.parse(JSON.stringify(userRequest))
 
@@ -126,5 +126,4 @@ const page = async (params:Props) => {
     </>
   )
 }
-
 export default page
