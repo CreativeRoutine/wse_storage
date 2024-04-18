@@ -1,50 +1,80 @@
-
-import React, {Key} from 'react'
 import Title from '@/components/shared/Title'
 import { getPrinter } from '@/lib/actions/printer.action'
+import React from 'react'
 
+import {auth} from "@clerk/nextjs"
+import Image from 'next/image'
+import { getUserById } from '@/lib/actions/user.action'
+import { redirect } from "next/navigation";
+import VisitorNotification from '@/components/shared/VisitorNotification'
 
 const page = async ({ params }: { params: { barcode: string } }) => {
 
-    const barcode = params.barcode;
+  const {userId} = auth();
+  if(!userId) redirect('/sign-in')
+  const mongoUserData = await getUserById({userId})
+  const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+  
+  if(mongoUser.department === "visitor"){
+    return(<VisitorNotification />)
+  }
 
-    const printer = await getPrinter({barcode});
+  const { barcode } = params
+
+  const printer = await getPrinter({barcode})
+  const printers = JSON.parse(JSON.stringify(printer.printer))
 
   return (
     <>
-      <Title text="Printer Page " />
+      <Title text={`Printer - ${barcode}`} />
+      <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
 
-      <div className="flex  bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
-        <div className='w-full flex p-4 gap-4'>
-          {/* LEFT SIDE */}
-          <div className='max-w-1/2 flex bg-secondary-200 px-8  py-6 w-full rounded-xl border border-dark-350 shadow-lg'>
-            <div className='flex flex-col w-full'>
-                {
-                    printer.printer.map(item=>{
-                        return(
-                            <div key={item._id as Key}>
-                            <div>Printer S/N: {item.sn}</div>
-                            <div>Printer Product Number: {item.pnum}</div>
-                            <div>Printer Barcode: {item.barcode}</div>
-                            </div>
-                        )
-                    })
-                }
-
-            </div>
-          </div>
-
-          {/* RIGHT SIDE */}
-          <div className='flex flex-col w-1/2 '>
-
-
-            
-            
-          </div>
-          
+        <div className='w-1/3'>
+          <Image 
+          src="/assets/printers_preview/402.png" 
+          width={240} 
+          height={240} 
+          className="p-4"
+          alt="printer" 
+          />
         </div>
+
+        {
+          printers.map( 
+            (item:any) => (
+              <div className="flex flex-col w-1/3 max-w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+                <div className="flex justify-between w-full text-white mb-3">
+                  <div className="font-semibold">S/N:</div>
+                  <div className="font-bold text-lime-400">{item.sn}</div>
+                </div>
+              <div className="flex justify-between w-full text-white mb-3">
+            <div className="font-semibold">Product number:</div>
+            <div className="font-bold text-sky-400">{item.productNumber ? item.productNumber : <span className="text-red-500">No product number</span>}</div>
+          </div>
+          <div className="flex justify-between w-full text-white mb-3">
+            <div className="font-semibold">Barcode:</div>
+            <div className="font-bold text-sky-400">{item.barcode ? item.barcode : <span className="text-red-500">No barcode</span>}</div>
+          </div>
+          <div className="flex justify-between w-full text-white mb-3">
+            <div className="font-semibold">Added on:</div>
+            <div className="font-bold text-sky-400">{item.addedOn ? item.AddedOn : <span className="text-red-500">No date</span>}</div>
+          </div>
+          <div className="flex justify-between w-full text-white mb-3">
+            <div className="font-semibold">Condition:</div>
+            <div className="font-bold text-sky-400">{item.addedOn ? item.AddedOn : <span className="text-red-500">Not examined yet</span>}</div>
+          </div>
+        </div>
+            )
+           ) 
+        }
+
+        <div className="flex flex-col w-1/3 max-w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+          <div className="text-white text-xl font-bold">No works performed yet...</div>
+        </div>
+
+
+
       </div>
-    
     </>
   )
 }

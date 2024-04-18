@@ -115,6 +115,27 @@ export async function updatePaletCost(params:UpdatePaletCost){
 
 }
 
+export async function deletePallet(params:DeletePalletParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const { barcode, path } = params;
+
+    // Find the pallet by its ID and delete it
+    await Pallet.findOneAndDelete({barcode: barcode});
+
+    // Revalidate the path
+    revalidatePath(path);
+
+
+  } catch (error) {
+    // Log any errors
+    console.log("Error:", error);
+    // Return an error message
+    return "An error occurred while deleting the printer";
+  }
+}
 
 
 
@@ -176,24 +197,3 @@ export async function updatePaletCost(params:UpdatePaletCost){
 
 
 
-export async function deletePallet(params:DeletePalletParams) {
-  try {
-    // Connect to the database
-    await connectToDatabase();
-
-    const { palletId, path } = params;
-
-    // Find the pallet by its ID and delete it
-    await Pallet.findByIdAndDelete(palletId);
-
-    // Revalidate the path
-    revalidatePath(path);
-
-
-  } catch (error) {
-    // Log any errors
-    console.log("Error:", error);
-    // Return an error message
-    return "An error occurred while deleting the printer";
-  }
-}

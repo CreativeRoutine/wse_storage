@@ -6,13 +6,30 @@ import Link from 'next/link'
 import AddPrinterToPalet from '@/components/shared/pallets/AddPrinterToPalet'
 import ChangePaletLocation from '@/components/shared/pallets/ChangePaletLocation'
 import ChangePaletCost from '@/components/shared/pallets/ChangePaletCost'
+import {auth} from "@clerk/nextjs"
+import Image from 'next/image'
+import { getUserById } from '@/lib/actions/user.action'
+import { redirect } from "next/navigation";
+import VisitorNotification from '@/components/shared/VisitorNotification'
+import { Button } from '@/components/ui/button'
+import DeletePalet from '@/components/shared/pallets/DeletePalet'
+
 
 const page = async ({ params }: { params: { barcode: string } }) => {
+
+  const {userId} = auth();
+  if(!userId) redirect('/sign-in')
+  const mongoUserData = await getUserById({userId})
+  const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+  
+  if(mongoUser.department === "visitor"){
+    return(<VisitorNotification />)
+  }
   
   const barcode = params.barcode;
   const getPaletData = await getPalet({ barcode});
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-
+  
   return (
     <>
       <Title text="Pallet with printers inside" />
@@ -46,8 +63,11 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                         <div className="w-full  mb-2 py-2 flex justify-between">
                           {
                             pallet.printers.length === 0 ?
-                              <div className="flex justify-start">
+                              <div className="flex w-full justify-between items-center">
                                 <div className="text-lg text-red-500 font-bold">Pallet is empty</div>
+
+                                <DeletePalet barcode={pallet.barcode} mongoUserId={mongoUser._id} />
+
                               </div> : 
                               <div className="flex flex-col justify-start w-full">
                                 <div className="text-lg text-lime-500">Printers:</div>
@@ -59,7 +79,7 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                                             <div className='mr-3'>{index +1}.</div>
 
                                             <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                              <div className='tex-sm text-slate-500 mr-2'>Barcode:</div><Link href={`/printers/printer/${printer.barcode}`} className='hover:text-sky-600 font-bold'>{printer.barcode}</Link>
+                                              <div className='tex-sm text-slate-500 mr-2'>Barcode:</div><Link href={`/printers/${printer.barcode}`} className='hover:text-sky-600 font-bold'>{printer.barcode}</Link>
                                             </div>
 
                                             <div className='ml-1 mr-6  text-white text-lg flex flex-row'>

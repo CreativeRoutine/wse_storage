@@ -9,6 +9,16 @@ export const AddUserSchema = z.object({
   printers: z.array(z.string().min(1).max(15)).min(1).max(3),
 });
 
+export const ChangeUserDepartmentSchema = z.object({
+  department: z.string().min(3).max(16).trim(),
+});
+export const ChangeUserAdminSchema = z.object({
+  admin: z.boolean(),
+});
+export const ChangeUserSupervisorSchema = z.object({
+  supervisor: z.boolean(),
+});
+
 // ===================  Pallet  ===================
 
 export const addPalletSchema = z.object({
@@ -24,6 +34,10 @@ export const addLocationToPalletSchema = z.object({
 
 export const addCostToPalletSchema = z.object({
   price: z.string().min(2).max(7),
+})
+
+export const deletePalletSchema = z.object({
+  barcode: z.string().min(5).max(12),
 })
 
 

@@ -15,53 +15,59 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
-import { addCostToPalletSchema } from '@/lib/validations';
+
+import { changeUserAdmin } from '@/lib/actions/user.action';
+import { ChangeUserAdminSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
-import { updatePaletCost } from '@/lib/actions/pallet.action';
-// import { updatePalet } from '@/lib/actions/pallet.action';
 
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
-  mongoUserId: string;
+    mongoUserId: string;
 }
 
-export default  function AddCostToPallet ({barcode}:Props){
+export default function ChangeUserAdminForm ({mongoUserId}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
   // 1. Define your form.
-  // addCostToPalletSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof addCostToPalletSchema>>({
-    resolver: zodResolver(addCostToPalletSchema),
+  // ChangeUserDepartmentChangeUserAdminSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof ChangeUserAdminSchema>>({
+    resolver: zodResolver(ChangeUserAdminSchema),
     defaultValues: {
-      price: "0",
+      admin: false,
     },
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof addCostToPalletSchema>,) {
+  async function onSubmit(values: z.infer<typeof ChangeUserAdminSchema>,) {
     setIsSubmitting(true);
-    // const numericPrice = parseFloat(values.price); // Convert price to a number
-
+    
     try {
-
+      
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await updatePaletCost({
-        price: values.price, 
-        paletBarcode: barcode,
+      await changeUserAdmin({
+        _id: JSON.parse(JSON.stringify(mongoUserId)), 
+        admin: values.admin,
         path: usepathname,
       })
 
-      form.reset(); // Reset form fields
+      form.reset({}); // Reset form fields
+      
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${barcode}`)
+      router.push(`/users/${mongoUserId}`)
 
     } catch (error) {
       console.error(error); 
@@ -73,33 +79,35 @@ export default  function AddCostToPallet ({barcode}:Props){
       <div className="bg-secondary-200 px-8 py-6  rounded-xl border border-dark-350 shadow-lg">
         <div className="">
           <div className=" text-lg text-slate-300 font-semibold">
+
           {
             <>
-              <Form {...form}>  
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-full mx-auto">
-
-                  {/* Item #1 */}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                   <FormField
                     control={form.control}
-                    name="price"
+                    name="admin"
                     render={({ field }) => (
-                      // First Input
                       <FormItem>
-                        
-                        <FormControl className=''>
+                        <FormLabel>Is User an Admin?</FormLabel>
                           <div className="flex flex-row gap-2">
-                            <Input
-                              className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="100..."
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
 
+                            <Select onValueChange={value => field.onChange(value === 'true')} defaultValue={String(field.value)}>
+                              <FormControl className="no-focus">
+                                <SelectTrigger className="no-focus">
+                                  <SelectValue placeholder="Admin" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className='bg-white no-focus'>
+                                <SelectItem value="true">Yes</SelectItem>
+                                <SelectItem value="false">No</SelectItem>
+
+                              </SelectContent>
+                            </Select>
+                            </div>
                         <FormMessage />
                       </FormItem>
-                    )
-                  }
+                    )}
                   />
                   <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
@@ -108,10 +116,10 @@ export default  function AddCostToPallet ({barcode}:Props){
                         </>
                       ) : (
                         <>
-                        {'Add Price'}
+                        {'Change Admin status'}
                         </>
                       )}
-                  </Button>
+                    </Button>
                 </form>
               </Form>
             </>

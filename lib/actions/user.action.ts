@@ -70,3 +70,94 @@ export async function getUserById(params: any){
         throw error;
     }
 }
+
+export async function getUserBy_Id(params: any){
+
+    try {
+        connectToDatabase();
+
+        const {_id} = params;
+
+        const user = await User.findOne({_id: _id});
+
+        return user;
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getUsers(params: any){
+
+    try {
+        connectToDatabase();
+
+        const user = await User.find({}).lean();
+
+        return user;
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+
+export async function changeUserDepartment(params: any){
+    try {
+        connectToDatabase();
+
+        const {_id, department, path} = params;
+
+        const user = await User.findOne({ _id: _id });
+        if (!user) {
+          return "This printer already exists in the database";
+        }
+    
+        await User.findOneAndUpdate(user._id, { $set: { department: department.slice(1, -1) } });
+        
+        revalidatePath(path);
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function changeUserAdmin(params: any){
+    try {
+        connectToDatabase();
+
+        const {_id, admin, path} = params;
+
+        const user = await User.findOne({ _id: _id });
+        if (!user) {
+          return "This printer already exists in the database";
+        }
+    
+        await User.findOneAndUpdate(user._id, { $set: { admin: admin } });
+        
+        revalidatePath(path);
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function changeUserSupervisor(params: any){
+    try {
+        connectToDatabase();
+
+        const {_id, supervisor, path} = params;
+
+        const user = await User.findOne({ _id: _id });
+        if (!user) {
+          return "This printer already exists in the database";
+        }
+    
+        await User.findOneAndUpdate(user._id, { $set: { supervisor: supervisor } });
+        
+        revalidatePath(path);
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}

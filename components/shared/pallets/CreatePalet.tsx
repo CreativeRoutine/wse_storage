@@ -28,9 +28,6 @@ interface Props {
 
 export default function CreatePalet ({ mongoUserId }: Props){
 
-  // Create state for: barcode, productNumber, sn
-
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
@@ -57,7 +54,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
       await createPalet({
         ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
-        user: JSON.parse(mongoUserId),
+        user: JSON.parse(JSON.stringify(mongoUserId)),
         path: usepathname,
         createdOn: createdOn
       })
@@ -70,44 +67,6 @@ export default function CreatePalet ({ mongoUserId }: Props){
       console.error(error); 
     }
   }
-
-  // const handleInputKeyDown = (
-  //   e: React.KeyboardEvent<HTMLInputElement>,
-  //   field: any
-  // ) => {
-  //   if (e.key === "Enter" && field.name === "printers") {
-  //     e.preventDefault();
-  //     console.log(e, field.value)
-
-  //     const tagInput = e.target as HTMLInputElement;
-  //     const tagValue = tagInput.value.trim();
-
-  //     if (tagValue !== "") {
-  //       if (tagValue.length > 15) {
-  //         return form.setError("printers", {
-  //           type: "required",
-  //           message: "Tag must be less than 15 characters.",
-  //         });
-  //       }
-
-  //       // here we check if the tag is already in the array
-  //       if (!field.value.includes(tagValue as never)) {
-  //         form.setValue("printers", [...field.value, tagValue]);
-  //         tagInput.value = "";
-  //         form.clearErrors("printers");
-  //       }
-  //     } else {
-  //       form.trigger();
-  //     }
-  //   }
-  // };
-
-  // const handlePrinterRemove = (printer: string, field: any) => {
-  //   const newPrinters = field.value.filter((t: string) => t !== printer);
-
-  //   form.setValue("printers", newPrinters);
-  // };
-
 
   return (
     <div className="bg-secondary-200 px-8 mb-6 py-6 w-full rounded-xl border border-dark-350 shadow-lg">
@@ -165,82 +124,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
                     </FormItem>
                   )}
                 />
-
-                {/* Item #3 */}
-                {/* <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    // First Input
-                    <FormItem>
-                      <FormLabel className="text-base text-slate-300 font-semibold">Location:</FormLabel>
-                      <FormControl>
-                        <div className="flex">                  
-                        <Input
-                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="Location 5-8 symbols"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
               </div>
-
-              {/* <div className="w-1/2"> */}
-
-                {/* <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printers:</div> */}
-
-                {/* Item #3 */}
-                {/* <FormField
-                  control={form.control}
-                  name="printers"
-                  render={({ field }) => (
-                      <FormItem className="flex w-full flex-col">
-                        <FormLabel className="text-base text-slate-300 font-semibold">Serial number:</FormLabel>
-                        <FormControl className="mt-3.5">
-                          <>
-                            <Input
-                              className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="Add printer's serial number and press 'Enter'"
-                              onKeyDown={(e) => handleInputKeyDown(e, field)}
-                            />
-
-                            {field.value.length > 0 && (
-                              <div className="flex flex-start flex-wrap mt-2.5 gap-2.5">
-                                {field.value.map((printer: any) => (
-                                  <Badge
-                                    key={printer}
-                                    className="subtle-medium bg-white flex items-center justify-center gap-2 round-md border-none px-4 py-2 caitalize"
-                                    onClick={() => handlePrinterRemove(printer, field)}
-                                  >
-                                    S/N {printer}
-                                    <Image
-                                      src="/assets/icons/close.svg"
-                                      width={12}
-                                      height={12}
-                                      alt="close icon"
-                                      className="cursor-pointer object-contain invert-0 dark:invert"
-                                    />
-                                  </Badge>
-                                ))}
-                              </div>
-                            )}
-                          </>
-                        </FormControl>
-                        <FormDescription className="text-sm text-slate-400">
-                          Add up to 30 printers (serial numbers) to pallet. You
-                          need to press enter after each printer.
-                        </FormDescription>
-                      <FormMessage className="text-red-500" />
-                    </FormItem>
-                  )} */}
-                {/* /> */}
-                {/* <Button type="button" className="bg-primary-500 text-white text-md mt-3" onClick={()=>handleAddPrinter("sdfs")}>Add printer</Button> */}
-              {/* </div> */}
             </div>
 
 

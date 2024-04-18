@@ -131,7 +131,7 @@ export interface GetPalletsParams {
 }
 
 export interface DeletePalletParams {
-  palletId: string;
+  barcode: string;
   path: string;
 }
 

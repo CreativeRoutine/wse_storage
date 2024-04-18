@@ -32,31 +32,18 @@ const Navbar = () => {
         
       </div>
 
-      <div className=" text-white flex gap-3">
+      <div className=" text-white flex gap-3 justify-center items-center">
           <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Add Pallet</Link>
           <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Start Printer</Link>
         {/* Theme Switch */}
         {/* <Theme /> */}
-        {/* <SignedIn>
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                avatarBox: "h-10 w-10",
-              },
-              variables: {
-                colorPrimary: "#ff7000",
-              },
-            }}
-          />
-        </SignedIn> */}
         
-          <SignedIn>
-          {/* Mount the UserButton component */}
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
+          <div className="h-[32px]">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/"/>
+            </SignedIn>
+          </div>
         <SignedOut>
-          {/* Signed out users get sign in button */}
           <SignInButton/>
         </SignedOut>
           

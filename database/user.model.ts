@@ -7,7 +7,7 @@ export interface IUser extends Document {
   name: string;
   username?: string;
   email?: string;
-  department?: string;
+  department: string;
   password?: string;
   printers: Schema.Types.ObjectId[];
   joinedAt: Date;
@@ -22,7 +22,7 @@ const UserSchema = new Schema({
   name: { type: String, required: true, unique: true},
   username: { type: String },
   email: { type: String },
-  department: { type: String},
+  department: { type: String, required: true, default: "visitor"},
   password: { type: String },
   printers: [{ type: Schema.Types.ObjectId, ref: "Printer" }],
   joinedAt: { type: Date, default: Date.now },

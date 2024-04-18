@@ -4,6 +4,14 @@ import { sidebarLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {Button} from "@/components/ui/button";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 
 // import { SignedOut, useAuth } from "@clerk/nextjs";
@@ -96,124 +104,14 @@ const LeftSidebar = () => {
             
           );
         })}
-        {/* <div className="border-b-2 border-dark-500 h-[2px] w-full mt-3 mb-3"></div>
-        <Link
-              href="/settings"
-              className={`${
-                isActive
-                  ? "primary-gradient rounded-lg text-light-900"
-                  : "text-slate-200 "
-              }  flex items-center justify-start gap-4 bg-transparent p-4`}
-            >
-              <Image
-                src="/assets/icons/gear.svg"
-                alt="Settings"
-                width={20}
-                height={20}
-
-              />
-              <p
-                className=" base-bold max-lg:hidden"
-              >
-                Settings
-              </p>
-            </Link> */}
+        
 
         </div>
 
-
-
-      </section>
-
-    {/* <section className="background-light900_dark200 light-border custom-scrollbar sticky left-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
-      <div className="flex flex-1 flex-col gap-6">
-        <Button className="btn light-gradient primary-text-gradient">Button</Button>
-        <Link
-          href="/addprinter"
-          className="primary-gradient rounded-lg text-light-900 flex items-center justify-start gap-4 bg-transparent p-4"
-        >
-          <Image
-            src="/assets/icons/plus.svg"
-            alt="add printer"
-            width={20}
-            height={20}
-            className=""
-          />
-          Add printer1
-        </Link>
-        <Link
-          href="/techprinter"
-          className="primary-gradient rounded-lg text-light-900 flex items-center justify-start gap-4 bg-transparent p-4"
-        >
-          <Image
-            src="/assets/icons/plus.svg"
-            alt="tech printer"
-            width={20}
-            height={20}
-            className=""
-          />
-          Tech printer
-        </Link>
-        <Link
-          href="/cleanerprinter"
-          className="primary-gradient rounded-lg text-light-900 flex items-center justify-start gap-4 bg-transparent p-4"
-        >
-          <Image
-            src="/assets/icons/plus.svg"
-            alt="add printer"
-            width={20}
-            height={20}
-            className=""
-          />
-          Cleaner printer
-        </Link>
-        {sidebarLinks.map((item) => {
-          const isActive =
-            (pathname.includes(item.route) && item.route.length > 1) ||
-            pathname === item.route;
-
-          // this code for
-          // if (item.route === "/profile") {
-          //   if (userId) {
-          //     item.route = `${item.route}/${userId}`;
-          //   } else {
-          //     return null;
-          //   }
-          // }
-
-          return (
-            <Link
-              href={item.route}
-              key={item.label}
-              className={`${
-                isActive
-                  ? "primary-gradient rounded-lg text-light-900"
-                  : "text-dark300_light900"
-              }  flex items-center justify-start gap-4 bg-transparent p-4`}
-            >
-              <Image
-                src={item.imgURL}
-                alt={item.label}
-                width={20}
-                height={20}
-                className={`${isActive ? "" : "invert-colors"}`}
-              />
-              <p
-                className={`${
-                  isActive ? "base-bold" : "base-medium"
-                } max-lg:hidden`}
-              >
-                {item.label}
-              </p>
-            </Link>
-          );
-        })}
-      </div>
-
-      <SignedOut>
-        <div className="flex flex-col gap-3">
+        <SignedOut>
+        <div className="flex flex-col gap-3 pl-10 pr-10 mb-8">
           <Link href="/sign-in">
-            <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
+            <Button className="w-full primary-gradient rounded-lg text-white">
               <Image
                 src="/assets/icons/account.svg"
                 alt="login"
@@ -221,7 +119,7 @@ const LeftSidebar = () => {
                 height={20}
                 className="invert-colors lg:hidden"
               />
-              <span className="primary-text-gradient max-lg:hidden">
+              <span className=" max-lg:hidden">
                 Log In
               </span>
             </Button>
@@ -240,8 +138,9 @@ const LeftSidebar = () => {
             </Button>
           </Link>
         </div>
-      </SignedOut>
-    </section> */}
+        </SignedOut>
+
+      </section>
     </>
   );
 };

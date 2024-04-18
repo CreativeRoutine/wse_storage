@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`h-full  {inter.className}`}>{children}</body>
+        <body className={`h-lvh {inter.className} overscroll-none`}>{children}</body>
       </html>
     </ClerkProvider>
   )

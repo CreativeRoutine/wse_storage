@@ -1,5 +1,4 @@
 import React, { Key} from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {getPrinters} from "@/lib/actions/printer.action";
 import {
@@ -13,13 +12,26 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import Title from "@/components/shared/Title";
+import {auth} from "@clerk/nextjs"
+import Image from 'next/image'
+import { getUserById } from '@/lib/actions/user.action'
+import { redirect } from "next/navigation";
+import VisitorNotification from "@/components/shared/VisitorNotification";
 
 const Printers = async () => {
+
+  const {userId} = auth();
+  if(!userId) redirect('/sign-in')
+  const mongoUserData = await getUserById({userId})
+  const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+  
+  if(mongoUser.department === "visitor"){
+    return(<VisitorNotification />)
+  }
 
   const printers = await getPrinters({})
 
   const printersRaw = JSON.parse(JSON.stringify(printers.printers))
-  console.log(printers.printers.length)
 
   return (
     <>
@@ -132,8 +144,8 @@ const Printers = async () => {
           </div>
   
           <div className="w-full">
-            {printersRaw > 0 ? (
-              printersRaw.map((printer) => (
+            {printersRaw.length > 0 ? (
+              printersRaw.map((printer:any) => (
                 <div
                 className="flex flex-row justify-center items-center pt-3 pb-3 px-6 border-b border-slate-200 hover:bg-slate-300"
                 key={printer._id as Key}
@@ -170,3 +182,5 @@ const Printers = async () => {
   )
 
 }
+
+export default Printers;
