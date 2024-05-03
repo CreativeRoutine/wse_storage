@@ -18,7 +18,6 @@ interface Props {
 }
 const page = async ({ params }: { params: { _id: string } }) => {
 
-
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})
@@ -31,7 +30,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
   const _id  = params._id;
   const userRequest = await getUserBy_Id({ _id });
   const user = JSON.parse(JSON.stringify(userRequest))
-
 
   return (
     <>
@@ -122,7 +120,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
           
         </div>
       </div>
-
     </>
   )
 }

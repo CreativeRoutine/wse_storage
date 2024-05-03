@@ -51,6 +51,10 @@ export const addPrinterSchema = z.object({
   // paletSn: z.string().min(3).max(12),
 })
 
+export const deletePrinterSchema = z.object({
+  barcode: z.string().min(5).max(12),
+})
+
 export const updatePaletCostSchema = z.object({
   sn: z.string().min(5).max(12), 
   paletCost: z.string().min(1).max(7),

@@ -5,12 +5,19 @@ import { ISupplier } from "@/database/supplier.model";
 // /////////////////////
 // PRINTER TYPES
 // /////////////////////
-export interface CreatePrinterParams {
+export interface AddPrinterToPalletParams {
   sn: string;
   productNumber: string;
   barcode: string;
   paletBarcode: string;
   path: string;
+}
+export interface CreatePrinterParams {
+  sn: string;
+  productNumber: string;
+  barcode: string;
+  path: string;
+  createdOn: Date;
 }
 
 export interface CreatePrinterModelParams {
@@ -24,6 +31,11 @@ export interface CreatePrinterModelParams {
 
 export interface DeletePrinterModelParams {
   printerId: string;
+  path: string;
+}
+
+export interface DeletePrinterParams {
+  barcode: string;
   path: string;
 }
 

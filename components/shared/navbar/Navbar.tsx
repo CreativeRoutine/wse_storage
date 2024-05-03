@@ -12,14 +12,13 @@ import {
 } from "@clerk/nextjs";
 
 import MobileNav from "./MobileNav";
-import { Button } from "@/components/ui/button";
 // import NavbarDark from "@/components/dark_with_search";
 
 const Navbar = () => {
   
 
   return (
-    <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500">
+    <nav className="z-10 flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500">
 
 
       {/* <GlobalSearch /> */}
@@ -33,8 +32,8 @@ const Navbar = () => {
       </div>
 
       <div className=" text-white flex gap-3 justify-center items-center">
-          <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Add Pallet</Link>
-          <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg text-white px-4 py-4">Start Printer</Link>
+          <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Pallet</Link>
+          <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Printer</Link>
         {/* Theme Switch */}
         {/* <Theme /> */}
         

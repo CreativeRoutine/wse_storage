@@ -73,7 +73,7 @@ export default  function AddLocationToPallet ({barcode}:Props){
       <div className="bg-secondary-200 px-8 py-6  rounded-xl border border-dark-350 shadow-lg">
         <div className="">
           <div className=" text-lg text-slate-300 font-semibold">
-
+          <div className='font-bold text-md mb-4'>Add location</div>
           {
             <>
               <Form {...form}>  

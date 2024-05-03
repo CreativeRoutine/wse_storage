@@ -3,9 +3,9 @@ import React, {useState} from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { addPalletSchema } from "@/lib/validations";
+import { addPrinterSchema } from "@/lib/validations";
 import {useRouter, usePathname} from 'next/navigation';
-import { createPalet } from '@/lib/actions/pallet.action';
+import { createPrinter } from '@/lib/actions/printer.action';
 import {
   Form,
   FormControl,
@@ -24,35 +24,36 @@ interface Props {
   mongoUserId: string;
 }
 
-export default function CreatePalet ({ mongoUserId }: Props){
+export default function CreatePrinter ({ mongoUserId }: Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
   // 1. Define your form.
-  // addPalletSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof addPalletSchema>>({
-    resolver: zodResolver(addPalletSchema),
+  // addPrinterSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof addPrinterSchema>>({
+    resolver: zodResolver(addPrinterSchema),
     defaultValues: {
-      ponumber:"",
+      sn: "",
+      productNumber:"",
       barcode:"",
     },
   });
 
   // 2. Define a submit handler.
-  // addPalletSchema took from lib/validations.ts to validate the form
-  async function onSubmit(values: z.infer<typeof addPalletSchema>) {
+  // addPrinterSchema took from lib/validations.ts to validate the form
+  async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
 
     const createdOn = new Date();
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
-      await createPalet({
-        ponumber: JSON.parse(JSON.stringify(values.ponumber)),
+      await createPrinter({
+        sn: JSON.parse(JSON.stringify(values.sn)),
+        productNumber: JSON.parse(JSON.stringify(values.productNumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
-        user: JSON.parse(JSON.stringify(mongoUserId)),
         path: usepathname,
         createdOn: createdOn
       })
@@ -60,7 +61,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       form.reset({}); // Reset form fields
-      router.push("/storage")
+      router.push("/printers")
     } catch (error) {
       console.error(error); 
     }
@@ -77,20 +78,42 @@ export default function CreatePalet ({ mongoUserId }: Props){
             <div className='flex gap-6'>
               <div className="w-full">
 
-                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Pallet:</div>
+                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printer:</div>
 
                 <FormField
                   control={form.control}
-                  name="ponumber"
+                  name="sn"
                   render={({ field }) => (
                     // First Input
                     <FormItem>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">PO number:</FormLabel>
+                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Serial number:</FormLabel>
                       <FormControl>
                         <div className="flex">
                           <Input
                             className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="PO number"
+                            placeholder="s/n"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="productNumber"
+                  render={({ field }) => (
+                    // First Input
+                    <FormItem>
+                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Product number:</FormLabel>
+                      <FormControl>
+                        <div className="flex">
+                          <Input
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="Product number"
                             {...field}
                           />
                         </div>
@@ -135,7 +158,7 @@ export default function CreatePalet ({ mongoUserId }: Props){
                   </>
                 ) : (
                   <>
-                  {type === 'edit' ? 'Edit pallet' : 'Add pallet'}
+                  {type === 'edit' ? 'Edit pallet' : 'Add printer'}
                   </>
                 )}
               </Button>

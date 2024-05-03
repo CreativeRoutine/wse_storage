@@ -6,6 +6,8 @@ import { getUserById } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 import {auth} from "@clerk/nextjs"
 import VisitorNotification from "@/components/shared/VisitorNotification";
+import CreatePalet from "@/components/shared/pallets/CreatePalet";
+import CreatePrinter from "@/components/shared/printers/CreatePrinter";
 
 const addPrinter = async () => {
 
@@ -20,17 +22,12 @@ const addPrinter = async () => {
 
   return (
     <>
-      <Title text="Work with printer" />
+      <Title text="Add new printer" />
       
       <div className="flex bg-dark-600 rounded-xl border border-dark-350 p-4 gap-4">
-        <div className="w-1/2">
+        <div className="w-full mt-1">
+          <CreatePrinter mongoUserId={mongoUser._id} />
           
-          
-          
-        </div>
-
-
-        <div className="w-1/2">
           
         </div>
 

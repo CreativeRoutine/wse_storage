@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
 import { Button } from '@/components/ui/button'
 import DeletePalet from '@/components/shared/pallets/DeletePalet'
+import UnPinPrinter from '@/components/shared/printers/UnPinPrinter'
 
 
 const page = async ({ params }: { params: { barcode: string } }) => {
@@ -92,6 +93,8 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                                               <div className='font-bold'>{printer.productNumber}</div>
                                             </div>
 
+                                            <UnPinPrinter barcode={printer.barcode} palletBarcode={pallet.barcode} mongoUserId={mongoUser._id} />
+
                                           </li>
                                         ) 
                                       }) 
@@ -115,11 +118,7 @@ const page = async ({ params }: { params: { barcode: string } }) => {
               <AddPrinterToPalet barcode={barcode}  mongoUserId="12345"/>
               <ChangePaletLocation barcode={barcode} mongoUserId="12345" />
               <ChangePaletCost barcode={barcode} mongoUserId="12345" />
-            
-            
-            {/* <AddPrinterToPalet sn={currentSN} mongoUserId={''} /> */}
 
-            {/* <SetPaletPrice sn={currentSN} /> */}
             
           </div>
           

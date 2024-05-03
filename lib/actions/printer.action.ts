@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, GetPrintersParams, GetPrinterParams } from "./shared.types";
+import {  CreatePrinterParams, AddPrinterToPalletParams, GetPrintersParams, GetPrinterParams, DeletePrinterParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 
@@ -48,9 +48,39 @@ import Pallet from "@/database/pallet.model";
 // CreatePrinterModelParams took from shared.types.d.ts 
 // to create a new printer model 
 
-
-
 export async function createPrinter(params: CreatePrinterParams) {
+  try {
+    connectToDatabase();
+
+    const { sn, productNumber, barcode, path, createdOn } = params;
+
+    // Searching if printer exists
+    const existingPrinter = await Printer.findOne({ barcode: barcode });
+    if (existingPrinter) {
+      return "This printer already exists in the database";
+    }
+
+    // Создание нового принтера с _id паллета
+    const newPrinter = await Printer.create({
+      sn, 
+      productNumber, 
+      barcode,
+    });
+
+    revalidatePath(path);
+
+    // Преобразование нового принтера в простой JavaScript объект
+    const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
+    
+    return newPrinterPlain;
+  } catch (error) {
+    // Return an error message
+    console.error("An error occurred while creating the printer:", error);
+    return "An error occurred while creating the printer";
+  }
+}
+
+export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
   try {
     connectToDatabase();
 
@@ -132,6 +162,82 @@ export async function getPrinter(params: GetPrinterParams){
     throw error;
   }
 }
+
+export async function deletePrinter(params:DeletePrinterParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+    const { barcode, path } = params;
+    const printer = await Printer.find({barcode: barcode});
+
+    let printerPallet;
+
+    if(printer[0].pallet){
+      printerPallet = JSON.parse(JSON.stringify(printer[0].pallet));
+
+      await Pallet.findByIdAndUpdate(
+        printerPallet, 
+        { $pull: { printers: printer[0]._id } },
+        { new: true }
+      )
+    }
+
+    // Find the pallet by its ID and delete it
+    await Printer.findOneAndDelete({barcode: barcode});
+
+    // Revalidate the path
+    revalidatePath(path);
+
+
+  } catch (error) {
+    // Log any errors
+    console.log("Error:", error);
+    // Return an error message
+    return "An error occurred while deleting the printer";
+  }
+}
+
+export async function unPinPrinter(params:DeletePrinterParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+    const { barcode, path } = params;
+    const printer = await Printer.find({barcode: barcode});
+
+    let printerPallet;
+
+    if(printer[0].pallet){
+      // find pallet by printer id
+      printerPallet = JSON.parse(JSON.stringify(printer[0].pallet));
+
+      // clean pallet from printer
+      await Pallet.findByIdAndUpdate(
+        printerPallet, 
+        { $pull: { printers: printer[0]._id } },
+        { new: true }
+      )
+
+      // clean printer from pallet
+      await Printer.findByIdAndUpdate(
+        printer[0]._id, 
+        { $unset: { pallet: "" } },
+        { new: true }
+      )
+    }
+
+    // Revalidate the path
+    revalidatePath(path);
+
+
+  } catch (error) {
+    // Log any errors
+    console.log("Error:", error);
+    // Return an error message
+    return "An error occurred while deleting the printer";
+  }
+}
+
+
 
 // export async function createPrinterModel(params:CreatePrinterModelParams) {
 //   try {

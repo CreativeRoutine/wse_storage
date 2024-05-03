@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { createPrinter } from '@/lib/actions/printer.action';
+import { addPrinterToPallet } from '@/lib/actions/printer.action';
 import { addPrinterSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 
@@ -53,7 +53,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await createPrinter({
+      await addPrinterToPallet({
         sn: values.sn, 
         productNumber: values.productNumber,
         barcode: values.barcode,
@@ -77,6 +77,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
       <div className="bg-secondary-200 px-8 py-6  rounded-xl border border-dark-350 shadow-lg">
         <div className="">
           <div className=" text-lg text-slate-300 font-semibold">
+            <div className='font-bold text-md mb-4'>Add printer</div>
 
           {
             <>

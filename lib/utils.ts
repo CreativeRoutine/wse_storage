@@ -7,8 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export const formatTime = (createdOn: Date, look: string) => {
 
-
-
   // Создание объекта Date
   const date = new Date(createdOn);
   
@@ -22,12 +20,12 @@ export const formatTime = (createdOn: Date, look: string) => {
   
   if(look === 'full'){
     // Full date
-    const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}`;
+    const formattedDate = `${month}-${day}-${year} ${hours}:${minutes}`;
     return formattedDate
   }
   if(look === 'date'){
     // Date only without time
-    const formattedDate = `${day}-${month}-${year}`;
+    const formattedDate = `${month}-${day}-${year}`;
     return formattedDate
   }
   if(look === 'time'){

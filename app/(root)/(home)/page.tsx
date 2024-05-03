@@ -28,171 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const printers = [
-  {
-    model: 1300,
-    made: 419,
-    technician: "John Doe",
-    cleaner: "David Miller",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 1320,
-    made: 493,
-    technician: "Emma Wilson",
-    cleaner: "Isabella Anderson",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 1515,
-    made: 371,
-    technician: "Daniel Lee",
-    cleaner: "Isabella Anderson",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 148,
-    made: 265,
-    technician: "James Taylor",
-    cleaner: "Jane Smith",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 130,
-    made: 105,
-    technician: "John Doe",
-    cleaner: "David Miller",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 252,
-    made: 416,
-    technician: "James Taylor",
-    cleaner: "David Miller",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 255,
-    made: 232,
-    technician: "John Doe",
-    cleaner: "Jane Smith",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 277,
-    made: 107,
-    technician: "Emma Wilson",
-    cleaner: "Jane Smith",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 452,
-    made: 323,
-    technician: "Maria Garcia",
-    cleaner: "Isabella Anderson",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 454,
-    made: 148,
-    technician: "Alex Johnson",
-    cleaner: "David Miller",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 477,
-    made: 243,
-    technician: "Daniel Lee",
-    cleaner: "Isabella Anderson",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 479,
-    made: 208,
-    technician: "Maria Garcia",
-    cleaner: "Jane Smith",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 4014,
-    made: 206,
-    technician: "Alex Johnson",
-    cleaner: "Jane Smith",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 4015,
-    made: 113,
-    technician: "Olivia Martinez",
-    cleaner: "Isabella Anderson",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: false,
-  },
-  {
-    model: 4200,
-    made: 341,
-    technician: "Emma Wilson",
-    cleaner: "David Miller",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 4250,
-    made: 125,
-    technician: "Emma Wilson",
-    cleaner: "Jane Smith",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 4300,
-    made: 349,
-    technician: "James Taylor",
-    cleaner: "David Miller",
-    partReplacements: true,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-  {
-    model: 4300,
-    made: 252,
-    technician: "Olivia Martinez",
-    cleaner: "Michael Brown",
-    partReplacements: false,
-    completedOn: "2023-05-22",
-    sold: true,
-  },
-];
-
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -200,7 +35,10 @@ import {auth} from "@clerk/nextjs"
 import { getUserById } from "@/lib/actions/user.action";
 import VisitorNotification from "@/components/shared/VisitorNotification";
 
+import DisplayPrinters from "@/components/shared/DisplayPrinters";
+
 export default async function  Home () {
+
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -214,14 +52,12 @@ export default async function  Home () {
       </>
     )
   }
-
-
     return (
       <>
         {/* STATISTIC TODAY */}
         <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
           {/* Card #1 */}
-          <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
+          {/* <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
             <CardHeader>
               <CardTitle className="flex justify-between text-white">
                 Techs
@@ -255,10 +91,10 @@ export default async function  Home () {
                 12 %
               </Badge>
             </CardContent>
-          </Card>
+          </Card> */}
   
           {/* Card #2 */}
-          <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
+          {/* <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
             <CardHeader>
               <CardTitle className="mb-3 flex justify-between text-white">
                 Cleaners
@@ -300,10 +136,10 @@ export default async function  Home () {
                 6 %
               </Badge>
             </CardContent>
-          </Card>
+          </Card> */}
   
           {/* Card #3 */}
-          <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
+          {/* <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
             <CardHeader>
               <CardTitle className="mb-3 flex justify-between text-white">
                 Done all time
@@ -327,194 +163,14 @@ export default async function  Home () {
             <CardContent className="flex justify-end items-end">
               <p className="text-purple-500 font-bold text-6xl">1463</p>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
-        <div className="flex gap-4 mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
-          <Table>
-            {/* TABLE HEAD */}
-            <TableHeader className="bg-black text-white rounded--md">
-              <TableRow className="">
-                <TableHead className="text-left w-[30px]">#</TableHead>
-                <TableHead className="flex items-center">
-                  Printers
-                  <Image
-                    src="/assets/icons/icons/chevron-down.svg"
-                    width={12}
-                    height={12}
-                    alt="Tech"
-                    className="ml-4"
-                  />
-                </TableHead>
-                <TableHead className="text-right">Tech</TableHead>
-                <TableHead className="text-right">Tech time</TableHead>
-                <TableHead className="text-right">Cleaner</TableHead>
-                <TableHead className="text-right">Cleaner time</TableHead>
-                <TableHead className="text-right">Time</TableHead>
-              </TableRow>
-            </TableHeader>
-  
-            {/* TABLE BODY */}
-            <TableBody>
-              {/* ROW #1 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#1.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4350</Link>
-                </TableCell>
-                <TableCell className="text-right">John</TableCell>
-                <TableCell className="text-right">45 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">23 mins.</TableCell>
-                <TableCell className="text-right">68 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #2 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#2.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4014</Link>
-                </TableCell>
-                <TableCell className="text-right">Tom</TableCell>
-                <TableCell className="text-right">34 mins.</TableCell>
-                <TableCell className="text-right">Hanna</TableCell>
-                <TableCell className="text-right">12 mins.</TableCell>
-                <TableCell className="text-right">46 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #3 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#3.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">1525</Link>
-                </TableCell>
-                <TableCell className="text-right">Andy</TableCell>
-                <TableCell className="text-right">14 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">6 mins.</TableCell>
-                <TableCell className="text-right">20 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #4 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#4.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4350</Link>
-                </TableCell>
-                <TableCell className="text-right">John</TableCell>
-                <TableCell className="text-right">45 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">23 mins.</TableCell>
-                <TableCell className="text-right">68 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #5 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#5.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4014</Link>
-                </TableCell>
-                <TableCell className="text-right">Tom</TableCell>
-                <TableCell className="text-right">34 mins.</TableCell>
-                <TableCell className="text-right">Hanna</TableCell>
-                <TableCell className="text-right">12 mins.</TableCell>
-                <TableCell className="text-right">46 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #6 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#6.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">1525</Link>
-                </TableCell>
-                <TableCell className="text-right">Andy</TableCell>
-                <TableCell className="text-right">14 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">6 mins.</TableCell>
-                <TableCell className="text-right">20 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #7 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#7.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4350</Link>
-                </TableCell>
-                <TableCell className="text-right">John</TableCell>
-                <TableCell className="text-right">45 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">23 mins.</TableCell>
-                <TableCell className="text-right">68 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #8 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#8.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4014</Link>
-                </TableCell>
-                <TableCell className="text-right">Tom</TableCell>
-                <TableCell className="text-right">34 mins.</TableCell>
-                <TableCell className="text-right">Hanna</TableCell>
-                <TableCell className="text-right">12 mins.</TableCell>
-                <TableCell className="text-right">46 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #9 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#9.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">1525</Link>
-                </TableCell>
-                <TableCell className="text-right">Andy</TableCell>
-                <TableCell className="text-right">14 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">6 mins.</TableCell>
-                <TableCell className="text-right">20 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #10 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#10.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4350</Link>
-                </TableCell>
-                <TableCell className="text-right">John</TableCell>
-                <TableCell className="text-right">45 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">23 mins.</TableCell>
-                <TableCell className="text-right">68 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #11 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#11.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">4014</Link>
-                </TableCell>
-                <TableCell className="text-right">Tom</TableCell>
-                <TableCell className="text-right">34 mins.</TableCell>
-                <TableCell className="text-right">Hanna</TableCell>
-                <TableCell className="text-right">12 mins.</TableCell>
-                <TableCell className="text-right">46 mins.</TableCell>
-              </TableRow>
-  
-              {/* ROW #12 */}
-              <TableRow>
-                <TableCell className="font-medium text-slate-400">#12.</TableCell>
-                <TableCell className="font-medium">
-                  <Link href="/printer/_id">1525</Link>
-                </TableCell>
-                <TableCell className="text-right">Andy</TableCell>
-                <TableCell className="text-right">14 mins.</TableCell>
-                <TableCell className="text-right">Helen</TableCell>
-                <TableCell className="text-right">6 mins.</TableCell>
-                <TableCell className="text-right">20 mins.</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
+
         </div>
       </>
     );
-};
 
+    
+};
 

@@ -17,6 +17,7 @@ import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
+import DisplayPrinters from "@/components/shared/DisplayPrinters";
 
 const Printers = async () => {
 
@@ -29,155 +30,66 @@ const Printers = async () => {
     return(<VisitorNotification />)
   }
 
-  const printers = await getPrinters({})
+  // const printers = await getPrinters({})
 
-  const printersRaw = JSON.parse(JSON.stringify(printers.printers))
+  // const printersRaw = JSON.parse(JSON.stringify(printers.printers))
 
   return (
     <>
         <Title text="Printers page" />
   
-        {/* STATISTIC TODAY */}
-        <div className="flex flex-row gap-4 mb-4">
-          {/* Card #1 */}
-          <Card className="w-1/3 border-none shadow-md bg-teal-50">
-            <CardHeader>
-              <CardTitle className="mb-3 flex justify-between">
-                Done today:
-                
-              </CardTitle>
-              <CardDescription className="text-slate-600">
-                Printers refurbished today
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-between items-end">
-              <p className="text-emerald-600 font-bold text-6xl">38</p>
-              <Badge className="px-5 py-2 bg-green-100 text-slate-800 flex flex-col justify-end items-end">
-                <div className="text-sm text-slate-500 mb-1">Average time</div>
-                <div className="flex text-lg">
-                  <Image
-                    src="/assets/icons/stopwatch.svg"
-                    width={20}
-                    height={20}
-                    alt="Tech"
-                    className="invert-colors mr-1"
-                  />
-                  19 mins.
-                </div>
-              </Badge>
-            </CardContent>
-          </Card>
-  
-          {/* Card #2 */}
-          <Card className="w-1/3 border-none shadow-md bg-sky-50">
-            <CardHeader>
-              <CardTitle className="mb-3 flex justify-between">
-                Done this week:
-              </CardTitle>
-              <CardDescription className="text-slate-600">
-                Printers refurbished this week
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-between items-end">
-              <p className="text-sky-500 font-bold text-6xl">126</p>
-              <Badge className="px-5 py-2 bg-sky-100 text-slate-800 flex flex-col justify-end items-end">
-                <div className="text-sm text-slate-500 mb-1">Average time</div>
-                <div className="flex text-lg">
-                  <Image
-                    src="/assets/icons/stopwatch.svg"
-                    width={20}
-                    height={20}
-                    alt="Tech"
-                    className="invert-colors mr-1"
-                  />
-                  22 mins.
-                </div>
-              </Badge>
-            </CardContent>
-          </Card>
-  
-          {/* Card #3 */}
-          <Card className="w-1/3 border-none shadow-md bg-purple-50">
-            <CardHeader>
-              <CardTitle className="mb-3 flex justify-between">
-                Total:
-              </CardTitle>
-              <CardDescription className="text-slate-600">
-                Total printers made / returns
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-between items-end">
-              <p className="text-purple-500 font-bold text-6xl">
-                832 <span className="text-xl text-red-500">/ 36</span>{" "}
-              </p>
-              <Badge className="px-5 py-2 bg-purple-100 text-slate-800 flex flex-col justify-end items-end">
-                <div className="text-sm text-slate-500 mb-1">Returns</div>
-                <div className="flex text-lg">
-                  <Image
-                    src="/assets/icons/pie.svg"
-                    width={20}
-                    height={20}
-                    alt="Tech"
-                    className="invert-colors mr-1"
-                  />
-                  0.4 %
-                </div>
-              </Badge>
-            </CardContent>
-          </Card>
-        </div>
-  
         {/* LIST OF PRINTERS */}
-  
-        <div className="mb-4 bg-slate-100 rounded-md py-6">
-          <div className="flex flex-row px-6 pb-4 font-semibold text-md border-b-2 border-slate-600 w-full">
-            <span className="w-[80px] ">Printer</span>
-            <span className="flex flex-1 justify-center pl-3">
-              Start/End Time
-            </span>
-            <span className="flex flex-1 justify-center ">Tech time</span>
-            <span className="flex flex-1 justify-center ">Cleaner time</span>
-            <span className="flex flex-1 justify-end  pr-2">Average time</span>
-            <span className="flex flex-1 justify-center ">Parts Changed</span>
-            <span className="flex flex-1 justify-center ">Costs</span>
-            <span className="flex flex-1 justify-end  pr-2">Printer profile</span>
-          </div>
-  
-          <div className="w-full">
-            {printersRaw.length > 0 ? (
-              printersRaw.map((printer:any) => (
-                <div
-                className="flex flex-row justify-center items-center pt-3 pb-3 px-6 border-b border-slate-200 hover:bg-slate-300"
-                key={printer._id as Key}
-              >
-                <span className="w-[80px] flex flex-col justify-center items-center">
-                  <Image
-                    src="/assets/printers_preview/281.png"
-                    width={60}
-                    height={60}
-                    alt="Printer"
-                    className=""
-                  />
-                  {printer.productNumber}
-                </span>
-                <span className="flex flex-1 justify-center pl-3">
-                  {/* {printer.techStart} / {printer.techEnd} */}
-                </span>
-                <span className="flex flex-1 justify-end ">
-                  <Link
-                    href={`/printers/${printer.barcode}`}
-                    className="px-4 py-3 bg-transparent font-bold border-2 border-slate-600 rounded-full hover:border-none hover:bg-sky-600 hover:text-white"
-                  >
-                    Full info
-                  </Link>
-                </span>
+        <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
+          <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
+            
+
+            <div className="mt-8 flow-root  rounded-lg">
+              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                  <table className="min-w-full divide-y divide-gray-300">
+                    <thead>
+                      <tr>
+                        <th 
+                          scope="col" 
+                          className="sticky top-0 z-10 py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                        >
+                          Printer
+                        </th>
+                        <th 
+                          scope="col" 
+                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                        >
+                          Barcode
+                        </th>
+                        <th 
+                          scope="col" 
+                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                        >
+                          Status
+                        </th>
+                        <th 
+                          scope="col" 
+                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                        >
+                          Created on
+                        </th>
+                        <th 
+                          scope="col" 
+                          className="relative sticky top-0 z-10 py-3.5 pl-3 pr-4 sm:pr-0"
+                        >
+                          <span className="sr-only">View</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 bg-transparent">
+                      <DisplayPrinters />
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              ))
-            ) : (
-              <div>DATA NOT LOADED</div>
-            )}
+            </div>
           </div>
-        </div>
+        </div>  
       </>
   )
 
