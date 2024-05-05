@@ -39,12 +39,22 @@ export interface DeletePrinterParams {
   path: string;
 }
 
+export interface PinToPalletParams {
+  barcode: string;
+  palletBarcode: string;
+  path: string;
+}
+
 
 export interface GetPrintersParams {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
   filter?: string;
+}
+
+export interface GetPrinterPopulatedParams {
+  barcode: string;
 }
 
 export interface GetPrinterParams{
@@ -120,6 +130,13 @@ export interface GetPalet{
   paletId?: string;
   // sn: string;
 }
+
+export interface GetPaletByIdParams{
+  _id: string;
+  // sn: string;
+}
+
+
 
 
 

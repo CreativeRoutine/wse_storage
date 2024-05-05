@@ -25,7 +25,7 @@ const PrinterSchema = new Schema({
     sn: { type: String, required: true },
     productNumber: { type: String, required: true},
     barcode: { type: String, required: true },
-    pallet: { type: Schema.Types.ObjectId, ref: 'Pallet', required: false},
+    pallet: { type: Schema.Types.ObjectId, ref: 'Pallet'},
     tech: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     techStart: { type: Date, required: false },
     techEnd: { type: Date, required: false },

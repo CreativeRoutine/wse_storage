@@ -2,7 +2,7 @@
 import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import { connectToDatabase } from "../mongoose"
-import { CreatePalet, GetPalet, DeletePalletParams, GetPalletsParams, UpdatePaletLocation, UpdatePaletCost} from "./shared.types";
+import { CreatePalet, GetPalet, DeletePalletParams, GetPalletsParams, UpdatePaletLocation, UpdatePaletCost, GetPaletByIdParams} from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Supplier from "@/database/supplier.model";
 // import { any } from "zod";
@@ -71,6 +71,24 @@ export async function getPalet(params: GetPalet) {
     .lean();
 
     return { pallets };
+  } catch (error) {
+    console.log("This Pallet couldn't load. Error:", error);
+    return { error: "This Pallet couldn't load." };
+  }
+}
+
+export async function getPaletById(params: GetPaletByIdParams) {
+  try {
+    await connectToDatabase();
+
+    const { _id } = params;
+
+    // Загрузка паллетов с заполнением информации о принтерах
+    const pallet = await Pallet.findOne({ _id: _id })
+    // .populate({ path: "printers", model: Printer, select: "barcode sn productNumber" })
+    .lean();
+
+    return { pallet };
   } catch (error) {
     console.log("This Pallet couldn't load. Error:", error);
     return { error: "This Pallet couldn't load." };

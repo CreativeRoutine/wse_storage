@@ -1,8 +1,9 @@
 import Title from '@/components/shared/Title'
-import { getPrinter } from '@/lib/actions/printer.action'
+import { getPrinterPopulated } from '@/lib/actions/printer.action'
+import { getPaletById } from '@/lib/actions/pallet.action'
 import React from 'react'
 import {Button} from '@/components/ui/button'
-
+import Link from 'next/link'
 import {auth} from "@clerk/nextjs"
 import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
@@ -10,6 +11,7 @@ import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
 import { formatTime } from '@/lib/utils'
 import DeletePrinter from '@/components/shared/printers/DeletePrinter'
+import PinToPallet from '@/components/shared/printers/PinToPallet'
 
 const page = async ({ params }: { params: { barcode: string } }) => {
 
@@ -24,9 +26,8 @@ const page = async ({ params }: { params: { barcode: string } }) => {
 
   const { barcode } = params
 
-  const printer = await getPrinter({barcode})
-  const printers = JSON.parse(JSON.stringify(printer.printer))
-  console.log(printers)
+  const printer = await getPrinterPopulated({barcode})
+  const printers = JSON.parse(JSON.stringify(printer.printers))
 
   return (
     <>
@@ -42,6 +43,8 @@ const page = async ({ params }: { params: { barcode: string } }) => {
           className="p-4"
           alt="printer" 
           />
+          {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet barcode={barcode} mongoUserId={userId} /> }
+          
           <DeletePrinter barcode={barcode} mongoUserId={userId} />
         </div>
 
@@ -73,6 +76,16 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                   <div className="font-base">Condition:</div>
                   <div className="font-bold text-sky-400">{item.addedOn ? item.AddedOn : <span className="text-red-500">Not examined yet</span>}</div>
                 </div>
+
+                {
+                  item.pallet ? 
+                  <div className="flex justify-between w-full text-white mb-3">
+                    <div className="font-base">Pallet:</div>
+                    <div className="font-bold text-sky-400">
+                      <Link href={`/storage/${JSON.parse(JSON.stringify(item.pallet.barcode))}`}>{JSON.stringify(item.pallet.barcode)}</Link>
+                      </div>
+                  </div> : null
+                }
               </div>
             )
            ) 

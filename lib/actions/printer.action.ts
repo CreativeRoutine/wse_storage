@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, AddPrinterToPalletParams, GetPrintersParams, GetPrinterParams, DeletePrinterParams } from "./shared.types";
+import {  CreatePrinterParams, AddPrinterToPalletParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams,  DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 
@@ -86,19 +86,19 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 
     const { sn, productNumber, barcode, paletBarcode, path } = params;
 
-    // Поиск существующего принтера
+    // Search for an existing printer by serial number, product number, and barcode
     const existingPrinter = await Printer.findOne({ sn, productNumber, barcode });
     if (existingPrinter) {
       return "This printer already exists in the database";
     }
 
-    // Поиск паллета по штрихкоду
+    // Searching for a pallet by barcode
     const pallet = await Pallet.findOne({ barcode: paletBarcode });
     if (!pallet) {
       return "Pallet not found";
     }
 
-    // Создание нового принтера с _id паллета
+    // Creating a new printer with the _id of the pallet
     const newPrinter = await Printer.create({
       sn, 
       productNumber, 
@@ -106,7 +106,7 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
       pallet: pallet._id, // Используем _id найденного паллета
     });
 
-    // После успешного создания принтера, обновляем документ паллета, добавляя _id нового принтера в массив printers
+    // Afer creating a new printer, we add it to the pallet
     await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: newPrinter._id } });
 
 
@@ -129,9 +129,29 @@ export async function getPrinters(params: GetPrintersParams){
     await connectToDatabase();
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await Printer.find({}).lean()
+    const printers = await Printer.find({})
 
-    // //.populate({path: "tags", model: Tag})
+    // .populate({path: "pallets", model: Pallet})
+    // //.populate({path: 'author', model: User}) 
+    return{printers}
+
+  } catch (error) {
+    
+    throw error;
+  }
+}
+
+export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const {barcode} = params;
+
+    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    const printers = await Printer.find({barcode: barcode})
+
+    .populate({path: "pallet", model: Pallet})
     // //.populate({path: 'author', model: User}) 
     return{printers}
 
@@ -162,6 +182,28 @@ export async function getPrinter(params: GetPrinterParams){
     throw error;
   }
 }
+
+// export async function getPrinterById(params: GetPrinterByIdParams){
+  
+//   const _id = params._id;
+
+//   try {
+//     // Connect to the database
+//     await connectToDatabase();
+
+//     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+//     // .lean() 
+//     const printer = await Printer.find({barcode: barcode}).lean()
+
+//     // //.populate({path: "tags", model: Tag})
+//     // //.populate({path: 'author', model: User}) 
+//     return{printer}
+
+//   } catch (error) {
+    
+//     throw error;
+//   }
+// }
 
 export async function deletePrinter(params:DeletePrinterParams) {
   try {
@@ -229,6 +271,33 @@ export async function unPinPrinter(params:DeletePrinterParams) {
     revalidatePath(path);
 
 
+  } catch (error) {
+    // Log any errors
+    console.log("Error:", error);
+    // Return an error message
+    return "An error occurred while deleting the printer";
+  }
+}
+
+export async function PinPrinterToPallet(params:PinToPalletParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+    const { barcode, palletBarcode, path } = params;
+
+    const pallet = await Pallet.findOne({barcode: palletBarcode});
+    if (!pallet) {
+      console.log("Pallet not found");
+      return "Pallet not found";
+    }
+    const printer = await Printer.findOne({barcode: barcode});
+    
+    await Printer.findByIdAndUpdate(printer._id, { $set: { pallet: pallet._id } });
+    await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: printer._id } });
+
+
+    // Revalidate the path
+    revalidatePath(path);
   } catch (error) {
     // Log any errors
     console.log("Error:", error);

@@ -9,7 +9,7 @@ const DisplayPrinters = async () => {
 
     const resultPrinters = await getPrinters({})
     const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
-
+    console.log(printers)
     if(printers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any printers yet!"</div>)
     }
