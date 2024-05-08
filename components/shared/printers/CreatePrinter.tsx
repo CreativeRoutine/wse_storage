@@ -48,8 +48,6 @@ export default function CreatePrinter ({ mongoUserId }: Props){
     setIsSubmitting(true);
 
     const createdOn = moment().tz("America/Chicago").toDate();
-
-    // const createdOn = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC', hour12: false }));
     createdOn.setHours(createdOn.getHours() - 5); 
 
     try {

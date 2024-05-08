@@ -4,7 +4,7 @@ import { connectToDatabase } from "../mongoose";
 import {  CreatePrinterParams, AddPrinterToPalletParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams,  DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
-
+import moment from 'moment-timezone';
 import Pallet from "@/database/pallet.model";
 
 // export async function createPrinter(params:any) {
@@ -87,6 +87,9 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 
     const { sn, productNumber, barcode, paletBarcode, path } = params;
 
+    const createdOn = moment().tz("America/Chicago").toDate();
+    createdOn.setHours(createdOn.getHours() - 5); 
+
     // Search for an existing printer by serial number, product number, and barcode
     const existingPrinter = await Printer.findOne({ sn, productNumber, barcode });
     if (existingPrinter) {
@@ -105,6 +108,7 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
       productNumber, 
       barcode,
       pallet: pallet._id, // Используем _id найденного паллета
+      createdOn
     });
 
     // Afer creating a new printer, we add it to the pallet
