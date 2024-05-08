@@ -59,7 +59,7 @@ const LeftSidebar = () => {
               href={item.route}
               className={`${
                 isActive
-                  ? "primary-gradient rounded-lg text-light-900"
+                  ? "bg-primary-500 rounded-lg text-light-900"
                   : "text-slate-200 "
               }  flex items-center justify-start gap-4 bg-transparent p-4`}
             >
@@ -83,9 +83,9 @@ const LeftSidebar = () => {
               key={item.label}
               className={`${
                 isActive
-                  ? "primary-gradient rounded-lg text-light-900"
+                  ? "bg-primary-500 rounded-lg text-light-900"
                   : "text-slate-200 "
-              }  flex items-center justify-start gap-4 bg-transparent p-4`}
+              }  flex items-center justify-start gap-4  p-4`}
             >
               <Image
                 src={item.imgURL}

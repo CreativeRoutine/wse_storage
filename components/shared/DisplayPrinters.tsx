@@ -9,7 +9,7 @@ const DisplayPrinters = async () => {
 
     const resultPrinters = await getPrinters({})
     const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
-    console.log(printers)
+    
     if(printers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any printers yet!"</div>)
     }
@@ -34,7 +34,7 @@ const DisplayPrinters = async () => {
           </td>
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             {
-              printer.tech ? (
+              printer.tech.length > 0  ? (
                 <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                   In progress
                 </span>

@@ -46,7 +46,9 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
 
-    const createdOn = new Date();
+    const dateTime = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });;
+    
+    const createdOn = dateTime;
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
@@ -55,7 +57,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
         productNumber: JSON.parse(JSON.stringify(values.productNumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
         path: usepathname,
-        createdOn: createdOn
+        createdOn: createdOn,
       })
       
       setIsSubmitting(false); // Reset isSubmitting state

@@ -30,10 +30,6 @@ const Printers = async () => {
     return(<VisitorNotification />)
   }
 
-  // const printers = await getPrinters({})
-
-  // const printersRaw = JSON.parse(JSON.stringify(printers.printers))
-
   return (
     <>
         <Title text="Printers page" />
