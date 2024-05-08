@@ -47,7 +47,10 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
 
-    const createdOn = moment().tz("America/Chicago").toDate();
+    // const createdOn = moment().tz("America/Chicago").toDate();
+
+    const createdOn = new Date(new Date().toLocaleString('en-US', { timeZone: 'UTC', hour12: false }));
+    createdOn.setHours(createdOn.getHours() - 5); 
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
