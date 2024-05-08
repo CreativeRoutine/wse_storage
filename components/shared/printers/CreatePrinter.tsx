@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import moment from 'moment-timezone';
 
 const type:any = 'create';
 
@@ -46,9 +47,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
 
-    const dateTime = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });;
-    
-    const createdOn = dateTime;
+    const createdOn = moment().tz("America/Chicago").toDate();
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
