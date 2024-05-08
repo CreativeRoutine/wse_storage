@@ -11,11 +11,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <LeftSidebar />
 
         <div className="flex flex-col px-16">
-          <section className="sticky top-0 left-0 right-0 bg-dark-100 flex flex-col flex-1" >
+          <section className="sticky z-20 top-0 left-0 right-0 bg-dark-100 flex flex-col flex-1" >
             <Navbar />
           </section>
 
-          <section className="pt-16">
+          <section className="pt-16 z-10">
             <div className="mx-auto w-full ">{children}</div>
           </section>
         </div>

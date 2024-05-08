@@ -47,33 +47,33 @@ const Printers = async () => {
                       <tr>
                         <th 
                           scope="col" 
-                          className="sticky top-0 z-10 py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                         >
                           Printer
                         </th>
                         <th 
                           scope="col" 
-                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
                         >
                           Barcode
                         </th>
                         <th 
                           scope="col" 
-                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
                         >
                           Status
                         </th>
                         <th 
                           scope="col" 
-                          className="px-3 sticky top-0 z-10 py-3.5 text-left text-lg font-bold text-slate-100"
+                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
                         >
                           Created on
                         </th>
                         <th 
                           scope="col" 
-                          className="relative sticky top-0 z-10 py-3.5 pl-3 pr-4 sm:pr-0"
+                          className="relative  py-3.5 pl-3 pr-4 sm:pr-0"
                         >
-                          <span className="sr-only">View</span>
+                          <span className="sr-only hidden">View</span>
                         </th>
                       </tr>
                     </thead>
