@@ -65,6 +65,7 @@ export async function createPrinter(params: CreatePrinterParams) {
       sn, 
       productNumber, 
       barcode,
+      createdOn
     });
 
     revalidatePath(path);
