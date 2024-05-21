@@ -4,6 +4,11 @@ export interface SidebarLink {
   label: string;
 }
 
+export interface SettingsLink {
+  route: string;
+  label: string;
+}
+
 export interface Users {
   id: string;
   role: string;

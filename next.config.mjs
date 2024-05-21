@@ -17,6 +17,17 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Basic redirect
+      {
+        source: '/settings',
+        destination: '/settings/suppliers',
+        permanent: true,
+      },
+
+    ]
+  },
 };
 
 export default nextConfig;

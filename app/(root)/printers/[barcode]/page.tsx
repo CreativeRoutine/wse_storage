@@ -57,6 +57,10 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                   <div className="font-bold text-lime-400">{item.sn}</div>
                 </div>
                 <div className="flex justify-between w-full text-white mb-3">
+                  <div className="font-base">PO number:</div>
+                  <div className="font-bold text-lime-400">{item.ponumber ? item.ponumber : <span className="text-red-500">No PO number</span>}</div>
+                </div>
+                <div className="flex justify-between w-full text-white mb-3">
                   <div className="font-base">Product number:</div>
                   <div className="font-bold text-sky-400">{item.productNumber ? item.productNumber : <span className="text-red-500">No product number</span>}</div>
                 </div>

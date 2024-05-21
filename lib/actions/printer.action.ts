@@ -6,6 +6,7 @@ import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
 import Pallet from "@/database/pallet.model";
+import Supplier from "@/database/supplier.model";
 
 // export async function createPrinter(params:any) {
 
@@ -52,21 +53,31 @@ export async function createPrinter(params: CreatePrinterParams) {
   try {
     connectToDatabase();
 
-    const { sn, productNumber, barcode, path, createdOn } = params;
+    const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
 
     // Searching if printer exists
     const existingPrinter = await Printer.findOne({ barcode: barcode });
     if (existingPrinter) {
+      // console.log("This printer already exists in the database");
       return "This printer already exists in the database";
     }
 
     // Создание нового принтера с _id паллета
     const newPrinter = await Printer.create({
+      ponumber,
       sn, 
       productNumber, 
       barcode,
       createdOn
     });
+
+    // Используем _id нового палета для добавления в массив pallets поставщика
+    const supplier = await Supplier.findOneAndUpdate(
+      { ponumber: ponumber },
+      { $push: { pallets: newPrinter._id } }, // Добавляем _id палета
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
+
 
     revalidatePath(path);
 
@@ -134,7 +145,7 @@ export async function getPrinters(params: GetPrintersParams){
     await connectToDatabase();
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await Printer.find({})
+    const printers = await Printer.find({}).sort({createdOn: -1})
 
     // .populate({path: "pallets", model: Pallet})
     // //.populate({path: 'author', model: User}) 

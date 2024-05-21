@@ -13,6 +13,7 @@ export interface AddPrinterToPalletParams {
   path: string;
 }
 export interface CreatePrinterParams {
+  ponumber: string;
   sn: string;
   productNumber: string;
   barcode: string;
@@ -136,6 +137,17 @@ export interface GetPaletByIdParams{
   // sn: string;
 }
 
+
+
+// /////////////////////
+// SUPPLIERS TYPES
+// /////////////////////
+export interface GetSuppliersParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  filter?: string;
+}
 
 
 

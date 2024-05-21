@@ -36,6 +36,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   const form = useForm<z.infer<typeof addPrinterSchema>>({
     resolver: zodResolver(addPrinterSchema),
     defaultValues: {
+      ponumber: "",
       sn: "",
       productNumber:"",
       barcode:"",
@@ -53,19 +54,23 @@ export default function CreatePrinter ({ mongoUserId }: Props){
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
       await createPrinter({
+        ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         sn: JSON.parse(JSON.stringify(values.sn)),
         productNumber: JSON.parse(JSON.stringify(values.productNumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
         path: usepathname,
         createdOn: createdOn,
       })
+
+
+        setIsSubmitting(false); // Reset isSubmitting state
+        // defined as a hook
+        form.reset({}); // Reset form fields
+        router.push("/printers")
       
-      setIsSubmitting(false); // Reset isSubmitting state
-      // defined as a hook
-      form.reset({}); // Reset form fields
-      router.push("/printers")
+      
     } catch (error) {
-      console.error(error); 
+      console.error("THIS IS AN ERROR", error); 
     }
   }
 
@@ -81,6 +86,28 @@ export default function CreatePrinter ({ mongoUserId }: Props){
               <div className="w-full">
 
                 <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printer:</div>
+
+                <FormField
+                  control={form.control}
+                  name="ponumber"
+                  render={({ field }) => (
+                    // First Input
+                    <FormItem>
+                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">PO number:</FormLabel>
+                      <FormControl>
+                        <div className="flex">
+                          <Input
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="PO number"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

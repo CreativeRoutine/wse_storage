@@ -1,38 +1,36 @@
 import React, { Key} from "react";
 import Link from "next/link";
 import {getPrinters} from "@/lib/actions/printer.action";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { Badge } from "@/components/ui/badge";
 import Title from "@/components/shared/Title";
 import {auth} from "@clerk/nextjs"
 import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
 import DisplayPrinters from "@/components/shared/DisplayPrinters";
+import {Button} from "@/components/ui/button";
+import SettingsNav from "@/components/shared/SettingsNav";
 
-const Printers = async () => {
+const Suppliers = async () => {
+    const {userId} = auth();
+    if(!userId) redirect('/sign-in')
+      const mongoUserData = await getUserById({userId})
+    const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+    
+    if(mongoUser.department === "visitor" ){
+      return(<VisitorNotification />)
+    }
 
-  const {userId} = auth();
-  if(!userId) redirect('/sign-in')
-  const mongoUserData = await getUserById({userId})
-  const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
-  
-  if(mongoUser.department === "visitor"){
-    return(<VisitorNotification />)
-  }
-
-  return (
+    return (
     <>
-        <Title text="Printers page" />
+        <Title text="Settings page" />
+
+        <div className="flex items-center justify-between text-white">
+          {/* <Link href="/settings/suppliers" className="text-white bg-transparent hover:bg-primary-500 hover:border-primary-500 border border-white bg-black rounded-lg px-4 py-4">Suppliers</Link> */}
+          <SettingsNav />
+
+        </div>
   
         {/* LIST OF PRINTERS */}
         <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
@@ -50,12 +48,6 @@ const Printers = async () => {
                           className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                         >
                           Printer
-                        </th>
-                        <th 
-                          scope="col" 
-                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                        >
-                          PO number
                         </th>
                         <th 
                           scope="col" 
@@ -94,7 +86,6 @@ const Printers = async () => {
         </div>  
       </>
   )
-
 }
 
-export default Printers;
+export default Suppliers

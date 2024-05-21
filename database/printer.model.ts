@@ -1,6 +1,7 @@
 import { Schema, model, models, Document } from "mongoose";
 
 export interface IPrinter extends Document {
+    ponumber?: string;
     createdOn: Date;
     sn?: string;
     productNumber: string;
@@ -21,6 +22,7 @@ export interface IPrinter extends Document {
 }
 
 const PrinterSchema = new Schema({
+    ponumber: { type: String, required: false },
     createdOn: { type: Date, default: Date.now },
     sn: { type: String, required: true },
     productNumber: { type: String, required: true},

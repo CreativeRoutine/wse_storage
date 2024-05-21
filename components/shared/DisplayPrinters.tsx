@@ -1,8 +1,8 @@
 "use server"
 
-import React from 'react'
+// import React from 'react'
 import {formatTime} from "@/lib/utils";
-import Link from "next/link";
+// import Link from "next/link";
 import { getPrinters } from "@/lib/actions/printer.action";
 
 const DisplayPrinters = async () => {
@@ -28,6 +28,9 @@ const DisplayPrinters = async () => {
                 <div className="mt-1 text-gray-500">{printer.sn}</div>
               </div>
             </div>
+          </td>
+          <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+            <div className="text-white">{printer.ponumber ? printer.ponumber : <span className="text-red-500">Not set</span> }</div>
           </td>
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             <div className="text-white">{printer.barcode}</div>

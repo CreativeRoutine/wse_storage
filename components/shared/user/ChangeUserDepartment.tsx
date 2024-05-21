@@ -103,6 +103,7 @@ export default function ChangeUserDepartmentForm ({mongoUserId}:Props){
                                 <SelectItem value="cleaner">Cleaner</SelectItem>
                                 <SelectItem value="warehouse">Warehouse</SelectItem>
                                 <SelectItem value="visitor">Visitor</SelectItem>
+                              <SelectItem value="owner">Owner</SelectItem>
                               </SelectContent>
                             </Select>
                             </div>
