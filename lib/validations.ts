@@ -45,7 +45,7 @@ export const deletePalletSchema = z.object({
 // ===================  Printer  ===================
 
 export const addPrinterSchema = z.object({
-  ponumber: z.string().min(3).max(12),
+  ponumber: z.string().min(0).max(12),
   sn: z.string().min(5).max(12), 
   productNumber: z.string().min(3).max(12),
   barcode: z.string().min(3).max(12),
