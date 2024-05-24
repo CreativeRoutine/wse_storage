@@ -62,6 +62,12 @@ export interface GetPrinterParams{
   // sn: string;
   barcode: string;
 }
+export interface updatePrinterPONParams{
+  barcode: string;
+  ponumber: string;
+  path: string;
+
+}
 
 export interface FindPrinterBySnParams {
   sn: string;

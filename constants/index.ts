@@ -60,6 +60,6 @@ export const settingsLinks: SettingsLink[] = [
   },
   {
     route: "/settings/makes",
-    label: "Printers names",
+    label: "Printers",
   },
 ]

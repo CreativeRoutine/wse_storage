@@ -8,11 +8,11 @@ import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect, usePathname } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
-import DisplayPrinters from "@/components/shared/DisplayPrinters";
+import DisplayPrinterSettings from "@/components/shared/DisplayPrinterSettings";
 import {Button} from "@/components/ui/button";
 import SettingsNav from "@/components/shared/SettingsNav";
 
-const Suppliers = async () => {
+const PrintersSetings = async () => {
     const {userId} = auth();
     if(!userId) redirect('/sign-in')
       const mongoUserData = await getUserById({userId})
@@ -27,7 +27,6 @@ const Suppliers = async () => {
         <Title text="Settings page" />
 
         <div className="flex items-center justify-between text-white">
-          {/* <Link href="/settings/suppliers" className="text-white bg-transparent hover:bg-primary-500 hover:border-primary-500 border border-white bg-black rounded-lg px-4 py-4">Suppliers</Link> */}
           <SettingsNav />
 
         </div>
@@ -43,40 +42,35 @@ const Suppliers = async () => {
                   <table className="min-w-full divide-y divide-gray-300">
                     <thead>
                       <tr>
+                      <th 
+                          scope="col" 
+                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                        >
+                          Preview
+                        </th>
                         <th 
                           scope="col" 
                           className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                         >
-                          Printer
+                          Product number
                         </th>
                         <th 
                           scope="col" 
-                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
+                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                         >
-                          Barcode
+                          Make / Name
                         </th>
-                        <th 
-                          scope="col" 
-                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
-                        >
-                          Status
-                        </th>
-                        <th 
-                          scope="col" 
-                          className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
-                        >
-                          Created on
-                        </th>
+
                         <th 
                           scope="col" 
                           className="relative  py-3.5 pl-3 pr-4 sm:pr-0"
                         >
-                          <span className="sr-only hidden">View</span>
+                          <span className="sr-only hidden">Edit</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-transparent">
-                      <DisplayPrinters />
+                      <DisplayPrinterSettings />
                     </tbody>
                   </table>
                 </div>
@@ -88,4 +82,4 @@ const Suppliers = async () => {
   )
 }
 
-export default Suppliers
+export default PrintersSetings

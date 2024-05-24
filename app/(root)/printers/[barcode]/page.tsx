@@ -12,6 +12,7 @@ import VisitorNotification from '@/components/shared/VisitorNotification'
 import { formatTime } from '@/lib/utils'
 import DeletePrinter from '@/components/shared/printers/DeletePrinter'
 import PinToPallet from '@/components/shared/printers/PinToPallet'
+import UpdatePrinterPON from '@/components/shared/printers/UpdatePrinterPON'
 
 const page = async ({ params }: { params: { barcode: string } }) => {
 
@@ -43,9 +44,15 @@ const page = async ({ params }: { params: { barcode: string } }) => {
           className="p-4"
           alt="printer" 
           />
-          {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet barcode={barcode} mongoUserId={userId} /> }
+          <div className='w-full mb-2'>
+            <UpdatePrinterPON barcode={barcode} mongoUserId={userId} />
+          </div>
+
           
-          <DeletePrinter barcode={barcode} mongoUserId={userId} />
+          <div className='w-full'>
+            {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet barcode={barcode} mongoUserId={userId} /> }
+          </div>
+            <DeletePrinter barcode={barcode} mongoUserId={userId} />
         </div>
 
         {

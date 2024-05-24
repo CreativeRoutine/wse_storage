@@ -40,9 +40,6 @@ import DisplayPrinters from "@/components/shared/DisplayPrinters";
 export default async function  Home () {
 
 
-  // time pale created
-
-
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})

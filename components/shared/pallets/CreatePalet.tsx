@@ -84,19 +84,19 @@ export default function CreatePalet ({ mongoUserId }: Props){
                   name="ponumber"
                   render={({ field }) => (
                     // First Input
-                    <FormItem>
+                    <FormItem className='mb-4'>
                       <FormLabel className="mb-3 text-base text-slate-300 font-semibold">PO number:</FormLabel>
                       <FormControl>
                         <div className="flex">
                           <Input
-                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
                             placeholder="PO number"
                             {...field}
                           />
                         </div>
                       </FormControl>
 
-                      <FormMessage />
+                      <FormMessage className='text-red-500'/>
                     </FormItem>
                   )}
                 />
@@ -106,19 +106,19 @@ export default function CreatePalet ({ mongoUserId }: Props){
                   name="barcode"
                   render={({ field }) => (
                     // First Input
-                    <FormItem>
+                    <FormItem className='mb-4'>
                       <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Barcode:</FormLabel>
                       <FormControl>
                         <div className="flex">
                           <Input
-                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
                             placeholder="Barcode"
                             {...field}
                           />
                         </div>
                       </FormControl>
 
-                      <FormMessage />
+                      <FormMessage className='text-red-500 mb-4'/>
                     </FormItem>
                   )}
                 />

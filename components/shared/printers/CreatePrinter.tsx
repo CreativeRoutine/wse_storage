@@ -48,6 +48,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
 
+
     const createdOn = moment().tz("America/Chicago").toDate();
     createdOn.setHours(createdOn.getHours() - 5); 
 

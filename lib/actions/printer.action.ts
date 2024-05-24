@@ -1,12 +1,14 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, AddPrinterToPalletParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams,  DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams,  DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
 import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
+import Makes from "@/database/makes.model";
+
 
 // export async function createPrinter(params:any) {
 
@@ -75,6 +77,13 @@ export async function createPrinter(params: CreatePrinterParams) {
     const supplier = await Supplier.findOneAndUpdate(
       { ponumber: ponumber },
       { $push: { pallets: newPrinter._id } }, // Добавляем _id палета
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
+
+    // Используем _id нового Добавляем _id принтера для добавления в массив Makes
+    const makes = await Makes.findOneAndUpdate(
+      { productNumber: productNumber },
+      { $set: { productNumber: newPrinter.productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
 
@@ -197,6 +206,24 @@ export async function getPrinter(params: GetPrinterParams){
     
     throw error;
   }
+}
+
+export async function updatePrinterPON(params:updatePrinterPONParams){
+  try {
+    connectToDatabase();
+    const { barcode, ponumber, path} = params;
+
+    const printer = await Printer.findOne({ barcode: barcode });
+    if (!printer) {
+      return "This printer already exists in the database";
+    }
+
+    await Printer.findOneAndUpdate(printer._id, { $set: { ponumber: ponumber } });
+    revalidatePath(path);
+  } catch (error) {
+      console.log("Error:", error);
+  }
+
 }
 
 // export async function getPrinterById(params: GetPrinterByIdParams){

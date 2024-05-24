@@ -46,7 +46,7 @@ export const deletePalletSchema = z.object({
 
 export const addPrinterSchema = z.object({
   ponumber: z.string().min(0).max(12),
-  sn: z.string().min(5).max(12), 
+  sn: z.string().min(5).max(20), 
   productNumber: z.string().min(3).max(12),
   barcode: z.string().min(3).max(12),
   // paletSn: z.string().min(3).max(12),
@@ -64,6 +64,10 @@ export const pinToPalletSchema = z.object({
 export const updatePaletCostSchema = z.object({
   sn: z.string().min(5).max(12), 
   paletCost: z.string().min(1).max(7),
+})
+
+export const updatePrinterPONSchema = z.object({
+  ponumber: z.string().min(0).max(20),
 })
 
 export const addPartSchema = z.object({

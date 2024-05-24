@@ -10,7 +10,7 @@ export async function getSuppliers(params: GetSuppliersParams){
     await connectToDatabase();
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const suppliers = await Supplier.find({})
+    const suppliers = await Supplier.find({}).sort({ field: -1 })
 
     return{suppliers}
 
