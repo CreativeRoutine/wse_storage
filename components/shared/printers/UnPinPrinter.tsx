@@ -16,30 +16,30 @@ import {
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import { deletePrinterSchema } from '@/lib/validations';
+import { unPinPrinterSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { unPinPrinter } from '@/lib/actions/printer.action';
 
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
-  palletBarcode: string;
+  id: string;
+  printerId: string;
   mongoUserId: string;
 }
 
-export default  function DeletePrinter ({barcode, palletBarcode}:Props){
+export default  function UnPinPrinter ({id, printerId}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
   // 1. Define your form.
-  // deletePrinterSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof deletePrinterSchema>>({
-    resolver: zodResolver(deletePrinterSchema),
+  // unPinPrinterSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof unPinPrinterSchema>>({
+    resolver: zodResolver(unPinPrinterSchema),
     defaultValues: {
-      barcode: "",
+      id: "",
     },
   });
 
@@ -51,14 +51,15 @@ export default  function DeletePrinter ({barcode, palletBarcode}:Props){
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await unPinPrinter({
-        barcode: JSON.parse(JSON.stringify(barcode)),
+        id: JSON.parse(JSON.stringify(id)),
+        printerId: JSON.parse(JSON.stringify(printerId)),
         path: usepathname,
       })
 
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${palletBarcode}`)
+      router.push(`/storage/${id}`)
 
     } catch (error) {
       console.error(error); 

@@ -9,7 +9,7 @@ export interface AddPrinterToPalletParams {
   sn: string;
   productNumber: string;
   barcode: string;
-  paletBarcode: string;
+  palletId: string;
   path: string;
 }
 export interface CreatePrinterParams {
@@ -36,12 +36,18 @@ export interface DeletePrinterModelParams {
 }
 
 export interface DeletePrinterParams {
-  barcode: string;
+  id: string;
+  path: string;
+}
+
+export interface UnPinPrinterParams {
+  id: string;
+  printerId: string;
   path: string;
 }
 
 export interface PinToPalletParams {
-  barcode: string;
+  id: string;
   palletBarcode: string;
   path: string;
 }
@@ -55,7 +61,7 @@ export interface GetPrintersParams {
 }
 
 export interface GetPrinterPopulatedParams {
-  barcode: string;
+  _id: string;
 }
 
 export interface GetPrinterParams{
@@ -63,7 +69,7 @@ export interface GetPrinterParams{
   barcode: string;
 }
 export interface updatePrinterPONParams{
-  barcode: string;
+  _id: string;
   ponumber: string;
   path: string;
 
@@ -72,6 +78,33 @@ export interface updatePrinterPONParams{
 export interface FindPrinterBySnParams {
   sn: string;
 }
+
+// /////////////////////
+// MAKES TYPES
+// /////////////////////
+
+export interface CreateMakesParams {
+  name?: string;
+  productNumber: string;
+  path: string;
+}
+
+export interface GetAllMakesParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  filter?: string;
+}
+
+export interface UpdateMakesParams {
+  name: string;
+  path: string;
+}
+
+
+
+
+
 
 // /////////////////////
 // PART TYPES
@@ -108,13 +141,13 @@ export interface CreatePalet{
 
 export interface UpdatePaletLocation{
   location: string;
-  paletBarcode: string;
+  id: string;
   path: string;
 }
 
 export interface UpdatePaletCost{
   price: string;
-  paletBarcode: string;
+  id: string;
   path: string;
 }
 
@@ -133,7 +166,7 @@ export interface SetPricePalet{
 }
 
 export interface GetPalet{
-  barcode: string;
+  _id: string;
   paletId?: string;
   // sn: string;
 }
@@ -155,6 +188,16 @@ export interface GetSuppliersParams {
   filter?: string;
 }
 
+export interface UpdateSuppliersName{
+  name: string;
+  _id: string;
+  path: string;
+}
+
+export interface DeleteSupplierParams {
+  _id: string;
+  path: string;
+}
 
 
 
@@ -178,7 +221,7 @@ export interface GetPalletsParams {
 }
 
 export interface DeletePalletParams {
-  barcode: string;
+  id: string;
   path: string;
 }
 

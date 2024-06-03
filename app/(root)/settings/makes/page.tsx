@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect, usePathname } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
-import DisplayPrinterSettings from "@/components/shared/DisplayPrinterSettings";
+import DisplayMakes from "@/components/shared/DisplayMakes";
 import {Button} from "@/components/ui/button";
 import SettingsNav from "@/components/shared/SettingsNav";
 
@@ -63,6 +63,13 @@ const PrintersSetings = async () => {
 
                         <th 
                           scope="col" 
+                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                        >
+                          Printers qtty
+                        </th>
+
+                        <th 
+                          scope="col" 
                           className="relative  py-3.5 pl-3 pr-4 sm:pr-0"
                         >
                           <span className="sr-only hidden">Edit</span>
@@ -70,7 +77,7 @@ const PrintersSetings = async () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-transparent">
-                      <DisplayPrinterSettings />
+                      <DisplayMakes />
                     </tbody>
                   </table>
                 </div>

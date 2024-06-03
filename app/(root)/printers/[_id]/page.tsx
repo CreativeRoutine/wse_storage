@@ -14,7 +14,7 @@ import DeletePrinter from '@/components/shared/printers/DeletePrinter'
 import PinToPallet from '@/components/shared/printers/PinToPallet'
 import UpdatePrinterPON from '@/components/shared/printers/UpdatePrinterPON'
 
-const page = async ({ params }: { params: { barcode: string } }) => {
+const page = async ({ params }: { params: { _id: string } }) => {
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -25,14 +25,14 @@ const page = async ({ params }: { params: { barcode: string } }) => {
     return(<VisitorNotification />)
   }
 
-  const { barcode } = params
+  const { _id } = params
 
-  const printer = await getPrinterPopulated({barcode})
-  const printers = JSON.parse(JSON.stringify(printer.printers))
-
+  const printer = await getPrinterPopulated({_id})
+  const printers = JSON.parse(JSON.stringify(printer))
+  // console.log(printers[0])
   return (
     <>
-      <Title text={`Printer - ${barcode}`} />
+      <Title text={`Printer - ${_id}`} />
 
       <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
 
@@ -45,14 +45,15 @@ const page = async ({ params }: { params: { barcode: string } }) => {
           alt="printer" 
           />
           <div className='w-full mb-2'>
-            <UpdatePrinterPON barcode={barcode} mongoUserId={userId} />
+            <UpdatePrinterPON mongoUserId={userId} id={_id} />
           </div>
 
           
           <div className='w-full'>
-            {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet barcode={barcode} mongoUserId={userId} /> }
+            {/* {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet barcode={printers[0].barcode} mongoUserId={userId} /> } */}
+            {printers[0].pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet id={_id} mongoUserId={userId} /> }
           </div>
-            <DeletePrinter barcode={barcode} mongoUserId={userId} />
+            <DeletePrinter id={_id} mongoUserId={userId} />
         </div>
 
         {
@@ -93,7 +94,7 @@ const page = async ({ params }: { params: { barcode: string } }) => {
                   <div className="flex justify-between w-full text-white mb-3">
                     <div className="font-base">Pallet:</div>
                     <div className="font-bold text-sky-400">
-                      <Link href={`/storage/${JSON.parse(JSON.stringify(item.pallet.barcode))}`}>{JSON.stringify(item.pallet.barcode)}</Link>
+                      <Link href={`/storage/${JSON.parse(JSON.stringify(item.pallet._id))}`}>{JSON.stringify(item.pallet.barcode)}</Link>
                       </div>
                   </div> : null
                 }

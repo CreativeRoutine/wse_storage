@@ -25,11 +25,11 @@ import { deletePallet } from '@/lib/actions/pallet.action';
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function DeletePallet ({barcode}:Props){
+export default  function DeletePallet ({id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -42,7 +42,7 @@ export default  function DeletePallet ({barcode}:Props){
   const form = useForm<z.infer<typeof deletePalletSchema>>({
     resolver: zodResolver(deletePalletSchema),
     defaultValues: {
-      barcode: "",
+      id: "",
     },
   });
 
@@ -54,7 +54,7 @@ export default  function DeletePallet ({barcode}:Props){
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await deletePallet({
-        barcode: JSON.parse(JSON.stringify(barcode)),
+        id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       })
 

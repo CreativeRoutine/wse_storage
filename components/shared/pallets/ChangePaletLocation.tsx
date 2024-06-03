@@ -25,11 +25,11 @@ import {useRouter, usePathname} from 'next/navigation';
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function AddLocationToPallet ({barcode}:Props){
+export default  function AddLocationToPallet ({id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -53,7 +53,7 @@ export default  function AddLocationToPallet ({barcode}:Props){
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await updatePaletPlace({
         location: values.location, 
-        paletBarcode: barcode,
+        id: id,
         path: usepathname,
       })
 
@@ -61,7 +61,7 @@ export default  function AddLocationToPallet ({barcode}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${barcode}`)
+      router.push(`/storage/${id}`)
 
     } catch (error) {
       console.error(error); 

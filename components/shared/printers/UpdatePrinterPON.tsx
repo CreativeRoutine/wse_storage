@@ -25,11 +25,11 @@ import { updatePrinterPON } from '@/lib/actions/printer.action';
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function UpdatePrinerPON ({barcode}:Props){
+export default  function UpdatePrinerPON ({mongoUserId, id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -53,7 +53,7 @@ export default  function UpdatePrinerPON ({barcode}:Props){
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await updatePrinterPON({
-        barcode: barcode,
+        _id: id,
         ponumber: values.ponumber, 
         path: usepathname,
       })
@@ -61,7 +61,7 @@ export default  function UpdatePrinerPON ({barcode}:Props){
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/printers/${barcode}`)
+      router.push(`/printers/${id}`)
 
     } catch (error) {
       console.error(error); 

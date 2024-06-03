@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams,  DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
@@ -9,62 +9,82 @@ import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
 
-
-// export async function createPrinter(params:any) {
-
+// Old version
+// export async function createPrinter(params: CreatePrinterParams) {
 //   try {
-//     // create printer
-//     connectToDatabase ();
+//     connectToDatabase();
 
+//     const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
 
-//     const { make, pModel, path} = params;
-
-//     // create question from model
-//     const printer = await Printer.create({make,pModel});
-
-//       const printersDocument = [];
-
-//       // Add printers to pallet or add them later.
-//       // model taken from printer.model.ts
-
-//     // Add the printer to the DB
-//     for (const mk of make){
-//       const existingMk = await Printer.findOneAndUpdate(
-//         // this parameter allows us to find the printer by its make
-//         {name: {$regex: new RegExp(`^${mk}$`, "i")}},
-//         // this parameter allows us to update the printer by its make
-//         {$setOnInsert: {name: mk}, $push: {printers: printer._id}},
-//         // this parameter allows us to create a new printer if it does not exist
-//         {upsert: true, new: true}
-//       )
-//       printersDocument.push(existingMk._id);
+//     // Searching if printer exists
+//     const existingPrinter = await Printer.findOne({ barcode: barcode });
+//     if (existingPrinter) {
+//       // console.log("This printer already exists in the database");
+//       return "This printer already exists in the database";
 //     }
 
-//     await Printer.findByIdAndUpdate(printer._id, {$push: {make: {$each: printersDocument}}});
+//     // Создание нового принтера с _id паллета
+//     const newPrinter = await Printer.create({
+//       ponumber,
+//       sn, 
+//       productNumber, 
+//       barcode,
+//       createdOn
+//     });
 
-//     // Create an interaction between the printer and the pallet
-//     } catch(error){
-//           console.log("We faced with error:", error)
-//       }
+//     const existingSupplier = await Supplier.findOne({ponumber: ponumber});
+
+//     if (existingSupplier){
+//       console.log("THIS IS SUPPLIER ",existingSupplier)
+//       const supplier = await Supplier.create({ponumber: ponumber, pallets:[], printers:[], name:""})
+//     } else {
+//       console.log("THIS IS SUPPLIER NOT FOUND")
+//       // Используем _id нового палета для добавления в массив pallets поставщика
+//       const supplier = await Supplier.findOneAndUpdate(
+//         { ponumber:  ponumber},
+//         { $set: { ponumber: ponumber }, $push: { printers: newPrinter._id } } , // Добавляем _id палета
+//         { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+//       );
+//     }
+
+    
+
+//     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
+//     const makes = await Makes.findOneAndUpdate(
+//       { productNumber: productNumber },
+//       { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
+//       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+//     );
+
+
+//     revalidatePath(path);
+
+//     // Преобразование нового принтера в простой JavaScript объект
+//     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
+    
+//     return newPrinterPlain;
+
+//   } catch (error) {
+//     // Return an error message
+//     console.error("An error occurred while creating the printer:", error);
+//     return "An error occurred while creating the printer";
+//   }
 // }
 
-// CreatePrinterModelParams took from shared.types.d.ts 
-// to create a new printer model 
-
+// New version
 export async function createPrinter(params: CreatePrinterParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase(); // Добавьте await, чтобы дождаться подключения к базе данных
 
     const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
 
     // Searching if printer exists
     const existingPrinter = await Printer.findOne({ barcode: barcode });
     if (existingPrinter) {
-      // console.log("This printer already exists in the database");
       return "This printer already exists in the database";
     }
 
-    // Создание нового принтера с _id паллета
+    // Создание нового принтера
     const newPrinter = await Printer.create({
       ponumber,
       sn, 
@@ -73,20 +93,33 @@ export async function createPrinter(params: CreatePrinterParams) {
       createdOn
     });
 
-    // Используем _id нового палета для добавления в массив pallets поставщика
-    const supplier = await Supplier.findOneAndUpdate(
-      { ponumber: ponumber },
-      { $push: { pallets: newPrinter._id } }, // Добавляем _id палета
-      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-    );
+    // const existingSupplier = await Supplier.findOne({ ponumber: ponumber });
 
-    // Используем _id нового Добавляем _id принтера для добавления в массив Makes
-    const makes = await Makes.findOneAndUpdate(
+    if (newPrinter ) {
+      console.log("Printer done")
+      // Обновляем существующего поставщика
+      await Supplier.findOneAndUpdate(
+        { ponumber: ponumber },
+        { $push: { printers: newPrinter._id } },
+        { new: true, upsert: true }
+      );
+    } else {
+      console.log("Printer NOT done")
+      // Создаем нового поставщика
+      await Supplier.create({
+        ponumber: ponumber,
+        pallets: [],
+        printers: [newPrinter._id],
+        name: ""
+      });
+    }
+
+    // Обновляем или создаем запись в Makes
+    await Makes.findOneAndUpdate(
       { productNumber: productNumber },
-      { $set: { productNumber: newPrinter.productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
-      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+      { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
-
 
     revalidatePath(path);
 
@@ -94,18 +127,22 @@ export async function createPrinter(params: CreatePrinterParams) {
     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
     
     return newPrinterPlain;
+
   } catch (error) {
-    // Return an error message
+    // Возвращаем сообщение об ошибке
     console.error("An error occurred while creating the printer:", error);
     return "An error occurred while creating the printer";
   }
 }
 
+
+
 export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
+  console.log("addPrinterToPallet", params)
   try {
     connectToDatabase();
 
-    const { sn, productNumber, barcode, paletBarcode, path } = params;
+    const { sn, productNumber, barcode, palletId, path } = params;
 
     const createdOn = moment().tz("America/Chicago").toDate();
     createdOn.setHours(createdOn.getHours() - 5); 
@@ -117,7 +154,7 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
     }
 
     // Searching for a pallet by barcode
-    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    const pallet = await Pallet.findOne({ _id: palletId });
     if (!pallet) {
       return "Pallet not found";
     }
@@ -128,12 +165,26 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
       productNumber, 
       barcode,
       pallet: pallet._id, // Используем _id найденного паллета
-      createdOn
+      createdOn,
+      ponumber: pallet.ponumber
     });
 
     // Afer creating a new printer, we add it to the pallet
     await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: newPrinter._id } });
 
+    // Используем _id нового палета для добавления в массив pallets поставщика
+    const supplier = await Supplier.findOneAndUpdate(
+      { ponumber: pallet.ponumber },
+      { $set: { ponumber: pallet.ponumber }, $push: { printers: newPrinter._id } }, // Добавляем _id палета
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
+
+    // Используем _id нового Добавляем _id принтера для добавления в массив Makes
+    const makes = await Makes.findOneAndUpdate(
+      { productNumber: productNumber },
+      { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
 
     revalidatePath(path);
 
@@ -171,14 +222,15 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
     // Connect to the database
     await connectToDatabase();
 
-    const {barcode} = params;
+    const {_id} = params;
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await Printer.find({barcode: barcode})
+    const printer = await Printer.find({_id: _id})
 
     .populate({path: "pallet", model: Pallet})
+    // .populate({path: "supplier", model: Supplier})
     // //.populate({path: 'author', model: User}) 
-    return{printers}
+    return printer
 
   } catch (error) {
     
@@ -211,14 +263,37 @@ export async function getPrinter(params: GetPrinterParams){
 export async function updatePrinterPON(params:updatePrinterPONParams){
   try {
     connectToDatabase();
-    const { barcode, ponumber, path} = params;
+    const { _id, ponumber, path} = params;
 
-    const printer = await Printer.findOne({ barcode: barcode });
+    // 1. Find the printer by its ID
+    // 2. Update the printer's ponumber
+    // 3. Find the supplier by the old ponumber and remove the printer from the supplier's printers array
+
+    const printer = await Printer.findOne({ _id: _id });
     if (!printer) {
-      return "This printer already exists in the database";
+      return "This printer not exists in the database";
     }
 
+    // 3. Find the supplier by the old ponumber and remove the printer from the supplier's printers array
+
+    const oldPOnumber = printer.ponumber;
+
+    const oldSupplier = await Supplier.findOne({ponumber: oldPOnumber});
+    if (oldSupplier) {
+      await Supplier.findOneAndUpdate({ponumber: oldPOnumber}, { $pull: { printers: printer._id } });
+    }
+
+
     await Printer.findOneAndUpdate(printer._id, { $set: { ponumber: ponumber } });
+
+    // Используем _id нового палета для добавления в массив pallets поставщика
+    const supplier = await Supplier.findOneAndUpdate(
+      { ponumber: ponumber },
+      { $set: { ponumber: ponumber }, $push: { printers: printer._id } }, // Добавляем _id палета
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
+
+
     revalidatePath(path);
   } catch (error) {
       console.log("Error:", error);
@@ -252,8 +327,11 @@ export async function deletePrinter(params:DeletePrinterParams) {
   try {
     // Connect to the database
     await connectToDatabase();
-    const { barcode, path } = params;
-    const printer = await Printer.find({barcode: barcode});
+    const { id, path } = params;
+    
+    const printerRaw = await Printer.find({_id: id});
+
+    const printer = JSON.parse(JSON.stringify(printerRaw))
 
     let printerPallet;
 
@@ -267,8 +345,15 @@ export async function deletePrinter(params:DeletePrinterParams) {
       )
     }
 
-    // Find the pallet by its ID and delete it
-    await Printer.findOneAndDelete({barcode: barcode});
+    // Find Supplier by printer id
+    await Supplier.findOneAndUpdate({ponumber: printer[0].ponumber}, { $pull: { printers: printer[0]._id } })
+
+    // Find Makes by printer id and delete printer from Makes
+    await Makes.findOneAndUpdate({productNumber: printer[0].productNumber}, { $pull: { printers: printer[0]._id } })
+
+
+    // // Find the pallet by its ID and delete it
+    await Printer.findOneAndDelete({_id: id});
 
     // Revalidate the path
     revalidatePath(path);
@@ -282,34 +367,26 @@ export async function deletePrinter(params:DeletePrinterParams) {
   }
 }
 
-export async function unPinPrinter(params:DeletePrinterParams) {
+export async function unPinPrinter(params:UnPinPrinterParams) {
   try {
     // Connect to the database
     await connectToDatabase();
-    const { barcode, path } = params;
-    const printer = await Printer.find({barcode: barcode});
+    const { id, printerId, path } = params;
 
-    let printerPallet;
+    // clean pallet from printer
+    await Pallet.findByIdAndUpdate(
+      id, 
+      { $pull: { printers: printerId } },
+      { new: true }
+    )
 
-    if(printer[0].pallet){
-      // find pallet by printer id
-      printerPallet = JSON.parse(JSON.stringify(printer[0].pallet));
-
-      // clean pallet from printer
-      await Pallet.findByIdAndUpdate(
-        printerPallet, 
-        { $pull: { printers: printer[0]._id } },
-        { new: true }
-      )
-
-      // clean printer from pallet
-      await Printer.findByIdAndUpdate(
-        printer[0]._id, 
-        { $unset: { pallet: "" } },
-        { new: true }
-      )
-    }
-
+    // clean printer from pallet
+    await Printer.findByIdAndUpdate(
+      printerId, 
+      { $unset: { pallet: "" } },
+      { new: true }
+    )
+    
     // Revalidate the path
     revalidatePath(path);
 
@@ -326,14 +403,13 @@ export async function PinPrinterToPallet(params:PinToPalletParams) {
   try {
     // Connect to the database
     await connectToDatabase();
-    const { barcode, palletBarcode, path } = params;
+    const { id, palletBarcode, path } = params;
 
     const pallet = await Pallet.findOne({barcode: palletBarcode});
     if (!pallet) {
-      console.log("Pallet not found");
       return "Pallet not found";
     }
-    const printer = await Printer.findOne({barcode: barcode});
+    const printer = await Printer.findOne({_id: id});
     
     await Printer.findByIdAndUpdate(printer._id, { $set: { pallet: pallet._id } });
     await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: printer._id } });

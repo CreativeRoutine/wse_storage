@@ -21,11 +21,11 @@ export const sidebarLinks: SidebarLink[] = [
     route: "/users",
     label: "Users",
   },
-  {
-    imgURL: "/assets/icons/parts.svg",
-    route: "/parts",
-    label: "Parts",
-  },
+  // {
+  //   imgURL: "/assets/icons/parts.svg",
+  //   route: "/parts",
+  //   label: "Parts",
+  // },
   {
     imgURL: "/assets/icons/gear.svg",
     route: "/settings",
@@ -60,6 +60,6 @@ export const settingsLinks: SettingsLink[] = [
   },
   {
     route: "/settings/makes",
-    label: "Printers",
+    label: "Makes",
   },
 ]

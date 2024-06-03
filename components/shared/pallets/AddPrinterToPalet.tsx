@@ -19,26 +19,26 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { addPrinterToPallet } from '@/lib/actions/printer.action';
-import { addPrinterSchema } from '@/lib/validations';
+import { addPrinterToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function AddPrinterToPalet ({barcode}:Props){
+export default  function AddPrinterToPalet ({id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
   // 1. Define your form.
-  // addPrinterSchema took from lib/validations.ts to validate the form
-  const form = useForm<z.infer<typeof addPrinterSchema>>({
-    resolver: zodResolver(addPrinterSchema),
+  // addPrinterToPalletSchema took from lib/validations.ts to validate the form
+  const form = useForm<z.infer<typeof addPrinterToPalletSchema>>({
+    resolver: zodResolver(addPrinterToPalletSchema),
     defaultValues: {
       sn: "",
       productNumber: "",
@@ -47,8 +47,10 @@ export default  function AddPrinterToPalet ({barcode}:Props){
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof addPrinterSchema>,) {
+  async function onSubmit(values: z.infer<typeof addPrinterToPalletSchema>,) {
     setIsSubmitting(true);
+
+    console.log("onSubmit sarted")
     
     try {
       
@@ -57,7 +59,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
         sn: values.sn, 
         productNumber: values.productNumber,
         barcode: values.barcode,
-        paletBarcode: barcode,
+        palletId: id,
         path: usepathname,
       })
 
@@ -65,7 +67,7 @@ export default  function AddPrinterToPalet ({barcode}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${barcode}`)
+      router.push(`/storage/${id}`)
 
     } catch (error) {
       console.error(error); 

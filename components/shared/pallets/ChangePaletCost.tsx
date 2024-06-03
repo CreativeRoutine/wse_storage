@@ -25,11 +25,11 @@ import { updatePaletCost } from '@/lib/actions/pallet.action';
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function AddCostToPallet ({barcode}:Props){
+export default  function AddCostToPallet ({id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -54,14 +54,14 @@ export default  function AddCostToPallet ({barcode}:Props){
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await updatePaletCost({
         price: values.price, 
-        paletBarcode: barcode,
+        id: id,
         path: usepathname,
       })
 
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${barcode}`)
+      router.push(`/storage/${id}`)
 
     } catch (error) {
       console.error(error); 

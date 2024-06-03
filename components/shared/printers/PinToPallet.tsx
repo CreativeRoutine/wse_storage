@@ -23,11 +23,11 @@ import { PinPrinterToPallet } from '@/lib/actions/printer.action';
 const type:any = 'create';
 
 interface Props {
-  barcode: string;
+  id: string;
   mongoUserId: string;
 }
 
-export default  function PinToPalletSchema ({barcode}:Props){
+export default  function PinToPalletSchema ({id}:Props){
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -38,7 +38,7 @@ export default  function PinToPalletSchema ({barcode}:Props){
   const form = useForm<z.infer<typeof pinToPalletSchema>>({
     resolver: zodResolver(pinToPalletSchema),
     defaultValues: {
-      barcode: "",
+      // id: "",
       palletBarcode: "",
     },
   });
@@ -49,17 +49,19 @@ export default  function PinToPalletSchema ({barcode}:Props){
     // const numericPrice = parseFloat(values.price); // Convert price to a number
     try {
 
+      // console.log( form.getValues('palletBarcode'))
+
       // this function took from lib/actions/printer.action.ts to create a new printer model
       await PinPrinterToPallet({
-        barcode: JSON.parse(JSON.stringify(barcode)),
-        palletBarcode: JSON.parse(JSON.stringify(form.getValues('barcode'))),
+        id,
+        palletBarcode: form.getValues('palletBarcode'),
         path: usepathname,
       })
 
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/printers/${barcode}`)
+      router.push(`/printers/${id}`)
 
     } catch (error) {
       console.error(error); 
@@ -76,7 +78,7 @@ export default  function PinToPalletSchema ({barcode}:Props){
                   <div className='w-full flex flex-row justify-center items-center gap-2'>
                   <FormField
                   control={form.control}
-                  name="barcode"
+                  name="palletBarcode"
                   render={({ field }) => (
                       // First Input
                       <FormItem>

@@ -4,6 +4,7 @@ export interface ISupplier extends Document {
     ponumber: string;
     name?: string;
     pallets: Schema.Types.ObjectId[];
+    printers: Schema.Types.ObjectId[];
     // id: number;
     // sn: Schema.Types.ObjectId[];
     // palletSn: Schema.Types.ObjectId;
@@ -22,7 +23,8 @@ export interface ISupplier extends Document {
 const SupplierSchema = new Schema({
     ponumber: { type: String, required: true },
     name: { type: String, required: false },
-    pallets: [{ type: Schema.Types.ObjectId, ref: 'Pallet', required: false }],
+    pallets: [{ type: Schema.Types.ObjectId, ref: 'Pallet' }],
+    printers: [{ type: Schema.Types.ObjectId, ref: 'Printer'}],
 });
 
 const Supplier = models.Supplier || model('Supplier', SupplierSchema);

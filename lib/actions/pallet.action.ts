@@ -63,14 +63,14 @@ export async function getPalet(params: GetPalet) {
   try {
     await connectToDatabase();
 
-    const { barcode } = params;
+    const { _id } = params;
 
     // Загрузка паллетов с заполнением информации о принтерах
-    const pallets = await Pallet.find({ barcode: barcode })
+    const pallets = await Pallet.findOne({ _id: _id })
     .populate({ path: "printers", model: Printer, select: "barcode sn productNumber" })
     .lean();
 
-    return { pallets };
+    return pallets ;
   } catch (error) {
     console.log("This Pallet couldn't load. Error:", error);
     return { error: "This Pallet couldn't load." };
@@ -98,14 +98,15 @@ export async function getPaletById(params: GetPaletByIdParams) {
 export async function updatePaletPlace(params:UpdatePaletLocation){
   try {
     connectToDatabase();
-    const { location, paletBarcode, path} = params;
+    const { location, id, path} = params;
 
-    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    const pallet = await Pallet.findOne({ _id: id });
     if (!pallet) {
-      return "This printer already exists in the database";
+      return "This printer does not exists in the database";
     }
 
     await Pallet.findOneAndUpdate(pallet._id, { $set: { location: location } });
+
     revalidatePath(path);
   } catch (error) {
       console.log("Error:", error);
@@ -116,13 +117,11 @@ export async function updatePaletPlace(params:UpdatePaletLocation){
 export async function updatePaletCost(params:UpdatePaletCost){
   try {
     connectToDatabase();
-    const { price, paletBarcode, path} = params;
-  
-    console.log(typeof price)
+    const { price, id, path} = params;
 
-    const pallet = await Pallet.findOne({ barcode: paletBarcode });
+    const pallet = await Pallet.findOne({ _id: id });
     if (!pallet) {
-      return "This printer already exists in the database";
+      return "This printer does not exists in the database";
     }
 
     await Pallet.findOneAndUpdate(pallet._id, { $set: { price: price } });
@@ -130,7 +129,6 @@ export async function updatePaletCost(params:UpdatePaletCost){
   } catch (error) {
       console.log("Error:", error);
   }
-
 }
 
 export async function deletePallet(params:DeletePalletParams) {
@@ -138,10 +136,19 @@ export async function deletePallet(params:DeletePalletParams) {
     // Connect to the database
     await connectToDatabase();
 
-    const { barcode, path } = params;
+    const { id, path } = params;
 
-    // Find the pallet by its ID and delete it
-    await Pallet.findOneAndDelete({barcode: barcode});
+    const pallet = await Pallet.findOne({ _id: id });
+    if(pallet){
+
+      // Find Supplier by printer id
+      await Supplier.findOneAndUpdate({ponumber: pallet.ponumber}, { $pull: { pallets: pallet._id } })
+      
+      // Find the pallet by its ID and delete it
+      await Pallet.findOneAndDelete({_id: id});
+
+    }
+
 
     // Revalidate the path
     revalidatePath(path);

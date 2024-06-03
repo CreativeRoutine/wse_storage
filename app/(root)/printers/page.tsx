@@ -18,6 +18,7 @@ import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
 import DisplayPrinters from "@/components/shared/DisplayPrinters";
+import Pagination from "@/components/shared/Pagination";
 
 const Printers = async () => {
 
@@ -33,6 +34,7 @@ const Printers = async () => {
   return (
     <>
         <Title text="Printers page" />
+
   
         {/* LIST OF PRINTERS */}
         <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
@@ -92,6 +94,8 @@ const Printers = async () => {
             </div>
           </div>
         </div>  
+
+        {/* <Pagination /> */}
       </>
   )
 
