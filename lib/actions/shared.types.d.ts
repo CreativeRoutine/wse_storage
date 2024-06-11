@@ -62,6 +62,7 @@ export interface GetPrintersParams {
 
 export interface GetPrinterPopulatedParams {
   _id: string;
+  path: string;
 }
 
 export interface GetPrinterParams{
@@ -89,6 +90,11 @@ export interface CreateMakesParams {
   path: string;
 }
 
+export interface GetMakeByIdParams {
+  _id: string;
+  path?: string;
+}
+
 export interface GetAllMakesParams {
   page?: number;
   pageSize?: number;
@@ -98,6 +104,17 @@ export interface GetAllMakesParams {
 
 export interface UpdateMakesParams {
   name: string;
+  path: string;
+}
+
+export interface UpdateMakeName{
+  name?: string;
+  _id: string;
+  path: string;
+}
+
+export interface DeleteMakeParams {
+  _id: string;
   path: string;
 }
 

@@ -9,7 +9,7 @@ const DisplayMakes = async () => {
 
     const makesRaw = await getAllMakes({})
     const makes = JSON.parse(JSON.stringify(makesRaw))
-    console.log(makes)
+    // console.log(makes)
     // const suppliers = JSON.parse(JSON.stringify(makes.suppliers))
     if(makes.length == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any Makes (Priner's names) yet!"</div>)

@@ -135,8 +135,6 @@ export async function createPrinter(params: CreatePrinterParams) {
   }
 }
 
-
-
 export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
   console.log("addPrinterToPallet", params)
   try {
@@ -222,15 +220,15 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
     // Connect to the database
     await connectToDatabase();
 
-    const {_id} = params;
+    const {_id, path} = params;
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     const printer = await Printer.find({_id: _id})
 
-    .populate({path: "pallet", model: Pallet})
+    // .populate({path: 'pallets', model: Pallet, select: "barcode"}).lean()
     // .populate({path: "supplier", model: Supplier})
     // //.populate({path: 'author', model: User}) 
-    return printer
+    return printer[0]
 
   } catch (error) {
     

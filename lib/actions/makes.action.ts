@@ -1,10 +1,11 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreateMakesParams, GetAllMakesParams } from "./shared.types";
+import {  CreateMakesParams, GetAllMakesParams,GetMakeByIdParams, DeleteMakeParams, UpdateMakeName } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import Makes from "@/database/makes.model";
+import { constants } from "fs/promises";
 
 export async function createMake(params: CreateMakesParams) {
   try {
@@ -58,6 +59,69 @@ export async function getAllMakes(params: GetAllMakesParams) {
     }
   }
 
+  export async function getMakeById(params: GetMakeByIdParams) {
+    try {
+      // Connect to the database
+      connectToDatabase();
+
+      const { _id, path } = params;
+  
+      // Searching if printer exists
+      const makes = await Makes.find({_id: _id})
+      .populate({path: 'printers', model: Printer, select: '_id sn barcode createdOn'}).lean()
+  
+      if (!makes) {
+        // console.log("This printer already exists in the database");
+        return "There are NO makes in the database";
+      }
+  
+      return makes[0]
+    } catch (error) {
+      // Return an error message
+      console.error("An error occurred while creating the printer:", error);
+      return "An error occurred while creating the printer";
+    }
+  }
+
+  export async function deleteMake(params: DeleteMakeParams) {
+    try {
+      await connectToDatabase();
+      const { _id, path } = params;
+      const make = await Makes.findOne({ _id: _id });
+  
+  
+      if (!make) {
+        return  "This supplier does not exist in the database" ;
+      }
+      if (make.printers.length > 0) {
+        return  "This supplier has pallets or printers. Please delete them first" ;
+      }
+      await Makes.deleteOne({ _id: make._id });
+  
+      revalidatePath(path);
+      // return { success: "Supplier deleted successfully" };
+    } catch (error) {
+      console.error("Error deleting supplier:", error);
+      throw new Error("Error deleting supplier");
+    }
+  }
+
+  export async function updateMake(params: UpdateMakeName) {
+    try {
+      await connectToDatabase();
+      const { _id, name, path } = params;
+      const make = await Makes.findOne({ _id });
+      if (!make) {
+        return "This make does not exist in the database";
+      }
+      await Makes.findOneAndUpdate(make._id, { $set: { name: name } });
+      revalidatePath(path);
+      return { message: 'Make updated successfully' };
+    } catch (error) {
+      console.error("Error updating Make:", error);
+      throw new Error("Error updating Make");
+    }
+  }
 
 
 // export async function updateMake(params: CreateMakesParams) {

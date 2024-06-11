@@ -32,8 +32,8 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const supplierData = await getSupplier(_id)
   const supplier = JSON.parse(JSON.stringify(supplierData))
-  const pallets = JSON.parse(JSON.stringify(supplier.pallets))
-  // console.log(supplier)
+  // const pallets = JSON.parse(JSON.stringify(supplier.pallets))
+  console.log(supplier)
 
   return (
     
@@ -59,7 +59,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <DescriptionDetails className='!text-white'>{supplier.ponumber}</DescriptionDetails>
 
               <DescriptionTerm>Pallets</DescriptionTerm>
-              <DescriptionDetails className='!text-white'>{pallets.length}</DescriptionDetails>
+              <DescriptionDetails className='!text-white'>{supplier.pallets ? supplier.pallets.length : "Not added yet"}</DescriptionDetails>
 
               <DescriptionTerm>Printers</DescriptionTerm>
               <DescriptionDetails className='!text-white'>{supplier.printers ? supplier.printers.length : 0 }</DescriptionDetails>
@@ -82,13 +82,13 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
         <div className='flex flex-row gap-2'>
           <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-            <Subheading className="!text-white !text-lg relative">Pallets{pallets.length > 0 ? (<span className="text-sm text-slate-400 absolute right-2"> ({pallets.length})</span> ) : null }:</Subheading>
+            <Subheading className="!text-white !text-lg relative">Pallets{supplier.pallets && supplier.pallets.length > 0 ? (<span className="text-sm text-slate-400 absolute right-2"> ({supplier.pallets.length})</span> ) : null }:</Subheading>
             <DescriptionList className='mt-4'>
 
           {
-            pallets.length > 0 ?
+            supplier.pallets && supplier.pallets.length > 0 ?
 
-              pallets.map( 
+            supplier.pallets.map( 
                 (item:any, i:number) => (
                   <>
                     <DescriptionTerm className='text-white'>{i + 1}</DescriptionTerm>
@@ -110,7 +110,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
             <DescriptionList className='mt-4'>
 
               {
-                supplier.printers.length > 0  ?
+                supplier.printers && supplier.printers.length > 0  ?
                 supplier.printers.map( 
                   (item:any, i:number) => (
                     <>

@@ -11,6 +11,7 @@ import VisitorNotification from "@/components/shared/VisitorNotification";
 import {Button} from "@/components/ui/button";
 import SettingsNav from "@/components/shared/SettingsNav";
 import DisplaySuppliers from "@/components/shared/DisplaySuppliers";
+import Pagination from "@/components/shared/Pagination";
 
 const Suppliers = async () => {
     const {userId} = auth();
@@ -35,7 +36,7 @@ const Suppliers = async () => {
           <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
             
 
-            <div className="mt-8 flow-root  rounded-lg">
+            <div className="mt-8 flow-root rounded-lg">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                   <table className="min-w-full divide-y divide-gray-300">
@@ -82,6 +83,12 @@ const Suppliers = async () => {
             </div>
           </div>
         </div>  
+
+        {/* <Pagination 
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+
+        /> */}
       </>
   )
 }
