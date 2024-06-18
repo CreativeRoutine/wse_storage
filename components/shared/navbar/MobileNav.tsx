@@ -20,7 +20,7 @@ const NavContent = () => {
   const pathname = usePathname();
 
   return (
-    <section className="flex h-full flex-col gap-6 pt-16">
+    <section className="flex h-full flex-col gap-6 pt-16 ">
       {sidebarLinks.map((item) => {
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
@@ -77,7 +77,7 @@ const MobileNav = () => {
           <Image src="/images/logo.png" width={23} height={23} alt="DevFlow" />
           {/* Company Name */}
           <p className="h2-bold text-dark100_light900 font-spaceGrotesk">
-            <span className="text-primary-500">White Spider Electronics</span>
+            <span className="text-primary-500">WS Electronics</span>
           </p>
         </Link>
         <div className="mobile_nav flex flex-col h-full justify-between">

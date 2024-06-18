@@ -12,8 +12,21 @@ import {Button} from "@/components/ui/button";
 import SettingsNav from "@/components/shared/SettingsNav";
 import DisplaySuppliers from "@/components/shared/DisplaySuppliers";
 import Pagination from "@/components/shared/Pagination";
+import { SearchParamsProps } from "@/types";
+import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
+import { getAllSuppliers } from "@/lib/actions/supplier.action";
 
-const Suppliers = async () => {
+const Suppliers = async ({searchParams}: SearchParamsProps) => {
+  
+  console.log("THIS IS SEARCH PARAMS",searchParams)
+
+  const result = await getAllSuppliers({
+    searchQuery: searchParams.q
+  })
+
+  console.log(result.suppliers)
+  
+  
     const {userId} = auth();
     if(!userId) redirect('/sign-in')
       const mongoUserData = await getUserById({userId})
@@ -34,7 +47,17 @@ const Suppliers = async () => {
         {/* LIST OF PRINTERS */}
         <div className="mt-8 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
           <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
-            
+
+            <div className="sticky mt-8 flow-root  rounded-lg">
+              <LocalSearchbar 
+                route="/settings/suppliers" 
+                iconPosition="left" 
+                imgSrc="/assets/icons/search.svg" 
+                placeholder="Search by supplier's name or PO number" 
+                otherClasses="mb-4 bg-dark-600"
+              /> 
+            </div>
+
 
             <div className="mt-8 flow-root rounded-lg">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -75,7 +98,9 @@ const Suppliers = async () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-transparent">
-                      <DisplaySuppliers />
+                      <DisplaySuppliers 
+                        suppliers={result.suppliers}
+                      />
                     </tbody>
                   </table>
                 </div>

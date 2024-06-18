@@ -8,6 +8,7 @@ import moment from 'moment-timezone';
 import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
+import { FilterQuery } from "mongoose";
 
 // Old version
 // export async function createPrinter(params: CreatePrinterParams) {
@@ -202,9 +203,23 @@ export async function getPrinters(params: GetPrintersParams){
     // Connect to the database
     await connectToDatabase();
 
-    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await Printer.find({}).sort({createdOn: -1})
+    const {searchQuery} = params;
 
+    const query: FilterQuery<typeof Printer> = {};
+
+    if(searchQuery){
+      query.$or = [
+        {productNumber: {$regex: new RegExp(searchQuery, "i")}},
+        {barcode: {$regex: new RegExp(searchQuery, "i")}},
+        {ponumber: {$regex: new RegExp(searchQuery, "i")}},
+        {sn: {$regex: new RegExp(searchQuery, "i")}},
+      ];
+    }
+
+    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    const printers = await Printer.find(query).sort({createdOn: -1}).lean()
+    // .populate({path: 'makes', model: Makes, select: 'productNumber'})
+    // .populate({path: "makes", model: Makes, select: "productNumber"})
     // .populate({path: "pallets", model: Pallet})
     // //.populate({path: 'author', model: User}) 
     return{printers}

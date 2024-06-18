@@ -1,26 +1,24 @@
 import React, { Key} from "react";
-import Link from "next/link";
-import {getPrinters} from "@/lib/actions/printer.action";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
-import { Badge } from "@/components/ui/badge";
 import Title from "@/components/shared/Title";
 import {auth} from "@clerk/nextjs"
-import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
 import DisplayPrinters from "@/components/shared/DisplayPrinters";
 import Pagination from "@/components/shared/Pagination";
+import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
+import { SearchParamsProps } from "@/types";
+import { getPrinters } from "@/lib/actions/printer.action";
 
-const Printers = async () => {
+const Printers = async ({searchParams}: SearchParamsProps) => {
+
+
+  const result = await getPrinters({
+    searchQuery: searchParams.q
+  })
+
+  console.log(result.printers)
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -31,6 +29,13 @@ const Printers = async () => {
     return(<VisitorNotification />)
   }
 
+  // const resultPrinters = await getPrinters({})
+  // const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
+
+  // console.log(printers)
+
+  
+
   return (
     <>
         <Title text="Printers page" />
@@ -39,7 +44,16 @@ const Printers = async () => {
         {/* LIST OF PRINTERS */}
         <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
           <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
-            
+
+            <div className="sticky mt-8 flow-root  rounded-lg">
+              <LocalSearchbar 
+                route="/printers" 
+                iconPosition="left" 
+                imgSrc="/assets/icons/search.svg" 
+                placeholder="Search by product number, serial number, PO number or barcode" 
+                otherClasses="mb-4 bg-dark-600"
+              /> 
+            </div>
 
             <div className="mt-8 flow-root  rounded-lg">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -86,7 +100,10 @@ const Printers = async () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-transparent">
-                      <DisplayPrinters />
+                      <DisplayPrinters 
+                        // printers={valuesArray[0]} 
+                        printers={result.printers} 
+                      />
                     </tbody>
                   </table>
                 </div>

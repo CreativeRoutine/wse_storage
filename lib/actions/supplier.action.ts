@@ -5,11 +5,24 @@ import { connectToDatabase } from "../mongoose";
 import { GetSuppliersParams, UpdateSuppliersName, DeleteSupplierParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Pallet from "@/database/pallet.model";
+import { FilterQuery } from "mongoose";
 
 export async function getAllSuppliers(params: GetSuppliersParams){
   try {
     await connectToDatabase();
-    const suppliers = await Supplier.find({}).sort({ field: -1 });
+
+    const {searchQuery} = params;
+
+    const query: FilterQuery<typeof Supplier> = {};
+
+    if(searchQuery){
+      query.$or = [
+        {ponumber: {$regex: new RegExp(searchQuery, "i")}},
+        {name: {$regex: new RegExp(searchQuery, "i")}},
+      ];
+    }
+
+    const suppliers = await Supplier.find(query).sort({ field: -1 });
     return { suppliers };
   } catch (error) {
     throw error;

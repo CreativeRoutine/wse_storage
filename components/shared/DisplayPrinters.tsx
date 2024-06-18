@@ -5,11 +5,17 @@ import {formatTime} from "@/lib/utils";
 // import Link from "next/link";
 import { getPrinters } from "@/lib/actions/printer.action";
 
-const DisplayPrinters = async () => {
+interface Props {
+  printers: any;
+}
 
-    const resultPrinters = await getPrinters({})
-    const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
-    // console.log(printers)
+const DisplayPrinters = async ({printers}:Props) => {
+
+  // console.log(typeof JSON.parse(JSON.stringify(printers[0])))
+
+    // const resultPrinters = await getPrinters({})
+    // const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
+    // console.log("===================== ",typeof printers)
     
     if(printers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any printers yet!"</div>)

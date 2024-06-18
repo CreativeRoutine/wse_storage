@@ -61,3 +61,7 @@ export interface Parts {
   rolls: number;
   rollsMax: number;
 }
+
+export interface SearchParamsProps {
+  searchParams: { [key: string]: string | undefined };
+}
