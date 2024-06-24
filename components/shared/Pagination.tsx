@@ -10,10 +10,10 @@ interface Props {
 }
 
 const Pagination = ({pageNumber, isNext}:Props) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleNavigation = (direction:string) => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
 
     const nextPageNumber = direction === 'prev' ? pageNumber - 1 : pageNumber + 1;
 
@@ -29,18 +29,21 @@ const Pagination = ({pageNumber, isNext}:Props) => {
   }
 
   return (
-    <div className="mt-8 py-8 px-8 mb-8 bg-dark-600 text-white rounded-xl flex items-center justify-between border border-dark-350 shadow-lg">
+    <div className="mt-8 py-8 px-8 mb-8 bg-dark-600 text-white rounded-xl flex items-center justify-center border border-dark-350 shadow-lg gap-3">
       <Button 
-        disabled={pageNumber === 1}
+        disabled={pageNumber === 1 }
         onClick={() => handleNavigation('prev')}
         className='border border-dark-350 bg-dark-600 text-white hover:bg-white hover:text-dark-500'
-        >Prev
+        >
+          <p className='font-bold'>
+            Prev
+          </p>
       </Button>
 
-      <p className='text-white'>{pageNumber}</p>
+      <p className='text-white bg-primary-500 py-2 px-3 rounded'>{pageNumber}</p>
 
       <Button 
-        disabled={isNext}
+        disabled={!isNext}
         onClick={() => handleNavigation('next')}
         className='border border-dark-350 bg-dark-600 text-white hover:bg-white hover:text-dark-500'
         >Next

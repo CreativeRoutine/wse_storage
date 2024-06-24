@@ -22,8 +22,8 @@ export const ChangeUserSupervisorSchema = z.object({
 // ===================  Pallet  ===================
 
 export const addPalletSchema = z.object({
-  ponumber: z.string().min(3).max(24),
-  barcode: z.string().min(5).max(12),
+  ponumber: z.string().min(3).max(30),
+  barcode: z.string().min(5).max(30),
   // user: z.string().min(3).max(24),
   // printers: z.array(z.string().min(1).max(15)).min(1).max(99),  
 })
@@ -45,31 +45,31 @@ export const deletePalletSchema = z.object({
 // ===================  Printer  ===================
 
 export const addPrinterSchema = z.object({
-  ponumber: z.string().min(0).max(12),
-  sn: z.string().min(5).max(20), 
-  productNumber: z.string().min(3).max(12),
-  barcode: z.string().min(3).max(12),
+  ponumber: z.string().min(0).max(30),
+  sn: z.string().min(5).max(30), 
+  productNumber: z.string().min(3).max(30),
+  barcode: z.string().min(3).max(30),
   // paletSn: z.string().min(3).max(12),
 })
 
 export const addPrinterToPalletSchema = z.object({
-  sn: z.string().min(5).max(20), 
-  productNumber: z.string().min(3).max(12),
-  barcode: z.string().min(3).max(12),
+  sn: z.string().min(5).max(30), 
+  productNumber: z.string().min(3).max(30),
+  barcode: z.string().min(3).max(30),
 })
 
 export const deletePrinterSchema = z.object({
-  id: z.string().min(5).max(20),
+  id: z.string().min(5).max(30),
 })
 
 export const unPinPrinterSchema = z.object({
-  id: z.string().min(5).max(20),
-  printerId: z.string().min(5).max(20),
+  id: z.string().min(5).max(30),
+  printerId: z.string().min(5).max(30),
 })
 
 export const pinToPalletSchema = z.object({
   id: z.string().min(5).max(20),
-  palletBarcode: z.string().min(5).max(12),
+  palletBarcode: z.string().min(5).max(30),
 })
 
 export const updatePaletCostSchema = z.object({
@@ -78,36 +78,36 @@ export const updatePaletCostSchema = z.object({
 })
 
 export const updatePrinterPONSchema = z.object({
-  ponumber: z.string().min(0).max(20),
+  ponumber: z.string().min(0).max(30),
 })
 
 export const addPartSchema = z.object({
-  name: z.string().min(2).max(12), 
-  pn: z.string().min(1).max(12),
+  name: z.string().min(2).max(30), 
+  pn: z.string().min(1).max(30),
 })
 
 export const addWorkSchema = z.object({
-  name: z.string().min(2).max(24), 
+  name: z.string().min(2).max(30), 
   // user: z.string().min(3).max(12),
   // printers: z.array(z.string().min(1).max(15)).min(1).max(20),
 })
 
 export const findPrinterBySnSchema = z.object({
-  sn: z.string().min(2).max(12),
+  sn: z.string().min(2).max(30),
 })
 
 // ===================  Supplier  ===================
 export const updateSuppliersName = z.object({
-  name: z.string().min(0).max(20),
+  name: z.string().min(0).max(30),
 })
 export const deleteSupplierSchema = z.object({
-  _id: z.string().min(2).max(20),
+  _id: z.string().min(2).max(30),
 })
 
 // ===================  Make  ===================
 export const updateMakeName = z.object({
-  name: z.string().min(0).max(20),
+  name: z.string().min(0).max(30),
 })
 export const deleteMakeSchema = z.object({
-  _id: z.string().min(2).max(20),
+  _id: z.string().min(2).max(30),
 })

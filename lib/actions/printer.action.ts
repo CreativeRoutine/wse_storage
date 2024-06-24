@@ -203,7 +203,9 @@ export async function getPrinters(params: GetPrintersParams){
     // Connect to the database
     await connectToDatabase();
 
-    const {searchQuery} = params;
+    const {searchQuery, filter, page = 1, pageSize = 20} = params;
+
+    const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Printer> = {};
 
@@ -216,13 +218,37 @@ export async function getPrinters(params: GetPrintersParams){
       ];
     }
 
+    let sortOptions = {};
+
+    switch (filter) {
+      case "newest":
+        sortOptions = {createdOn: -1};
+        break;
+      case "oldest":
+        sortOptions = {createdOn: 1};
+        break;
+      
+      default:
+        sortOptions = {createdOn: -1};
+        break
+
+    }
+
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printers = await Printer.find(query).sort({createdOn: -1}).lean()
+    const printers = await Printer.find(query)
+    .skip(skipAmount)
+    .limit(pageSize)
+    .sort(sortOptions)
+    .lean()
     // .populate({path: 'makes', model: Makes, select: 'productNumber'})
     // .populate({path: "makes", model: Makes, select: "productNumber"})
     // .populate({path: "pallets", model: Pallet})
     // //.populate({path: 'author', model: User}) 
-    return{printers}
+
+    const totalPrinters = await Printer.countDocuments(query);
+    const isNext = totalPrinters > skipAmount + printers.length
+
+    return{printers, isNext}
 
   } catch (error) {
     

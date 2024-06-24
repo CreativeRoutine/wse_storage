@@ -10,15 +10,16 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { SearchParamsProps } from "@/types";
 import { getPrinters } from "@/lib/actions/printer.action";
+import {PrintersFilters} from "@/components/printers/PrintersFilters";
 
 const Printers = async ({searchParams}: SearchParamsProps) => {
 
 
   const result = await getPrinters({
-    searchQuery: searchParams.q
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   })
-
-  console.log(result.printers)
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -29,16 +30,11 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     return(<VisitorNotification />)
   }
 
-  // const resultPrinters = await getPrinters({})
-  // const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
-
-  // console.log(printers)
-
-  
-
   return (
     <>
         <Title text="Printers page" />
+
+
 
   
         {/* LIST OF PRINTERS */}
@@ -54,6 +50,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
                 otherClasses="mb-4 bg-dark-600"
               /> 
             </div>
+            <PrintersFilters />
 
             <div className="mt-8 flow-root  rounded-lg">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -103,7 +100,9 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
                       <DisplayPrinters 
                         // printers={valuesArray[0]} 
                         printers={result.printers} 
+                        printersCount={searchParams?.page ? +searchParams.page : 1}
                       />
+                      
                     </tbody>
                   </table>
                 </div>
@@ -112,7 +111,12 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
           </div>
         </div>  
 
-        {/* <Pagination /> */}
+        <Pagination 
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
+
+        
       </>
   )
 

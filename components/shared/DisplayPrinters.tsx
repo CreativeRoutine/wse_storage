@@ -7,15 +7,11 @@ import { getPrinters } from "@/lib/actions/printer.action";
 
 interface Props {
   printers: any;
+  printersCount: number;
 }
 
-const DisplayPrinters = async ({printers}:Props) => {
+const DisplayPrinters = async ({printers, printersCount}:Props) => {
 
-  // console.log(typeof JSON.parse(JSON.stringify(printers[0])))
-
-    // const resultPrinters = await getPrinters({})
-    // const printers = JSON.parse(JSON.stringify(resultPrinters.printers))
-    // console.log("===================== ",typeof printers)
     
     if(printers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any printers yet!"</div>)
@@ -27,7 +23,7 @@ const DisplayPrinters = async ({printers}:Props) => {
         <tr key={printer._id}>
           <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
             <div className="flex items-center">
-              <div>{i+1}</div>
+              {/* <div>{i+ 1 }</div> */}
               <div className="h-11 w-11 flex-shrink-0">
                 <img className="h-11 w-11 rounded-full" src="/assets/printers_preview/281.png" alt="" />
               </div>

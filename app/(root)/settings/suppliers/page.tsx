@@ -24,7 +24,7 @@ const Suppliers = async ({searchParams}: SearchParamsProps) => {
     searchQuery: searchParams.q
   })
 
-  console.log(result.suppliers)
+  // console.log(result.suppliers)
   
   
     const {userId} = auth();
