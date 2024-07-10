@@ -15,6 +15,7 @@ export async function createPalet(params: CreatePalet) {
     const { ponumber, barcode, user, path, createdOn } = params;
 
     const existingPallet = await Pallet.findOne({ barcode: barcode });
+
     if (!existingPallet) {
       // Создание нового палета
       const newPalet = await Pallet.create({
@@ -30,14 +31,18 @@ export async function createPalet(params: CreatePalet) {
         { $push: { pallets: newPalet._id } }, // Добавляем _id палета
         { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
       );
+
+      // how to return a message to the user if existingPallet is true?
+      revalidatePath(path);
+      return true;
+
     } else {
-      return "This pallet already exists in the database";
+      return false;
     }
 
-    revalidatePath(path);
   } catch (error) {
-    console.log("Error:", error);
     return "An error occurred while creating the pallet";
+    console.log("Error:", error);
   }
 }
 
@@ -108,8 +113,11 @@ export async function updatePaletPlace(params:UpdatePaletLocation){
     await Pallet.findOneAndUpdate(pallet._id, { $set: { location: location } });
 
     revalidatePath(path);
+    return true;
+
   } catch (error) {
-      console.log("Error:", error);
+    console.log("Error:", error);
+    return false;
   }
 
 }
@@ -126,8 +134,10 @@ export async function updatePaletCost(params:UpdatePaletCost){
 
     await Pallet.findOneAndUpdate(pallet._id, { $set: { price: price } });
     revalidatePath(path);
+    return true
   } catch (error) {
       console.log("Error:", error);
+      return false;
   }
 }
 
@@ -141,6 +151,8 @@ export async function deletePallet(params:DeletePalletParams) {
     const pallet = await Pallet.findOne({ _id: id });
     if(pallet){
 
+      await Pallet.findOneAndUpdate(pallet._id, { $set: { location: "" } });
+
       // Find Supplier by printer id
       await Supplier.findOneAndUpdate({ponumber: pallet.ponumber}, { $pull: { pallets: pallet._id } })
       
@@ -152,13 +164,14 @@ export async function deletePallet(params:DeletePalletParams) {
 
     // Revalidate the path
     revalidatePath(path);
+    return true
 
 
   } catch (error) {
     // Log any errors
     console.log("Error:", error);
     // Return an error message
-    return "An error occurred while deleting the printer";
+    return false;
   }
 }
 

@@ -21,6 +21,7 @@ import { addCostToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { updatePaletCost } from '@/lib/actions/pallet.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default  function AddCostToPallet ({id}:Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -52,7 +54,7 @@ export default  function AddCostToPallet ({id}:Props){
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await updatePaletCost({
+      const response: any = await updatePaletCost({
         price: values.price, 
         id: id,
         path: usepathname,
@@ -62,6 +64,11 @@ export default  function AddCostToPallet ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${id}`)
+
+      return toast({
+        title: response ? "Pallet cost changed successfully!" : "Pallet cost can't be changed!",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 

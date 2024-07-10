@@ -21,6 +21,7 @@ import { deletePalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { deletePallet } from '@/lib/actions/pallet.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -30,12 +31,11 @@ interface Props {
 }
 
 export default  function DeletePallet ({id}:Props){
+  const { toast } = useToast()
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
-
-  // console.log(barcode)
 
   // 1. Define your form.
   // deletePalletSchema took from lib/validations.ts to validate the form
@@ -53,7 +53,7 @@ export default  function DeletePallet ({id}:Props){
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await deletePallet({
+      const response = await deletePallet({
         id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       })
@@ -62,6 +62,11 @@ export default  function DeletePallet ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage`)
+
+      return toast({
+        title: response ? "Pallet deleted successfully!" : "An error occurred while deleting the printer",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 

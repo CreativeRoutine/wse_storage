@@ -110,16 +110,27 @@ export async function getAllMakes(params: GetAllMakesParams) {
     try {
       await connectToDatabase();
       const { _id, name, path } = params;
+
       const make = await Makes.findOne({ _id });
       if (!make) {
-        return "This make does not exist in the database";
+        return false;
       }
-      await Makes.findOneAndUpdate(make._id, { $set: { name: name } });
+
+      await Makes.findOneAndUpdate({ _id: make._id }, { $set: { name: name } });
+
+      // const printers = await Printer.find({productNumber: make.productNumber});
+      
+      const printersNames = await Printer.updateMany(
+        { productNumber: make.productNumber }, 
+        { $set: { name: name } }
+      );
+
       revalidatePath(path);
-      return { message: 'Make updated successfully' };
+      return  true ;
+      
     } catch (error) {
       console.error("Error updating Make:", error);
-      throw new Error("Error updating Make");
+      return false
     }
   }
 

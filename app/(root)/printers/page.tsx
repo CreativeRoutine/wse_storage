@@ -20,7 +20,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
   })
-
+  
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})
@@ -63,6 +63,12 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
                           className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                         >
                           Printer
+                        </th>
+                        <th 
+                          scope="col" 
+                          className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                        >
+                          Make
                         </th>
                         <th 
                           scope="col" 
@@ -114,6 +120,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
         <Pagination 
           pageNumber={searchParams?.page ? +searchParams.page : 1}
           isNext={result.isNext}
+          total={result.total}
         />
 
         

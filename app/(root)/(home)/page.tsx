@@ -36,6 +36,7 @@ import { getUserById } from "@/lib/actions/user.action";
 import VisitorNotification from "@/components/shared/VisitorNotification";
 
 import DisplayPrinters from "@/components/shared/DisplayPrinters";
+import Loading from "./loading";
 
 export default async function  Home () {
 
@@ -52,6 +53,9 @@ export default async function  Home () {
       </>
     )
   }
+
+  // const isLoading = true;
+  // if(isLoading) return <Loading />
     return (
       <>
         {/* STATISTIC TODAY */}

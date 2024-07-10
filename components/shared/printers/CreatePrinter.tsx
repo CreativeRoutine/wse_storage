@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import moment from 'moment-timezone';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export default function CreatePrinter ({ mongoUserId }: Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -54,7 +56,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
-      await createPrinter({
+      const response = await createPrinter({
         ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         sn: JSON.parse(JSON.stringify(values.sn)),
         productNumber: JSON.parse(JSON.stringify(values.productNumber)),
@@ -68,6 +70,17 @@ export default function CreatePrinter ({ mongoUserId }: Props){
         // defined as a hook
         form.reset({}); // Reset form fields
         router.push("/printers")
+
+        response ? ( toast({
+          title: "Printer created successfully!",
+          variant: 'default',
+        })) :(
+          toast({
+            title: "Printer with such Barcode already in DataBase!",
+            description: "Check the serial number, product number or barcode.",
+            variant: 'custom',
+          })
+        )
       
       
     } catch (error) {

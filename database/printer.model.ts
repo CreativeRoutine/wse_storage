@@ -19,6 +19,7 @@ export interface IPrinter extends Document {
     changedParts: string[];
     tasksPerformed: string[];
     price: number;
+    name: string;
 }
 
 const PrinterSchema = new Schema({
@@ -39,7 +40,8 @@ const PrinterSchema = new Schema({
     repariable: { type: Boolean, required: false },
     changedParts: [{ type: String, required: false }],
     tasksPerformed: [{ type: String, required: false }],
-    price: { type: Number, required: false }
+    price: { type: Number, required: false },
+    name: { type: String, required: true },
 });
 
 const Printer = models.Printer || model('Printer', PrinterSchema);

@@ -34,13 +34,13 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const makeData = await getMakeById({_id})
   const make = JSON.parse(JSON.stringify(makeData))
-  console.log(make)
+  // console.log(make)
 
   return (
 
     <>
       {
-        make.name ? ( <Title text={`Supplier - ${make.name}`} /> ) :
+        make.name ? ( <Title text={`Make - ${make.name}`} /> ) :
         (<Title text={`Make - ${_id}`} />)
       }
       

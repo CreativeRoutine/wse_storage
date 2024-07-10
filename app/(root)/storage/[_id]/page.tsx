@@ -28,11 +28,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
   }
   
   const { _id } = params
-  // console.log("=======---=========ID palleta",_id)
 
   const getPaletData = await getPalet({ _id});
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  // console.log("=======---=========",getPaletDataPlain)
   
 
   

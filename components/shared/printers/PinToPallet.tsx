@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { pinToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { PinPrinterToPallet } from '@/lib/actions/printer.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export default  function PinToPalletSchema ({id}:Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -52,7 +54,7 @@ export default  function PinToPalletSchema ({id}:Props){
       // console.log( form.getValues('palletBarcode'))
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await PinPrinterToPallet({
+      const response = await PinPrinterToPallet({
         id,
         palletBarcode: form.getValues('palletBarcode'),
         path: usepathname,
@@ -62,6 +64,11 @@ export default  function PinToPalletSchema ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/printers/${id}`)
+
+      return toast({
+        title: response ? "Printer addet to pallet successfully!" : "Pallet not exist!",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 

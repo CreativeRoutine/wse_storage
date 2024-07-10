@@ -12,6 +12,7 @@ import {
 } from "@clerk/nextjs";
 
 import MobileNav from "./MobileNav";
+import GlobalSearch from "../search/GlobalSearch";
 // import NavbarDark from "@/components/dark_with_search";
 
 const Navbar = () => {
@@ -21,15 +22,7 @@ const Navbar = () => {
     <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500 bg-dark-100">
 
 
-      {/* <GlobalSearch /> */}
-      <div className="flex flex-row h-12 w-[268px] relative">
-        <Image className="absolute left-5 top-3.5 stroke-3" width={18} height={18} src="/assets/icons/search.svg" alt="search"/>
-        <Input 
-        className="px-4 pl-12 h-12 text-base bg-dark-600 border-none shadow-md rounded-3xl focus:outline-none" 
-        placeholder="Search ..."
-        />
-        
-      </div>
+      <GlobalSearch />
 
       <div className=" text-white flex gap-3 justify-center items-center">
           <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Pallet</Link>

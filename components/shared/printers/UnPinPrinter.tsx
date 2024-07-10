@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { unPinPrinterSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { unPinPrinter } from '@/lib/actions/printer.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export default  function UnPinPrinter ({id, printerId}:Props){
+  const { toast } = useToast()
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -50,7 +52,7 @@ export default  function UnPinPrinter ({id, printerId}:Props){
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await unPinPrinter({
+      const response: any = await unPinPrinter({
         id: JSON.parse(JSON.stringify(id)),
         printerId: JSON.parse(JSON.stringify(printerId)),
         path: usepathname,
@@ -60,6 +62,11 @@ export default  function UnPinPrinter ({id, printerId}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${id}`)
+
+      return toast({
+        title: response ? "Printer unpinned successfully!" : "Printer already deleted!",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 
@@ -92,6 +99,5 @@ export default  function UnPinPrinter ({id, printerId}:Props){
           }
 
     </>
-
   )
 }

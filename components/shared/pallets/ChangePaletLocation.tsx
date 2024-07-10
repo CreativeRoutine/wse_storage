@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { updatePaletPlace } from '@/lib/actions/pallet.action';
 import { addLocationToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default  function AddLocationToPallet ({id}:Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -51,7 +53,7 @@ export default  function AddLocationToPallet ({id}:Props){
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await updatePaletPlace({
+      const response: any = await updatePaletPlace({
         location: values.location, 
         id: id,
         path: usepathname,
@@ -62,6 +64,11 @@ export default  function AddLocationToPallet ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${id}`)
+
+      return toast({
+        title: response ? "Pallet location changed successfully!" : "Pallet location can't be changed!",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 

@@ -28,10 +28,13 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
                 <img className="h-11 w-11 rounded-full" src="/assets/printers_preview/281.png" alt="" />
               </div>
               <div className="ml-4">
-                <div className="font-medium text-white">{printer.productNumber}</div>
-                <div className="mt-1 text-gray-500">{printer.sn}</div>
+                <div className="font-medium text-white">P/N: {printer.productNumber}</div>
+                <div className="mt-1 text-gray-500">S/N:{printer.sn}</div>
               </div>
             </div>
+          </td>
+          <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+            <div className="text-white">{printer.name ? printer.name : <span className="text-red-500">Not set</span> }</div>
           </td>
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             <div className="text-white">{printer.ponumber ? printer.ponumber : <span className="text-red-500">Not set</span> }</div>

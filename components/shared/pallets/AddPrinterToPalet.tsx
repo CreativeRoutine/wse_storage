@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { addPrinterToPallet } from '@/lib/actions/printer.action';
 import { addPrinterToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default  function AddPrinterToPalet ({id}:Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -49,13 +51,11 @@ export default  function AddPrinterToPalet ({id}:Props){
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof addPrinterToPalletSchema>,) {
     setIsSubmitting(true);
-
-    console.log("onSubmit sarted")
     
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await addPrinterToPallet({
+      const response: any = await addPrinterToPallet({
         sn: values.sn, 
         productNumber: values.productNumber,
         barcode: values.barcode,
@@ -68,6 +68,17 @@ export default  function AddPrinterToPalet ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${id}`)
+
+      response ? ( toast({
+        title: "Printer added to pallet successfully!",
+        variant: 'default',
+      })) :(
+        toast({
+          title: "Printer can't be added!",
+          description: "Check the serial number, product number or barcode.",
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { deleteSupplierSchema } from '@/lib/validations';
 import { useRouter, usePathname } from 'next/navigation';
 import { deleteSupplier } from '@/lib/actions/supplier.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -25,6 +26,8 @@ interface Props {
 }
 
 export default function DeleteSupplier({ id }: Props) {
+  const { toast } = useToast();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
@@ -40,14 +43,28 @@ export default function DeleteSupplier({ id }: Props) {
     setIsSubmitting(true);
   
     try {
-      await deleteSupplier({
+      const response = await deleteSupplier({
         _id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       });
       
       form.reset();
       setIsSubmitting(false);
-      router.push(`/settings/suppliers`);
+      
+      response ? (
+        toast({ title: "Supplier deleted successfully!", variant: 'default'})
+      ):(
+        toast({
+          title: "Supplier can't be deleted!",
+          description: "Check if the supplier is not linked to any printer or pallet",
+          variant: 'custom',
+        })
+      )
+      
+      response ? ( router.push(`/settings/suppliers`) ) : (null);
+
+
+
     } catch (error) {
       console.error(error);
     }

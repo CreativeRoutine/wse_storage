@@ -26,14 +26,16 @@ const page = async ({ params }: { params: { _id: string } }) => {
   }
 
   const { _id } = params
-  console.log(_id)
+
 
   const printer = await getPrinterPopulated({
     _id,
     path: ''
   })
   const printers = JSON.parse(JSON.stringify(printer))
-  console.log(printers)
+  
+
+  if (printers) {
   return (
     <>
       <Title text={`Printer - ${_id}`} />
@@ -98,7 +100,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                   <div className="flex justify-between w-full text-white mb-3">
                     <div className="font-base">Pallet:</div>
                     <div className="font-bold text-sky-400">
-                      <Link href={`/storage/${JSON.parse(JSON.stringify(printer.pallet._id))}`}>{JSON.stringify(printer.pallet.barcode)}</Link>
+                      <Link href={`/storage/${JSON.parse(JSON.stringify(printer.pallet._id))}`}>{JSON.stringify(printer.pallet._id)}</Link>
                       </div>
                   </div> : null
                 }
@@ -113,6 +115,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
       </div>
     </>
   )
+  }
 }
 
 export default page

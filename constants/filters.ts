@@ -34,8 +34,8 @@ export const AnswerFilters = [
   ];
   
   export const GlobalSearchFilters = [
-    { name: "Question", value: "question" },
-    { name: "Answer", value: "answer" },
+    { name: "Printer", value: "printer" },
+    { name: "Supplier", value: "supplier" },
+    { name: "Pallet", value: "pallet" },
     { name: "User", value: "user" },
-    { name: "Tag", value: "tag" },
   ];

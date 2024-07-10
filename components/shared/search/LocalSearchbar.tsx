@@ -28,7 +28,8 @@ const LocalSearchbar = ({
 
   const query = searchParams.get('q');
 
-  console.log(query)
+  // console.log(query, pathname, route)
+
 
   const [search, setSearch] = useState(query || '');
 
@@ -43,7 +44,7 @@ const LocalSearchbar = ({
 
         router.push(newUrl, { scroll: false });
       } else {
-        console.log(route, pathname)
+
         if(pathname === route) {
           const newUrl = removeKeysFromQuery({
             params: searchParams.toString(),
@@ -57,7 +58,7 @@ const LocalSearchbar = ({
     }, 300);
     
     return () => clearTimeout(delayDebounceFn)
-  }, [search, route, pathname, router, searchParams, query])
+  }, [search, pathname, router, searchParams, query])
 
   return (
     <div className={`bg-dark-500 flex min-h-[56px] grow items-center gap-4 px-4 ${otherClasses} border rounded-xl`}>

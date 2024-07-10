@@ -59,11 +59,11 @@ export async function updateSupplier(params: UpdateSuppliersName) {
     const { _id, name, path } = params;
     const supplier = await Supplier.findOne({ _id });
     if (!supplier) {
-      return "This supplier does not exist in the database";
+      return false;
     }
     await Supplier.findOneAndUpdate(supplier._id, { $set: { name: name } });
     revalidatePath(path);
-    return { message: 'Supplier updated successfully' };
+    return true;
   } catch (error) {
     console.error("Error updating supplier:", error);
     throw new Error("Error updating supplier");
@@ -78,14 +78,15 @@ export async function deleteSupplier(params: DeleteSupplierParams) {
 
 
     if (!supplier) {
-      return  "This supplier does not exist in the database" ;
+      return  false ;
     }
-    if (supplier.pallets.length > 0 && supplier.printers.length > 0) {
-      return  "This supplier has pallets or printers. Please delete them first" ;
+    if (supplier.pallets.length > 0 || supplier.printers.length > 0) {
+      return  false ;
     }
     await Supplier.deleteOne({ _id: supplier._id });
 
     revalidatePath(path);
+    return true
     // return { success: "Supplier deleted successfully" };
   } catch (error) {
     console.error("Error deleting supplier:", error);

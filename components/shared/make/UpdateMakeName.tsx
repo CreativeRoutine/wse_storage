@@ -22,6 +22,7 @@ import { updateMakeName } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { updateMake } from '@/lib/actions/makes.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
 
@@ -30,6 +31,7 @@ interface Props {
 }
 
 export default function UpdateMakeName ({id}:Props){
+  const { toast } = useToast()
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -52,7 +54,7 @@ export default function UpdateMakeName ({id}:Props){
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await updateMake({
+      const response:any = await updateMake({
         _id: id,
         name: values.name, 
         path: usepathname,
@@ -62,6 +64,11 @@ export default function UpdateMakeName ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/make/${id}`)
+
+      return toast({
+        title: response ? "Make's name updated successfully!" : "Make's name can't be updated!",
+        variant: response ? 'default' : 'custom',
+      })
 
     } catch (error) {
       console.error(error); 

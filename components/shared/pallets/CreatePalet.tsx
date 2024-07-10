@@ -17,14 +17,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast"
+
 
 const type:any = 'create';
-
 interface Props {
   mongoUserId: string;
 }
 
 export default function CreatePalet ({ mongoUserId }: Props){
+
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -49,18 +52,33 @@ export default function CreatePalet ({ mongoUserId }: Props){
 
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
-      await createPalet({
+      // await createPalet({
+      //   ponumber: JSON.parse(JSON.stringify(values.ponumber)),
+      //   barcode: JSON.parse(JSON.stringify(values.barcode)),
+      //   user: JSON.parse(JSON.stringify(mongoUserId)),
+      //   path: usepathname,
+      //   createdOn: createdOn
+      // })
+
+      //This is the function that will be called when the form is submitted.
+      // it changed to return a response from the createPalet function and then display a toast message
+      const response:any = await createPalet({
         ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
         user: JSON.parse(JSON.stringify(mongoUserId)),
         path: usepathname,
         createdOn: createdOn
-      })
+      });
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       form.reset({}); // Reset form fields
       router.push("/storage")
+      
+      return toast({
+        title: response ? "Pallet created successfully!" : "Pallet already exists!",
+        variant: response ? 'default' : 'custom',
+      })
     } catch (error) {
       console.error(error); 
     }

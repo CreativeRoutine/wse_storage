@@ -19,15 +19,16 @@ import { Button } from "@/components/ui/button";
 import { deletePrinterSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { deletePrinter } from '@/lib/actions/printer.action';
+import { useToast } from "@/components/ui/use-toast"
 
 const type:any = 'create';
-
 interface Props {
   id: string;
   mongoUserId: string;
 }
 
 export default  function DeletePrinter ({id}:Props){
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -49,7 +50,7 @@ export default  function DeletePrinter ({id}:Props){
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      await deletePrinter({
+      const response = await deletePrinter({
         id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       })
@@ -58,6 +59,17 @@ export default  function DeletePrinter ({id}:Props){
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/printers`)
+
+      response ? ( toast({
+        title: "Printer deleted successfully!",
+        variant: 'default',
+      })) :(
+        toast({
+          title: "Printer can't be deleted!",
+          description: "Try update page or contact with support.",
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 

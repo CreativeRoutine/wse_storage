@@ -9,7 +9,6 @@ const DisplayPallets = async () => {
 
   const resultPallets = await getPallets({})
   const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
-  console.log(pallets)
   return (
     <>
       <div className="py-4 px-8 mb-2 mt-6 bg-dark-600 text-white rounded-xl flex-col items-center justify-between border border-dark-350 shadow-lg">
