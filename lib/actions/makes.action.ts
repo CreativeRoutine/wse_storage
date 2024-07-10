@@ -68,7 +68,7 @@ export async function getAllMakes(params: GetAllMakesParams) {
   
       // Searching if printer exists
       const makes = await Makes.find({_id: _id})
-      .populate({path: 'printers', model: Printer, select: '_id sn barcode createdOn'}).lean()
+      .populate({path: 'printers', model: Printer, select: '_id sn barcode createdOn name'}).lean()
   
       if (!makes) {
         // console.log("This printer already exists in the database");

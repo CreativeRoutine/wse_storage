@@ -102,6 +102,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
                               <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-light-800 sm:pl-3">
                                 #
                               </th>
+                              <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-light-800 sm:pl-3">
+                                Name
+                              </th>
                               <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-light-800">
                                 Barcode:
                               </th>
@@ -122,9 +125,10 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                 (item:any, i:number) => (
                                   <>
                                     <tr key={item._id} className="even:bg-secondary-100 rounded-lg even:rounded-xl">
-                                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-dark-400 sm:pl-3">
+                                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-400 sm:pl-3">
                                         {i+1}
                                       </td>
+                                      <td className="whitespace-nowrap px-3 py-4 text-sm text-light-400">{item.name}</td>
                                       <td className="whitespace-nowrap px-3 py-4 text-sm text-light-400">{item.barcode}</td>
                                       <td className="whitespace-nowrap px-3 py-4 text-sm text-light-400">{formatTime( item.createdOn, "date")}</td>
                                       <td className="whitespace-nowrap px-3 py-4 text-sm text-light-400">{item.sn}</td>

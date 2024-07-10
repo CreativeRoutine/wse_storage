@@ -10,68 +10,6 @@ import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
 import { FilterQuery } from "mongoose";
 
-// Old version
-// export async function createPrinter(params: CreatePrinterParams) {
-//   try {
-//     connectToDatabase();
-
-//     const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
-
-//     // Searching if printer exists
-//     const existingPrinter = await Printer.findOne({ barcode: barcode });
-//     if (existingPrinter) {
-//       // console.log("This printer already exists in the database");
-//       return "This printer already exists in the database";
-//     }
-
-//     // Создание нового принтера с _id паллета
-//     const newPrinter = await Printer.create({
-//       ponumber,
-//       sn, 
-//       productNumber, 
-//       barcode,
-//       createdOn
-//     });
-
-//     const existingSupplier = await Supplier.findOne({ponumber: ponumber});
-
-//     if (existingSupplier){
-//       console.log("THIS IS SUPPLIER ",existingSupplier)
-//       const supplier = await Supplier.create({ponumber: ponumber, pallets:[], printers:[], name:""})
-//     } else {
-//       console.log("THIS IS SUPPLIER NOT FOUND")
-//       // Используем _id нового палета для добавления в массив pallets поставщика
-//       const supplier = await Supplier.findOneAndUpdate(
-//         { ponumber:  ponumber},
-//         { $set: { ponumber: ponumber }, $push: { printers: newPrinter._id } } , // Добавляем _id палета
-//         { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-//       );
-//     }
-
-    
-
-//     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
-//     const makes = await Makes.findOneAndUpdate(
-//       { productNumber: productNumber },
-//       { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
-//       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-//     );
-
-
-//     revalidatePath(path);
-
-//     // Преобразование нового принтера в простой JavaScript объект
-//     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
-//     return newPrinterPlain;
-
-//   } catch (error) {
-//     // Return an error message
-//     console.error("An error occurred while creating the printer:", error);
-//     return "An error occurred while creating the printer";
-//   }
-// }
-
 // New version
 export async function createPrinter(params: CreatePrinterParams) {
   try {
@@ -166,7 +104,8 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
       barcode,
       pallet: pallet._id, // Используем _id найденного паллета
       createdOn,
-      ponumber: pallet.ponumber
+      ponumber: pallet.ponumber,
+      name: ""
     });
 
     // Afer creating a new printer, we add it to the pallet

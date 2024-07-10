@@ -41,7 +41,7 @@ const PrinterSchema = new Schema({
     changedParts: [{ type: String, required: false }],
     tasksPerformed: [{ type: String, required: false }],
     price: { type: Number, required: false },
-    name: { type: String, required: true },
+    name: { type: String, required: false },
 });
 
 const Printer = models.Printer || model('Printer', PrinterSchema);
