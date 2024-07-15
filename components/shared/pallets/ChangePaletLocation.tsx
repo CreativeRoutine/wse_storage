@@ -65,10 +65,16 @@ export default  function AddLocationToPallet ({id}:Props){
       // defined as a hook
       router.push(`/storage/${id}`)
 
-      return toast({
-        title: response ? "Pallet location changed successfully!" : "Pallet location can't be changed!",
-        variant: response ? 'default' : 'custom',
-      })
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 
@@ -116,7 +122,7 @@ export default  function AddLocationToPallet ({id}:Props){
                         </>
                       ) : (
                         <>
-                        {'Add location'}
+                        {'Add location / Unpin'}
                         </>
                       )}
                     </Button>

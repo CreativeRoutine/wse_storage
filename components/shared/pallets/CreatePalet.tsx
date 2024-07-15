@@ -75,10 +75,18 @@ export default function CreatePalet ({ mongoUserId }: Props){
       form.reset({}); // Reset form fields
       router.push("/storage")
       
-      return toast({
-        title: response ? "Pallet created successfully!" : "Pallet already exists!",
-        variant: response ? 'default' : 'custom',
-      })
+
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
+
     } catch (error) {
       console.error(error); 
     }

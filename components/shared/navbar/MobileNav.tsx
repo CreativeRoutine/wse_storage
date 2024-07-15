@@ -12,6 +12,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 // Delete this after import real links
 import { sidebarLinks } from "@/constants";
@@ -35,7 +42,7 @@ const NavContent = () => {
               className={`${
                 isActive
                   ? "primary-gradient rounded-lg text-light-900"
-                  : "text-dark300_light900"
+                  : "text-white"
               } flex items-center justify-start gap-4 bg-transparent p-4`}
             >
               <Image
@@ -43,7 +50,7 @@ const NavContent = () => {
                 alt={item.label}
                 width={20}
                 height={20}
-                className={`${isActive ? "" : "invert-colors"}`}
+                className={`${isActive ? "" : ""}`}
               />
               <p className={`${isActive ? "base-bold" : "base-medium"}`}>
                 {item.label}
@@ -66,7 +73,7 @@ const MobileNav = () => {
           width={36}
           height={36}
           alt="Menu"
-          className="invert-colors sm:hidden"
+          className="sm:hidden"
         />
       </SheetTrigger>
 
@@ -74,10 +81,10 @@ const MobileNav = () => {
       <SheetContent side="left" className="bg-black text-white  border-none">
         <Link href="/" className="flex items-center gap-1">
           {/* Logo */}
-          <Image src="/images/logo.png" width={23} height={23} alt="DevFlow" />
+          <Image src="/images/logo.png" width={48} height={48} alt="DevFlow" className="w-[40px] h-[40px]" />
           {/* Company Name */}
-          <p className="h2-bold text-dark100_light900 font-spaceGrotesk">
-            <span className="text-primary-500">WS Electronics</span>
+          <p className="h2-bold font-spaceGrotesk text-md">
+            <span className="text-white ml-2">WS Electronics</span>
           </p>
         </Link>
         <div className="mobile_nav flex flex-col h-full justify-between">
@@ -86,22 +93,32 @@ const MobileNav = () => {
           </SheetClose>
 
           {/* <SignedOut> */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-10">
             <SheetClose asChild>
-              <Link href="/sign-in">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/"/>
+            </SignedIn>
+              {/* <Link href="/sign-in">
                 <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none">
                   <span className="primary-text-gradient">Log In</span>
                 </Button>
-              </Link>
+              </Link> */}
             </SheetClose>
 
             <SheetClose asChild>
-              <Link href="/sign-up">
+              <SignedOut>
+                <SignInButton/>
+              </SignedOut>
+
+              {/* <Link href="/sign-up">
                 <Button className="small-medium light-border-2 btn-tertiary text-white min-h-[41px] w-full rounded-lg border px-4 py-3 shadow-none">
                   Sign Up
                 </Button>
-              </Link>
+              </Link> */}
             </SheetClose>
+
+
+
           </div>
           {/* </SignedOut> */}
         </div>

@@ -22,6 +22,17 @@ import {useRouter, usePathname} from 'next/navigation';
 import { deletePallet } from '@/lib/actions/pallet.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
 import { useToast } from "@/components/ui/use-toast"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const type:any = 'create';
 
@@ -68,15 +79,47 @@ export default  function DeletePallet ({id}:Props){
         variant: response ? 'default' : 'custom',
       })
 
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
+
     } catch (error) {
       console.error(error); 
     }
   }
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <>
+      {/* New Form with Alert Dialog */}
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger className="w-[220px] bg-red-500 text-white font-semibold mt-3 py-2 rounded-lg hover:bg-red-600">Delete empty pallet</AlertDialogTrigger>
+        <AlertDialogContent className="bg-white">
 
-          {
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure you want to delete it?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete pallet
+               and remove your data from database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel className="text-red-600 border-red-600">I made mistake!</AlertDialogCancel>
+          <AlertDialogAction className="hover:text-red-600" type="submit" onClick={onSubmit} >Delete anyway!</AlertDialogAction>
+        </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+          {/* {
             <>
               <Form {...form}>  
                 <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
@@ -96,7 +139,7 @@ export default  function DeletePallet ({id}:Props){
                 </form>
               </Form>
             </>
-          }
+          } */}
 
     </>
 

@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import Title from "@/components/shared/Title";
-// import { getPrinters } from "@/lib/actions/printer.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { redirect } from "next/navigation";
 import {auth} from "@clerk/nextjs"

@@ -63,22 +63,32 @@ export default  function AddPrinterToPalet ({id}:Props){
         path: usepathname,
       })
 
-      form.reset({}); // Reset form fields
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       router.push(`/storage/${id}`)
-
-      response ? ( toast({
-        title: "Printer added to pallet successfully!",
-        variant: 'default',
-      })) :(
+      
+      
+      if (response.success) {
+        // Reset form fields
+        form.reset({}); 
+      
+        // Show success toast
         toast({
-          title: "Printer can't be added!",
-          description: "Check the serial number, product number or barcode.",
+          title: response.message,
+          variant: 'default',
+        });
+      } else {
+        // Show error toast
+        toast({
+          title: response.message,
+          description: response.info,
           variant: 'custom',
-        })
-      )
+        });
+      }
+      
+      
+
 
     } catch (error) {
       console.error(error); 

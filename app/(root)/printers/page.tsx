@@ -32,10 +32,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
 
   return (
     <>
-        <Title text="Printers page" />
-
-
-
+        <Title text={`Printers page (${result.printers.length})`} />
   
         {/* LIST OF PRINTERS */}
         <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
@@ -46,7 +43,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
                 route="/printers" 
                 iconPosition="left" 
                 imgSrc="/assets/icons/search.svg" 
-                placeholder="Search by product number, serial number, PO number or barcode" 
+                placeholder="Filter items by make, product number, serial number, PO number or barcode" 
                 otherClasses="mb-4 bg-dark-600"
               /> 
             </div>

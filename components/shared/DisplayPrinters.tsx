@@ -12,6 +12,7 @@ interface Props {
 
 const DisplayPrinters = async ({printers, printersCount}:Props) => {
 
+  
     
     if(printers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any printers yet!"</div>)

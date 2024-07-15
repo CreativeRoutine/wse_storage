@@ -21,7 +21,7 @@ export async function globalSearch(params: SearchParams){
     let results = [];
 
     let modelsAndTypes = [
-      { model: Printer, searchField: "barcode", type: 'printer' },
+      { model: Printer, searchField: "barcode ponumber name", type: 'printer' },
       { model: Supplier, searchField: 'ponumber', type: 'supplier' },
       { model: Pallet, searchField: "barcode", type: 'pallet'},
       { model: User, searchField: "username", type: 'user' },

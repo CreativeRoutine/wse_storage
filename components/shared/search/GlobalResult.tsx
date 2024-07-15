@@ -29,6 +29,7 @@ const GlobalResult = () => {
       try{
         // Fetch ALL data from API
         const res = await globalSearch({query: global, type})
+        console.log(res)
 
         setResult(JSON.parse(res))
 
@@ -96,7 +97,7 @@ const GlobalResult = () => {
                         height={18} 
                         alt="tags"/>
                       <div className="flex flex-col">
-                        <p className='text-medium line-clamp-1'>{item.title}</p>
+                        <p className='text-medium line-clamp-1'>{item.name}something</p>
                         <p className='group-hover:text-white text-slate-500 text-sm font-bold capitalize'>{item.type}</p>
                       </div>
                     </Link>

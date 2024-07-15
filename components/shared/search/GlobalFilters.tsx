@@ -13,7 +13,7 @@ const GlobalFilters = () => {
 
   const [active, setActive] = useState(typeParams || '');
 
-  console.log("typeParams => ",typeParams)
+  // console.log("typeParams => ",typeParams)
 
   // console.log("ROUTER",router)
   // console.log("Search params",searchParams)

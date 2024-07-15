@@ -65,10 +65,16 @@ export default  function AddCostToPallet ({id}:Props){
       // defined as a hook
       router.push(`/storage/${id}`)
 
-      return toast({
-        title: response ? "Pallet cost changed successfully!" : "Pallet cost can't be changed!",
-        variant: response ? 'default' : 'custom',
-      })
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 

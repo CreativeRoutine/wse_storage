@@ -65,10 +65,16 @@ export default  function PinToPalletSchema ({id}:Props){
       // defined as a hook
       router.push(`/printers/${id}`)
 
-      return toast({
-        title: response ? "Printer addet to pallet successfully!" : "Pallet not exist!",
-        variant: response ? 'default' : 'custom',
-      })
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 

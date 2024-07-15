@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import Supplier from "@/database/supplier.model";
 // import { any } from "zod";
 
-
+// Messaging ready
 export async function createPalet(params: CreatePalet) {
   try {
     connectToDatabase();
@@ -34,10 +34,10 @@ export async function createPalet(params: CreatePalet) {
 
       // how to return a message to the user if existingPallet is true?
       revalidatePath(path);
-      return true;
+      return { success: true, message: "Pallet created successfully!" };
 
     } else {
-      return false;
+      return { success: false, message: "An error occurred while creating the pallet", info: "This pallet already exists in the database"};
     }
 
   } catch (error) {
@@ -100,6 +100,7 @@ export async function getPaletById(params: GetPaletByIdParams) {
   }
 }
 
+// Messaging ready
 export async function updatePaletPlace(params:UpdatePaletLocation){
   try {
     connectToDatabase();
@@ -107,13 +108,19 @@ export async function updatePaletPlace(params:UpdatePaletLocation){
 
     const pallet = await Pallet.findOne({ _id: id });
     if (!pallet) {
-      return "This printer does not exists in the database";
+      return { success: false, message: "Pallet location not changed", info: "This printer does not exists in the database"}; 
     }
+    console.log(location.length == 0)
 
     await Pallet.findOneAndUpdate(pallet._id, { $set: { location: location } });
 
     revalidatePath(path);
-    return true;
+    if(location.length === 0 || location === ""){
+      return { success: true, message: "Pallet unpinned successfully!"}; 
+    } 
+    else{
+      return { success: true, message: "Pallet location changed successfully!"}; 
+    }
 
   } catch (error) {
     console.log("Error:", error);
@@ -122,6 +129,7 @@ export async function updatePaletPlace(params:UpdatePaletLocation){
 
 }
 
+// Messaging ready
 export async function updatePaletCost(params:UpdatePaletCost){
   try {
     connectToDatabase();
@@ -129,18 +137,21 @@ export async function updatePaletCost(params:UpdatePaletCost){
 
     const pallet = await Pallet.findOne({ _id: id });
     if (!pallet) {
-      return "This printer does not exists in the database";
+      return { success: false, message: "Pallet location not changed!", info: "This pallet not exists in the database"}; 
     }
 
     await Pallet.findOneAndUpdate(pallet._id, { $set: { price: price } });
     revalidatePath(path);
-    return true
+    
+    return { success: true, message: "Pallet location changed successfully!"}; 
+
   } catch (error) {
       console.log("Error:", error);
       return false;
   }
 }
 
+// Messaging ready
 export async function deletePallet(params:DeletePalletParams) {
   try {
     // Connect to the database
@@ -149,8 +160,9 @@ export async function deletePallet(params:DeletePalletParams) {
     const { id, path } = params;
 
     const pallet = await Pallet.findOne({ _id: id });
-    if(pallet){
-
+    if(!pallet){ 
+      return { success: false, message: "An error occurred while deleting the pallet", info: "This pallet not exists in the database"}; 
+    }else{
       await Pallet.findOneAndUpdate(pallet._id, { $set: { location: "" } });
 
       // Find Supplier by printer id
@@ -164,74 +176,13 @@ export async function deletePallet(params:DeletePalletParams) {
 
     // Revalidate the path
     revalidatePath(path);
-    return true
+    return { success: true, message: "Pallet deleted successfully!" };
 
 
   } catch (error) {
     // Log any errors
     console.log("Error:", error);
     // Return an error message
-    return false;
+    return { success: false, message: "An error occurred while deleting the pallet", info: "This pallet not exists in the database"};
   }
 }
-
-
-
-
-// export async function updatePalet(params:UpdatePalet){
-//   try {
-//     connectToDatabase();
-//     const { paletSn,printerSn, path} = params;
-
-//     const existingPallet = await Pallet.findOne({ sn: paletSn });
-//     if (!existingPallet) {
-//       return "This printer already exists in the database";
-//     }
-
-//     const updatedPallet = await Pallet.findOneAndUpdate({ sn: paletSn }, { $push: { printers: printerSn } }, { new: true });
-//     revalidatePath(path);
-//   } catch (error) {
-//       console.log("Error:", error);
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-// CreatePalletModelParams took from shared.types.d.ts 
-// to create a new printer model 
-// export async function createPalletModel(params:CreatePalletModelParams) {
-//   try {
-//     connectToDatabase();
-    
-//       console.log("THIS IS PARAMS: ", params)
-//       const { sn, locker,  path} = params;
-
-//       const createdAt = new Date();
-
-//       const existingPallet = await Pallet.findOne({ sn, locker, createdAt });
-//       if (existingPallet) {
-//         // If a printer with the same make and model exists, return an error message
-//         return "This printer already exists in the database";
-//     }
-
-//     const newPallet = await Pallet.create({ sn, locker, createdAt });
-      
-//     revalidatePath(path);
-//   } catch (error) {
-//       // Log any errors
-//       console.log("Error:", error);
-//       // Return an error message
-//       return "An error occurred while creating the printer";
-//   }
-// }
-
-
-

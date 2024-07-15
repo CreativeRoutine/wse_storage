@@ -52,7 +52,7 @@ const GlobalSearch = () => {
         //     keysToRemove: ['global']
         //   })
         // }
-        console.log("SEARCH LENGTH ==========>", search)
+        // console.log("SEARCH LENGTH ==========>", search)
 
         router.push(newUrl, { scroll: false });
       } else {
@@ -63,7 +63,7 @@ const GlobalSearch = () => {
             keysToRemove: ['global', 'type']
           })
 
-          console.log("QUERY newUrl==========>", newUrl)
+          // console.log("QUERY newUrl==========>", newUrl)
           router.push(newUrl, { scroll: false });
         }
 
