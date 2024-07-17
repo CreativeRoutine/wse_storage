@@ -19,6 +19,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
+    pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })
   
   const {userId} = auth();
@@ -29,10 +30,10 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
   if(mongoUser.department === "visitor"){
     return(<VisitorNotification />)
   }
-
+  
   return (
     <>
-        <Title text={`Printers page (${result.printers.length})`} />
+        <Title text={`Printers page (${result.totalPrinters})`} />
   
         {/* LIST OF PRINTERS */}
         <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">

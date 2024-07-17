@@ -55,7 +55,7 @@ export interface PinToPalletParams {
 
 export interface GetPrintersParams {
   page?: number;
-  pageSize?: number;
+  pageSize: number;
   searchQuery?: string;
   filter?: string;
 }

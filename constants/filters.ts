@@ -32,6 +32,14 @@ export const AnswerFilters = [
     // { name: "Frequent", value: "frequent" },
     // { name: "Unanswered", value: "unanswered" },
   ];
+  export const PrintersCountPageFilters = [
+    { name: "20", value: "20" },
+    { name: "50", value: "50" },
+    { name: "100", value: "100" },
+    { name: "All", value: "all" },
+    // { name: "Frequent", value: "frequent" },
+    // { name: "Unanswered", value: "unanswered" },
+  ];
   
   export const GlobalSearchFilters = [
     { name: "Printer", value: "printer" },

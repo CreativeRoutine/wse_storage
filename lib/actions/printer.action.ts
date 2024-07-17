@@ -161,7 +161,7 @@ export async function getPrinters(params: GetPrintersParams){
     // Connect to the database
     await connectToDatabase();
 
-    const {searchQuery, filter, page = 1, pageSize = 20} = params;
+    const {searchQuery, filter, page = 1, pageSize} = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -207,9 +207,9 @@ export async function getPrinters(params: GetPrintersParams){
     const totalPrinters = await Printer.countDocuments(query);
     const isNext = totalPrinters > skipAmount + printers.length
 
-    let total = totalPrinters / 20;
+    let total = totalPrinters / pageSize;
 
-    return{printers, isNext, total}
+    return{printers, isNext, total, totalPrinters}
 
   } catch (error) {
     

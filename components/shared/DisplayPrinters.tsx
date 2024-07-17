@@ -24,7 +24,7 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
         <tr key={printer._id}>
           <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
             <div className="flex items-center">
-              {/* <div>{i+ 1 }</div> */}
+              <div>{i+ 1 }</div>
               <div className="h-11 w-11 flex-shrink-0">
                 <img className="h-11 w-11 rounded-full" src="/assets/printers_preview/281.png" alt="" />
               </div>
