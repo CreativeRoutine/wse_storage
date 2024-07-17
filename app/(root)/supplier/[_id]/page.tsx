@@ -1,10 +1,7 @@
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/tw/description-list'
 import { Subheading } from '@/components/tw/heading'
 import Title from '@/components/shared/Title' 
-import { getPrinterPopulated } from '@/lib/actions/printer.action'
-import { getPaletById } from '@/lib/actions/pallet.action'
 import React from 'react'
-import {Button} from '@/components/ui/button'
 import Link from 'next/link'
 import {auth} from "@clerk/nextjs"
 
@@ -13,7 +10,6 @@ import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
 import { formatTime } from '@/lib/utils'
 import { getSupplier } from '@/lib/actions/supplier.action'
-import UpdatePalet from '@/components/shared/pallets/UpdatePalet'
 import UpdateSuppliersName from '@/components/shared/suppliers/UpdateSuppliersName'
 import DeleteSupplier from '@/components/shared/suppliers/DeleteSupplier'
 
@@ -32,19 +28,17 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const supplierData = await getSupplier(_id)
   const supplier = JSON.parse(JSON.stringify(supplierData))
-  // const pallets = JSON.parse(JSON.stringify(supplier.pallets))
-  console.log(supplier)
 
   return (
-    
     <>
       {
         supplier.name ? ( <Title text={`Supplier - ${supplier.name}`} /> ) :
-        (<Title text={`Supplier - ${_id}`} />)
+        (<Title text={`Supplier - ${supplier.ponumber}`} />)
       }
       
 
       <div className="flex flex-col bg-dark-600 rounded-xl border border-dark-350 p-4">
+        {/* Top Side */}
         <div className="flex flex-row gap-2">
           <div className='flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <Subheading className="!text-white !text-lg">General info</Subheading>
@@ -74,61 +68,157 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <DeleteSupplier id={_id} />
             </div>
             </div>
-              
           </div>
         </div>
 
         {/* Botom Side */}
 
         <div className='flex flex-row gap-2'>
+          {/* PALLETS */}
           <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
             <Subheading className="!text-white !text-lg relative">Pallets{supplier.pallets && supplier.pallets.length > 0 ? (<span className="text-sm text-slate-400 absolute right-2"> ({supplier.pallets.length})</span> ) : null }:</Subheading>
-            <DescriptionList className='mt-4'>
-
-          {
-            supplier.pallets && supplier.pallets.length > 0 ?
-
-            supplier.pallets.map( 
-                (item:any, i:number) => (
-                  <>
-                    <DescriptionTerm className='text-white'>{i + 1}</DescriptionTerm>
-                    <DescriptionDetails className='!text-white'><Link href={`/storage/${item}`}>{item}</Link></DescriptionDetails>                  
-                  </>
-                    )
-              ) : (
-                <div className='text-red-400'>"Pallets have not been added yet"</div>
-              )
-            } 
             
-              
-              </DescriptionList>
+            {supplier.pallets && supplier.pallets.length > 0  ? (
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead>
+                    <tr>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        #
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        Barcode
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        Location
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        Printers
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
+                      >
+                        Created on
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-transparent">
+                    {supplier.pallets.map( 
+                        (item:any, i:number) => (
 
+                          <tr key={item._id}>
+                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                              <div className="flex items-center">
+                                <div className="text-white">{i+ 1 }</div>
+                              </div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.barcode}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.location}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.printers.length}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><Link href={`/storage/${item._id}`}>{formatTime(item.createdOn, "full")}</Link></td>
+                          </tr>
+                        ))}
+                  </tbody>
+                </table>
+                ) : (
+                  <div className='text-red-400'>"Pallets have not been added yet"</div>
+                )}
           </div>
 
+          {/* PRINTERS */}
           <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-            <Subheading className="!text-white !text-lg relative">Printers{supplier.printers && supplier.printers.length >= 1 ? (<span className="text-sm text-slate-400 absolute right-2"> ({supplier.printers.length})</span> ) : null }:</Subheading>
-            <DescriptionList className='mt-4'>
+            <Subheading className="!text-white !text-lg relative">
+              Printers
+              {supplier.printers && supplier.printers.length >= 1 && (
+                <span className="text-sm text-slate-400 absolute right-2"> ({supplier.printers.length})</span>
+              )}
+            </Subheading>
+              
+            {supplier.printers && supplier.printers.length > 0  ? (
+                <table className="min-w-full divide-y divide-gray-300">
+                  <thead>
+                    <tr>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        #
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        S/N
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        Barcode
+                      </th>
+                      <th 
+                        scope="col" 
+                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
+                      >
+                        Product number
+                      </th>
+                      <th 
+                        scope="col" 
+                        className="px-3  py-3.5 text-left text-lg font-bold text-slate-100"
+                      >
+                        Created on
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-transparent">
+                    {supplier.printers.map( 
+                        (item:any, i:number) => (
 
-              {
-                supplier.printers && supplier.printers.length > 0  ?
-                supplier.printers.map( 
-                  (item:any, i:number) => (
-                    <>
-                      <DescriptionTerm className='text-white'>{i + 1}</DescriptionTerm>
-                      <DescriptionDetails className='!text-white'><Link href={`/printers/${item}`}>{item}</Link></DescriptionDetails>                  
-                    </>
-                      )
-                    ) : (
-                      <div className='text-red-400'>"Printers have not been added yet"</div>
-                    )
-              }
-              </DescriptionList>
-
+                          <tr key={item._id}>
+                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                              <div className="flex items-center">
+                                <div className="text-white">{i+ 1 }</div>
+                              </div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/printers/${item._id}`}>{item.sn}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/printers/${item._id}`}>{item.barcode}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                              <div className="text-white"><Link href={`/printers/${item._id}`}>{item.productNumber}</Link></div>
+                            </td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><Link href={`/printers/${item._id}`}>{formatTime(item.createdOn, "full")}</Link></td>
+                          </tr>
+                        ))}
+                  </tbody>
+                </table>
+                ) : (
+                  <div className='text-red-400'>"Printers have not been added yet"</div>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-
-      </div>
-    </>
+        </>
   )
 }
 

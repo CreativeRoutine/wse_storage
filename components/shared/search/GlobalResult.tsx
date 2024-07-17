@@ -29,17 +29,18 @@ const GlobalResult = () => {
       try{
         // Fetch ALL data from API
         const res = await globalSearch({query: global, type})
-        console.log(res)
+        // console.log(res);
 
-        setResult(JSON.parse(res))
+        setResult(JSON.parse(res));
 
       } catch (error) {
-        console.log(error)
+        console.error(error)
         throw error
       } finally {
         setIsLoading(false)
       }
     }
+
     if(global) {fetchResult()}
   }, [global, type])
 
@@ -52,13 +53,13 @@ const GlobalResult = () => {
         return `/supplier/${id}`
 
       case 'pallet':
-        return `/pallet/${id}`
+        return `/storage/${id}`
 
       case 'user':
         return `/user/${id}`
 
         default:
-          break
+          return '/'
     }
   }
 
@@ -83,6 +84,7 @@ const GlobalResult = () => {
             <div className='flex flex-col gap-2'>
               {
                 result.length > 0 ? (
+                  console.log(result),
                   result.map((item: any, index: number) => (
                     <Link 
                     // @ts-ignore
@@ -97,7 +99,7 @@ const GlobalResult = () => {
                         height={18} 
                         alt="tags"/>
                       <div className="flex flex-col">
-                        <p className='text-medium line-clamp-1'>{item.name}something</p>
+                        <p className='text-medium line-clamp-1'>{item.title}</p>
                         <p className='group-hover:text-white text-slate-500 text-sm font-bold capitalize'>{item.type}</p>
                       </div>
                     </Link>

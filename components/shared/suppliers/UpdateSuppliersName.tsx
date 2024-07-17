@@ -65,10 +65,17 @@ export default function UpdateSuppliersName ({id}:Props){
       // defined as a hook
       router.push(`/supplier/${id}`)
 
-      return toast({
-        title: response ? "Supplier updated successfully!" : "Supplier's name can't be updated!",
-        variant: response ? 'default' : 'custom',
-      })
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
+
 
     } catch (error) {
       console.error(error); 

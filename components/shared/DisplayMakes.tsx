@@ -3,17 +3,19 @@
 import React from 'react'
 import Link from "next/link";
 import Image from 'next/image'
-import { getAllMakes } from "@/lib/actions/makes.action";
+// import { getAllMakes } from "@/lib/actions/makes.action";
 
-const DisplayMakes = async () => {
+interface Props {
+  makes: any;
+}
 
-    const makesRaw = await getAllMakes({})
-    const makes = JSON.parse(JSON.stringify(makesRaw))
-    // console.log(makes)
-    // const suppliers = JSON.parse(JSON.stringify(makes.suppliers))
-    if(makes.length == 0){
-      return(<div className="mt-6 text-white text-left">"You didn't add any Makes (Priner's names) yet!"</div>)
-    }
+const DisplayMakes = async ({makes}: Props) => {
+
+  if(makes == 0){
+    return(<div className="mt-6 text-white text-left">"You didn't add any Makes (Priner's names) yet!"</div>)
+  }
+
+
 
   return (
     <>

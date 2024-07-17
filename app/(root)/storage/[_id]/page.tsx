@@ -71,6 +71,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                             <DeletePalet id={getPaletDataPlain._id} mongoUserId={mongoUser._id} />
 
                           </div> : 
+                          // IF THERE ARE PRINTERS ON PALLET
                           <div className="flex flex-col justify-start w-full">
                             <div className="text-lg text-lime-500">Printers:</div>
                               <ul>
@@ -81,17 +82,17 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                         <div className='mr-3'>{index +1}.</div>
 
                                         <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                          <div className='tex-sm text-slate-500 mr-2'>Barcode:</div><Link href={`/printers/${printer._id}`} className='hover:text-sky-600 font-bold'>{printer.barcode}</Link>
+                                          <div className='tex-sm text-slate-500 mr-2'>Barcode:</div><Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.barcode}</Link>
                                         </div>
 
                                         <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
                                           <div className='tex-sm text-slate-500 mr-2'>S/N:</div>
-                                          <div className='font-bold'>{printer.sn}</div>
+                                          <div className=''>{printer.sn}</div>
                                         </div>
 
                                         <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                          <div className='tex-sm text-slate-500 mr-2'>Product number:</div>
-                                          <div className='font-bold'>{printer.productNumber}</div>
+                                          <div className='tex-sm text-slate-500 mr-2'>Prod. num.:</div>
+                                          <div className=''>{printer.productNumber}</div>
                                         </div>
 
                                         <UnPinPrinter id={_id} printerId={printer._id} mongoUserId={mongoUser._id} />

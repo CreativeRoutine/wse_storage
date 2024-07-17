@@ -10,10 +10,6 @@ interface Props {
 }
 
 const DisplaySuppliers = async ({suppliers}:Props) => {
-
-    // const resultSuppliers = await getAllSuppliers({})
-    // const suppliers = JSON.parse(JSON.stringify(resultSuppliers.suppliers))
-    // console.log(suppliers)
     
     if(suppliers == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any Supplier (PO number) yet!"</div>)

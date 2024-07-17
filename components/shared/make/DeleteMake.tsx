@@ -17,6 +17,18 @@ import { Button } from "@/components/ui/button";
 import { deleteMakeSchema } from '@/lib/validations';
 import { useRouter, usePathname } from 'next/navigation';
 import { deleteMake } from '@/lib/actions/makes.action';
+import { useToast } from "@/components/ui/use-toast"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const type:any = 'create';
 
@@ -38,10 +50,13 @@ export default function DeleteMake({ id }: Props) {
   });
 
   async function onSubmit() {
+    
+    const { toast } = useToast();
+
     setIsSubmitting(true);
   
     try {
-      await deleteMake({
+      const response = await deleteMake({
         _id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       });
@@ -49,21 +64,53 @@ export default function DeleteMake({ id }: Props) {
       form.reset();
       setIsSubmitting(false);
       router.push(`/settings/makes`);
+
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
     } catch (error) {
       console.error(error);
     }
   }
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <>
+      {/* New Form with Alert Dialog */}
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger className="w-full bg-red-500 text-white font-semibold mt-3 py-3 rounded-lg hover:bg-red-600">Delete make</AlertDialogTrigger>
+        <AlertDialogContent className="bg-white">
+
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure you want to delete it?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete Make
+               and remove your data from database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel className="text-red-600 border-red-600">I made mistake!</AlertDialogCancel>
+          <AlertDialogAction className="hover:text-red-600" type="submit" onClick={onSubmit} >Delete anyway!</AlertDialogAction>
+        </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
-      <Form {...form}>
+      {/* <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
           <Button type="submit" onClick={onSubmit} className="w-full bg-red-500 text-white mt-3" disabled={isSubmitting}>
             {isSubmitting ? 'Deleting ...' : 'Delete Make'}
           </Button>
         </form>
-      </Form>
+      </Form> */}
       
     </>
   );

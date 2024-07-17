@@ -18,6 +18,17 @@ import { deleteSupplierSchema } from '@/lib/validations';
 import { useRouter, usePathname } from 'next/navigation';
 import { deleteSupplier } from '@/lib/actions/supplier.action';
 import { useToast } from "@/components/ui/use-toast"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const type:any = 'create';
 
@@ -43,43 +54,64 @@ export default function DeleteSupplier({ id }: Props) {
     setIsSubmitting(true);
   
     try {
-      const response = await deleteSupplier({
+      const response:any = await deleteSupplier({
         _id: JSON.parse(JSON.stringify(id)),
         path: usepathname,
       });
       
       form.reset();
       setIsSubmitting(false);
-      
-      response ? (
-        toast({ title: "Supplier deleted successfully!", variant: 'default'})
-      ):(
-        toast({
-          title: "Supplier can't be deleted!",
-          description: "Check if the supplier is not linked to any printer or pallet",
+
+      response ? ( router.push(`/settings/suppliers`) ) : (null);
+
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
           variant: 'custom',
         })
       )
       
-      response ? ( router.push(`/settings/suppliers`) ) : (null);
-
-
 
     } catch (error) {
       console.error(error);
     }
   }
 
+  const [open, setOpen] = React.useState(false);
+
   return (
     <>
+      {/* New Form with Alert Dialog */}
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger className="w-full bg-red-500 text-white font-semibold mt-3 py-3 rounded-lg hover:bg-red-600">Delete supplier!</AlertDialogTrigger>
+        <AlertDialogContent className="bg-white">
+
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure you want to delete it?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete Supplier
+               and remove your data from database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel className="text-red-600 border-red-600">I made mistake!</AlertDialogCancel>
+          <AlertDialogAction className="hover:text-red-600" type="submit" onClick={onSubmit} >Delete anyway!</AlertDialogAction>
+        </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       
-      <Form {...form}>
+      {/* <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
           <Button type="submit" onClick={onSubmit} className="w-full bg-red-500 text-white mt-3" disabled={isSubmitting}>
             {isSubmitting ? 'Deleting ...' : 'Delete Supplier'}
           </Button>
         </form>
-      </Form>
+      </Form> */}
       
     </>
   );

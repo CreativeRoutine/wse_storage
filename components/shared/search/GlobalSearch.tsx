@@ -18,60 +18,49 @@ const GlobalSearch = () => {
   const query = searchParams.get('q');
 
   const [search, setSearch] = useState(query || '');
-  const [isOpen, setIsOpen] = useState(false)
+  console.log(search)
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleOutsideClick = (event: any) => {
-      if(searchContainerRef.current && 
-        // @ts-ignore
-        !searchContainerRef.current.contains(event.target)) {
-        setIsOpen(false)
-        setSearch('')
+      if(searchContainerRef.current &&
+      // @ts-ignore
+      !searchContainerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+        setSearch('');
       }
     }
 
-    setIsOpen(false)
+    setIsOpen(false);
 
-    document.addEventListener("click", handleOutsideClick)
+    document.addEventListener("click", handleOutsideClick);
 
-    return () => {document.removeEventListener("click", handleOutsideClick)}
-  }, [pathname])
+    return () => {
+      document.removeEventListener("click", handleOutsideClick)
+    }
+  }, [pathname]) 
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if(search) {
+      if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          key: 'global',
-          value: search
+          key: "global",
+          value: search,
         })
-
-        // if (search === false){
-        //   const newUrl = removeKeysFromQuery({
-        //     params: searchParams.toString(),
-        //     keysToRemove: ['global']
-        //   })
-        // }
-        // console.log("SEARCH LENGTH ==========>", search)
-
-        router.push(newUrl, { scroll: false });
+        router.push(newUrl, { scroll: false })
       } else {
-        
-        if(query) {
-          const newUrl = removeKeysFromQuery({
-            params: searchParams.toString(),
-            keysToRemove: ['global', 'type']
-          })
-
-          // console.log("QUERY newUrl==========>", newUrl)
-          router.push(newUrl, { scroll: false });
-        }
-
+        const newURL = removeKeysFromQuery({
+          params: searchParams.toString(),
+          keysToRemove: ["global", "type"],
+        })
+        router.push(newURL, { scroll: false })
       }
-    }, 300);
-    
+    }, 300)
+  
     return () => clearTimeout(delayDebounceFn)
-  }, [search, pathname, router, searchParams, query])
+  }, [search, query])
 
   return (
     <div className="flex flex-row h-12 w-full max-w-[600px] max-lg:hidden relative" ref={searchContainerRef}>

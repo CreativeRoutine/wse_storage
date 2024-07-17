@@ -28,8 +28,6 @@ const LocalSearchbar = ({
 
   const query = searchParams.get('q');
 
-  // console.log(query, pathname, route)
-
 
   const [search, setSearch] = useState(query || '');
 

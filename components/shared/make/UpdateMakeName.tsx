@@ -24,6 +24,7 @@ import { updateMake } from '@/lib/actions/makes.action';
 // import { updatePalet } from '@/lib/actions/pallet.action';
 import { useToast } from "@/components/ui/use-toast"
 
+
 const type:any = 'create';
 
 interface Props {
@@ -65,10 +66,16 @@ export default function UpdateMakeName ({id}:Props){
       // defined as a hook
       router.push(`/make/${id}`)
 
-      return toast({
-        title: response ? "Make's name updated successfully!" : "Make's name can't be updated!",
-        variant: response ? 'default' : 'custom',
-      })
+      return (
+        response.success ? toast({
+          title: response.message,
+          variant: 'default',
+        }) : toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      )
 
     } catch (error) {
       console.error(error); 

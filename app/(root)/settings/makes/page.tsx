@@ -11,29 +11,49 @@ import VisitorNotification from "@/components/shared/VisitorNotification";
 import DisplayMakes from "@/components/shared/DisplayMakes";
 import {Button} from "@/components/ui/button";
 import SettingsNav from "@/components/shared/SettingsNav";
+import { SearchParamsProps } from "@/types";
+import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
+import { getAllMakes } from "@/lib/actions/makes.action";
 
-const PrintersSetings = async () => {
-    const {userId} = auth();
-    if(!userId) redirect('/sign-in')
-      const mongoUserData = await getUserById({userId})
-    const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
-    
-    if(mongoUser.department === "visitor" ){
-      return(<VisitorNotification />)
-    }
+const PrintersSetings = async ({searchParams}: SearchParamsProps) => {
 
-    return (
+  const result = await getAllMakes({
+    searchQuery: searchParams.q
+  })
+  console.log(result)
+  // const makes = JSON.parse(JSON.stringify(makesRaw))
+
+
+  const {userId} = auth();
+  if(!userId) redirect('/sign-in')
+    const mongoUserData = await getUserById({userId})
+  const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+  
+  if(mongoUser.department === "visitor" ){
+    return(<VisitorNotification />)
+  }
+
+  return (
     <>
         <Title text="Settings page" />
 
         <div className="flex items-center justify-between text-white">
           <SettingsNav />
-
         </div>
   
-        {/* LIST OF PRINTERS */}
-        <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
+        {/* LIST OF MAKES */}
+        <div className="mt-8 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
           <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
+
+          <div className="sticky mt-8 flow-root  rounded-lg">
+              <LocalSearchbar 
+                route="/settings/makes" 
+                iconPosition="left" 
+                imgSrc="/assets/icons/search.svg" 
+                placeholder="Filter by makes's name or product number" 
+                otherClasses="mb-4 bg-dark-600"
+              /> 
+            </div>
             
 
             <div className="mt-8 flow-root  rounded-lg">
@@ -77,7 +97,7 @@ const PrintersSetings = async () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-transparent">
-                      <DisplayMakes />
+                      <DisplayMakes makes={result}/>
                     </tbody>
                   </table>
                 </div>
