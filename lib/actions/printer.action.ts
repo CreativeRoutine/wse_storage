@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams,GetPrinterByBarcodeParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
@@ -70,6 +70,32 @@ export async function createPrinter(params: CreatePrinterParams) {
     
     console.error("An error occurred while creating the printer:", error);
     return "An error occurred while creating the printer";
+  }
+}
+
+export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const {barcode, path} = params;
+
+    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    const printer = await Printer.findOne({barcode}).lean()
+
+    // .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
+    // .populate({path: "supplier", model: Supplier})
+    // //.populate({path: 'author', model: User}) 
+    if (printer) {
+      // Convert _id and other ObjectId fields to string
+      printer._id = printer._id.toString();
+      // Add other fields that need conversion if any
+    }
+    return {printer}
+
+  } catch (error) {
+    
+    throw error;
   }
 }
 
@@ -161,7 +187,7 @@ export async function getPrinters(params: GetPrintersParams){
     // Connect to the database
     await connectToDatabase();
 
-    const {searchQuery, filter, page = 1, pageSize} = params;
+    const {searchQuery, filter, from, to, page = 1, pageSize} = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -175,6 +201,13 @@ export async function getPrinters(params: GetPrintersParams){
         {sn: {$regex: new RegExp(searchQuery, "i")}},
         {name: {$regex: new RegExp(searchQuery, "i")}},
       ];
+    }
+
+    if (from && to) {
+      query.createdOn = {
+        $gte: new Date(from),
+        $lte: new Date(to),
+      };
     }
 
     let sortOptions = {};

@@ -18,6 +18,8 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
   const result = await getPrinters({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    from: searchParams.from,
+    to: searchParams.to,
     page: searchParams.page ? +searchParams.page : 1,
     pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })

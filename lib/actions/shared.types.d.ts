@@ -58,6 +58,12 @@ export interface GetPrintersParams {
   pageSize: number;
   searchQuery?: string;
   filter?: string;
+  from?: any;
+  to?: any;
+}
+export interface GetPrinterByBarcodeParams {
+  barcode: string;
+  path: string;
 }
 
 export interface GetPrinterPopulatedParams {

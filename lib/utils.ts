@@ -55,10 +55,24 @@ export const formUrlQuery = ({ params, key, value}: UrlQueryParams) => {
   { skipNull: true})
 }
 
+export const formUrlQueryClean = ({ params, key, value }:UrlQueryParams) => {
+  const url = new URL(window.location.href);
+  const searchParams = new URLSearchParams(url.search);
+
+  if (value === null || value === undefined) {
+    searchParams.delete(key);
+  } else {
+    searchParams.set(key, value);
+  }
+
+  return `${url.pathname}?${searchParams.toString()}`;
+}
+
 interface RemoveUrlQueryParams {
   params: string;
   keysToRemove: string[];
 }
+
 
 export const removeKeysFromQuery = ({ params, keysToRemove}: RemoveUrlQueryParams) => {
   const currentUrl = qs.parse(params);

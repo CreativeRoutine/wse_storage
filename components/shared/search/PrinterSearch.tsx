@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils';
 import GlobalResult from './GlobalResult';
 
-const GlobalSearch = () => {
+const PrinterSearch = () => {
 
   const router = useRouter(); // allows you to programmatically change routes inside Client Components.
   const pathname = usePathname(); // read the current URL's pathname.
@@ -45,14 +45,14 @@ const GlobalSearch = () => {
       if (search) {
         const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          key: "global",
+          key: "printer",
           value: search,
         })
         router.push(newUrl, { scroll: false })
       } else {
         const newURL = removeKeysFromQuery({
           params: searchParams.toString(),
-          keysToRemove: ["global", "type"],
+          keysToRemove: ["printer"],
         })
         router.push(newURL, { scroll: false })
       }
@@ -83,7 +83,7 @@ const GlobalSearch = () => {
   )
 }
 
-export default GlobalSearch
+export default PrinterSearch
 
 
 

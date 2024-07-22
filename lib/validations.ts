@@ -52,6 +52,13 @@ export const addPrinterSchema = z.object({
   // paletSn: z.string().min(3).max(12),
 })
 
+export const printerSearchSchema = z.object({
+  barcode: z.string().min(0).max(30),
+})
+export const printerWorkerNameSchema = z.object({
+  techName: z.string().min(0).max(30),
+})
+
 export const addPrinterToPalletSchema = z.object({
   sn: z.string().min(5).max(30), 
   productNumber: z.string().min(3).max(30),
