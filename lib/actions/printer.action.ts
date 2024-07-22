@@ -81,17 +81,16 @@ export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
     const {barcode, path} = params;
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printer = await Printer.findOne({barcode}).lean()
+    const printer = await Printer.find({barcode}).lean()
 
     // .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
     // .populate({path: "supplier", model: Supplier})
     // //.populate({path: 'author', model: User}) 
-    if (printer) {
-      // Convert _id and other ObjectId fields to string
-      printer._id = printer._id.toString();
-      // Add other fields that need conversion if any
-    }
-    return {printer}
+    const toPass = JSON.stringify(printer)
+
+    console.log(toPass)
+
+    return {toPass}
 
   } catch (error) {
     

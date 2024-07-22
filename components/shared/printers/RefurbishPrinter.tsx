@@ -38,12 +38,11 @@ export default  function RefurbishPrinter () {
     const { toast } = useToast();
 
     const [currentUser, setCurrentUser] = useState<string | null>(null);
+    const [printer, setPrinter] = useState([])
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const router = useRouter();
     const usepathname = usePathname();
-
-    const [printer, setPrinter] = useState([]) 
 
     // ===============================================================
     // 1. Worker Name form.
@@ -78,7 +77,9 @@ export default  function RefurbishPrinter () {
           path: usepathname,
         })
 
-        setPrinter(JSON.parse(JSON.stringify(response.printer)));
+        const resp = JSON.stringify(response)
+        console.log(JSON.parse(resp.toPass))
+        // setPrinter(resp)
 
         form.reset({});
 
@@ -163,7 +164,8 @@ export default  function RefurbishPrinter () {
               V-bc0003
             </div>
             <div>
-            {printer ? JSON.stringify(printer.sn, null, 2) : "No printer found"}
+              {printer}
+            {/* {printer ? JSON.stringify(printer.sn, null, 2) : "No printer found"} */}
             
             </div>
 
