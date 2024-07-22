@@ -70,24 +70,24 @@ export default  function RefurbishPrinter () {
     });
 
     async function onSubmitSearch(values: z.infer<typeof printerSearchSchema>) {
-      setIsSearching(true);
-      try {
-        const response = await getPrinterByBarcode({
-          barcode: values.barcode,
-          path: usepathname,
-        })
+      // setIsSearching(true);
+      // try {
+      //   const response = await getPrinterByBarcode({
+      //     barcode: values.barcode,
+      //     path: usepathname,
+      //   })
 
-        const resp = JSON.stringify(response)
-        console.log(JSON.parse(resp.toPass))
-        // setPrinter(resp)
+      //   const resp = JSON.stringify(response)
+        
+        
 
-        form.reset({});
+      //   form.reset({});
 
-      } catch (error) {
-        console.error("Error searching printer:", error);
-      } finally {
-        setIsSearching(false);
-      }
+      // } catch (error) {
+      //   console.error("Error searching printer:", error);
+      // } finally {
+      //   setIsSearching(false);
+      // }
     }
     // ===============================================================
   
