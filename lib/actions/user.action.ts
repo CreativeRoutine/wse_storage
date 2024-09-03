@@ -1,6 +1,8 @@
 "use server"
 
 import User from "@/database/user.model";
+import Employee from "@/database/employee.model";
+import mongoose from 'mongoose';
 import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, UpdateUserParams, DeleteUserParams } from "./shared.types";
 import { revalidatePath } from "next/cache";
@@ -62,7 +64,8 @@ export async function getUserById(params: any){
 
         const {userId} = params;
 
-        const user = await User.findOne({clerkId: userId});
+        const user = await User.findOne({clerkId: userId})
+        .populate({path: 'employees', model: Employee, select: "name lastName nickName"}).lean();
 
         return user;
     } catch(error){
@@ -78,7 +81,8 @@ export async function getUserBy_Id(params: any){
 
         const {_id} = params;
 
-        const user = await User.findOne({_id: _id});
+        const user = await User.findOne({_id: _id})
+        .populate({path: 'employees', model: Employee, select: "name lastName nickName"}).lean();
 
         return user;
     } catch(error){
@@ -94,7 +98,27 @@ export async function getUsers(params: any){
 
         const user = await User.find({}).lean();
 
-        return user;
+        const users = JSON.parse(JSON.stringify(user));
+
+
+        return {users};
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getEmployees(params: any){
+
+    try {
+        connectToDatabase();
+
+        const user = await Employee.find({}).lean();
+
+        const users = JSON.parse(JSON.stringify(user));
+
+
+        return {users};
     } catch(error){
         console.log(error);
         throw error;
@@ -141,6 +165,46 @@ export async function changeUserAdmin(params: any){
         throw error;
     }
 }
+
+export async function addEmployee(params: any) {
+    try {
+        connectToDatabase();
+
+        const { _id, name, lastName, nickName, department, path } = params;
+
+        // Находим текущего пользователя по ID
+        const user = await User.findOne({ _id });
+        if (!user) {
+            return "This user not found in the database";
+        }
+
+        // Создаем нового сотрудника
+        const newEmployee = new Employee({
+            name: name,
+            lastName: lastName,
+            nickName: nickName,
+            department: user.department
+        });
+
+        // Сохраняем нового сотрудника в базе данных
+        await newEmployee.save();
+
+        // Добавляем ссылку на нового сотрудника в массив employees текущего пользователя
+        user.employees.push(newEmployee._id);
+
+        // Сохраняем изменения в текущем пользователе
+        await user.save();
+
+        // Обновляем кеш страницы
+        revalidatePath(path);
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+
 
 export async function changeUserSupervisor(params: any){
     try {

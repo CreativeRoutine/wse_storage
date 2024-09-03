@@ -169,3 +169,8 @@ code {
   /* height: 20px; */
   border:1px solid red
 }
+
+form{
+  width: 100%!important;
+  min-width: 100%;
+}

@@ -107,6 +107,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
         <div className="flex flex-col w-auto max-w-1/s bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
           <div className="text-white text-xl font-bold">No works performed yet...</div>
+          {JSON.stringify(printer)}
         </div>
       </div>
     </>

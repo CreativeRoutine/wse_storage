@@ -21,7 +21,8 @@ const Users = async () => {
   }
 
     const usersRaw = await getUsers({});
-    const users = JSON.parse(JSON.stringify(usersRaw))
+    
+    const users = JSON.parse(JSON.stringify(usersRaw.users))
     
   return (
     <>

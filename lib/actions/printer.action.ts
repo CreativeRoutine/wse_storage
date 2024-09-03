@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams,GetPrinterByBarcodeParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams,GetPrinterByBarcodeParams, FindPrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
@@ -9,6 +9,8 @@ import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
 import { FilterQuery } from "mongoose";
+import mongoose from 'mongoose';
+import User from '@/database/user.model';
 
 // Messaging ready
 export async function createPrinter(params: CreatePrinterParams) {
@@ -73,6 +75,35 @@ export async function createPrinter(params: CreatePrinterParams) {
   }
 }
 
+// find printer for tech/cleaner' form
+export async function findPrinter(params: FindPrinterParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const { barcode } = params;
+    if (!barcode) {
+      return { success: false, message: "Barcode is required!" }; 
+    }
+
+    // Find the printer by barcode
+    const result = await Printer.findOne({ barcode }).lean();
+
+    if (!result) {
+      return { success: false, message: "Printer not found!" };
+    }
+
+    // Convert the result to a plain object if necessary
+    const printer = JSON.parse(JSON.stringify(result));
+
+    return { success: true, message: "Printer was found", printer }; 
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+// function - to delete
 export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
   try {
     // Connect to the database
@@ -87,8 +118,6 @@ export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
     // .populate({path: "supplier", model: Supplier})
     // //.populate({path: 'author', model: User}) 
     const toPass = JSON.stringify(printer)
-
-    console.log(toPass)
 
     return {toPass}
 
@@ -250,7 +279,6 @@ export async function getPrinters(params: GetPrintersParams){
 }
 
 // Used on Printer's page
-
 export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
   try {
     // Connect to the database
@@ -271,6 +299,69 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
     throw error;
   }
 }
+
+
+
+export async function updatePrinterWithCheck(params: any) {
+    try {
+        // Подключаемся к базе данных
+        await connectToDatabase();
+
+        const {
+            printerId,
+            selectedUser,
+            overallCondition,
+            cleanliness,
+            workable,
+            changedParts,
+            afterRefurbish,
+            pagesNumber,
+            tested,
+            timeSpent,
+            path
+        } = params;
+
+        // Находим принтер по ID
+        const printer = await Printer.findOne({ _id: printerId });
+        if (!printer) {
+            return { success: false, message: "Printer not found!" };
+        }
+
+        // Находим пользователя по ID
+        const user = await User.findOne({ _id: selectedUser.id });
+        if (!user) {
+            return { success: false, message: "User not found!" };
+        }
+
+        // Обновляем информацию о технике (технике) и времени работы
+        printer.tech.push(user._id);
+        printer.techStart = printer.techStart || new Date(); // Если еще не установлено, установим время начала работы
+        printer.techEnd = new Date();
+
+        // Обновляем информацию о состоянии и выполненных задачах
+        printer.condition.push(overallCondition, cleanliness, afterRefurbish);
+        printer.workable = workable === "Workable";
+        printer.repariable = workable !== "Not Repairable";
+        printer.changedParts.push(...changedParts);
+        printer.tasksPerformed.push(...tested);
+        
+        // Обновляем цену и другую информацию, если это применимо (например, по страницам)
+        printer.price = (printer.price || 0) + timeSpent * 10; // Пример: цена увеличивается в зависимости от времени работы
+
+        // Сохраняем изменения в принтере
+        await printer.save();
+
+        // Обновляем кеш страницы
+        revalidatePath(path);
+
+        return { success: true, message: "Printer updated successfully!" };
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 
 // Messaging ready
 export async function updatePrinterPON(params:updatePrinterPONParams){

@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification';
+import AddEmployee from '@/components/shared/user/AddEmployee';
 
 interface Props {
     _id: string;
@@ -22,6 +23,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})
   const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+
   
   if(mongoUser.department === "visitor"){
     return(<VisitorNotification />)
@@ -66,6 +68,46 @@ const page = async ({ params }: { params: { _id: string } }) => {
                   <div className="text-slate-400">Reputation: </div>
                   <div className="text-white font-bold">{user.reputation}</div>
                 </div>
+                <div className="w-full  mb-2 py-2 flex justify-between">
+                  {
+                    user.employees && user.employees.length === 0 ?
+                      <div className="flex justify-start">
+                        <div className="text-lg text-red-500 font-bold">No employees in department</div>
+                      </div> : 
+                      user.employees && user.employees.length > 0 ? (
+                        <div className="flex flex-col justify-start w-full">
+                          <div className="text-lg text-lime-500">Employees:</div>
+                          <ul>
+                            {
+                              user.employees.map((employee:any, index:number) => (
+                                <li key={employee._id} className='mt-2 w-full text-base text-slate-400 flex flex-row items-center justify-start'>
+                                  <div className='mr-3'>{index +1}.</div>
+
+                                  <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
+                                    <div className='tex-sm text-slate-500 mr-2'>Name:</div>
+                                    <Link href={`/employees/${employee.name}`} className='hover:text-sky-600 font-bold'>{employee.name}</Link>
+                                  </div>
+
+                                  <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
+                                    <div className='tex-sm text-slate-500 mr-2'>Last name:</div>
+                                    <div className='font-bold'>{employee.lastName}</div>
+                                  </div>
+
+                                  <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
+                                    <div className='tex-sm text-slate-500 mr-2'>Nickname:</div>
+                                    <div className='font-bold'>{employee.nickName}</div>
+                                  </div>
+                                </li>
+                              )) 
+                            }
+                          </ul>
+                        </div>
+                      ) : (
+                        null
+                      )
+                  }
+                </div>
+
                 <div className="w-full  mb-2 py-2 flex justify-between">
                   {
                     user.printers.length === 0 ?
@@ -115,6 +157,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <ChangeUserDepartmentForm  mongoUserId={user._id}/>
               <ChangeUserAdmin mongoUserId={user._id} />
               <ChangeUserSupervisor mongoUserId={user._id} />
+              <AddEmployee mongoUserId={user._id} />
               
           </div>
           

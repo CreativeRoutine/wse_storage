@@ -15,9 +15,20 @@ export const ChangeUserDepartmentSchema = z.object({
 export const ChangeUserAdminSchema = z.object({
   admin: z.boolean(),
 });
+
+export const AddEmployeeSchema = z.object({
+  name: z.string().min(3).max(30),
+  lastName: z.string().min(3).max(30),
+  nickName: z.string().min(3).max(30),
+});
+
 export const ChangeUserSupervisorSchema = z.object({
   supervisor: z.boolean(),
 });
+
+export const userSearchSchema = z.object({
+  userName: z.string().min(0).max(30),
+})
 
 // ===================  Pallet  ===================
 
@@ -52,8 +63,12 @@ export const addPrinterSchema = z.object({
   // paletSn: z.string().min(3).max(12),
 })
 
-export const printerSearchSchema = z.object({
+export const findPrinterSchema = z.object({
   barcode: z.string().min(0).max(30),
+})
+
+export const printerSearchSchema = z.object({
+  printer: z.string().min(0).max(30),
 })
 export const printerWorkerNameSchema = z.object({
   techName: z.string().min(0).max(30),

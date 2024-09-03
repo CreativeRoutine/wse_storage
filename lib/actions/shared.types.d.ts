@@ -61,6 +61,11 @@ export interface GetPrintersParams {
   from?: any;
   to?: any;
 }
+
+export interface FindPrinterParams {
+  barcode: string;
+}
+
 export interface GetPrinterByBarcodeParams {
   barcode: string;
   path: string;
