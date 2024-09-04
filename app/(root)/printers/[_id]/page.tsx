@@ -14,6 +14,23 @@ import UpdatePrinterPON from '@/components/shared/printers/UpdatePrinterPON'
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/tw/description-list'
 import { Subheading } from '@/components/tw/heading'
 
+interface ITaskPerformed {
+  date: Date;
+  user: {
+    name: string;
+    lastName: string;
+  };
+  overallCondition: string;
+  cleanliness: string;
+  workable: boolean;
+  repariable: boolean;
+  changedParts: string[];
+  afterRefurbish: string;
+  pagesNumber: number;
+  tested: string[];
+  timeSpent: number;
+}
+
 const page = async ({ params }: { params: { _id: string } }) => {
 
   const {userId} = auth();
@@ -106,8 +123,52 @@ const page = async ({ params }: { params: { _id: string } }) => {
         }
 
         <div className="flex flex-col w-auto max-w-1/s bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-          <div className="text-white text-xl font-bold">No works performed yet...</div>
-          {JSON.stringify(printer)}
+          
+          {printer.tasksPerformed ? 
+          (
+            printer.tasksPerformed.map((task: ITaskPerformed) => (
+              <div key={task.date.toString()} className='flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg'>
+                <Subheading className="!text-white !text-lg">Tasks</Subheading>
+                <DescriptionList className='mt-4'>
+                  <DescriptionTerm className='text-white'>Date:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.date ? formatTime(task.date, "date") : <span className="text-red-500">No date</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>User:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.user ? task.user.name : <span className="text-red-500">No user</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Overall condition:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.overallCondition ? task.overallCondition : <span className="text-red-500">No condition</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Cleanliness:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.cleanliness ? task.cleanliness : <span className="text-red-500">No cleanliness</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Workable:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.workable ? "Yes" : "No"}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Repariable:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.repariable ? "Yes" : "No"}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Changed parts:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.changedParts ? task.changedParts.join(', ') : <span className="text-red-500">No parts</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>After refurbish:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.afterRefurbish ? task.afterRefurbish : <span className="text-red-500">No refurbish</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Pages number:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.pagesNumber ? task.pagesNumber : <span className="text-red-500">No pages</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Tested:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.tested ? task.tested.join(', ') : <span className="text-red-500">No parts</span>}</DescriptionDetails>
+
+                  <DescriptionTerm className='text-white'>Time spent:</DescriptionTerm>
+                  <DescriptionDetails className='!text-white flex justify-end'>{task.timeSpent ? (`${task.timeSpent} sec.` ) : "---"}</DescriptionDetails>
+                </DescriptionList>
+              </div>
+            )
+            )
+
+          ) : 
+          (<div className="text-white text-xl font-bold">No works performed yet...</div>)}
         </div>
       </div>
     </>

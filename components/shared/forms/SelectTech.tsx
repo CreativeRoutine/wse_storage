@@ -42,12 +42,15 @@ export default function SelectTech ({ users, setSelectedUser }: Props){
   const router = useRouter();
   const usepathname = usePathname();
 
+  // console.log(users)
+
   // 1. Define your form.
   // userSearchSchema took from lib/validations.ts to validate the form
   const form = useForm<z.infer<typeof userSearchSchema>>({
     resolver: zodResolver(userSearchSchema),
     defaultValues: {
       userName: "",
+      id: "",
     },
   });
 
@@ -64,9 +67,8 @@ export default function SelectTech ({ users, setSelectedUser }: Props){
     try {
       // this function took from lib/actions/pallet.action.ts to create a new printer model
       const response = "response" //await createPrinter({
-      
-        
-        setSelectedUser({id: "12345678", name: values.userName})
+
+      setSelectedUser({id: values.userName, name: values.userName})
 
 
         setIsSubmitting(false); // Reset isSubmitting state
@@ -123,7 +125,7 @@ export default function SelectTech ({ users, setSelectedUser }: Props){
                               {/* <SelectLabel className='text-lg font-bold border-b border-white'>Techs:</SelectLabel> */}
                               {
                                   users.map((user: { name: string; id: string })=>(
-                                  <SelectItem key={user.id} value={user.name} className='py-2 text-white hover:bg-dark-200'>{user.name}</SelectItem>    
+                                  <SelectItem key={user.id} value={user.id} className='py-2 text-white hover:bg-dark-200'>{user.name}</SelectItem>    
                                   ))
                               }
                               </SelectGroup>

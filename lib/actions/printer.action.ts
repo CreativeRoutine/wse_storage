@@ -11,6 +11,7 @@ import Makes from "@/database/makes.model";
 import { FilterQuery } from "mongoose";
 import mongoose from 'mongoose';
 import User from '@/database/user.model';
+import Employee from "@/database/employee.model";
 
 // Messaging ready
 export async function createPrinter(params: CreatePrinterParams) {
@@ -289,9 +290,10 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     const printer = await Printer.find({_id: _id})
 
-    .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
-    // .populate({path: "supplier", model: Supplier})
-    // //.populate({path: 'author', model: User}) 
+    .populate({path: 'pallet', model: Pallet, select: "barcode location"})
+    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
+      .lean();
+
     return printer[0]
 
   } catch (error) {
@@ -301,65 +303,78 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
 }
 
 
-
+// Messaging ready
 export async function updatePrinterWithCheck(params: any) {
-    try {
-        // Подключаемся к базе данных
-        await connectToDatabase();
+  try {
+    // Подключаемся к базе данных
+    await connectToDatabase();
 
-        const {
-            printerId,
-            selectedUser,
-            overallCondition,
-            cleanliness,
-            workable,
-            changedParts,
-            afterRefurbish,
-            pagesNumber,
-            tested,
-            timeSpent,
-            path
-        } = params;
+    const {
+      date,
+      printerId,
+      selectedUser,
+      overallCondition,
+      cleanliness,
+      workable,
+      changedParts,
+      afterRefurbish,
+      pagesNumber,
+      tested,
+      timeSpent,
+      path
+    } = params;
 
-        // Находим принтер по ID
-        const printer = await Printer.findOne({ _id: printerId });
-        if (!printer) {
-            return { success: false, message: "Printer not found!" };
-        }
-
-        // Находим пользователя по ID
-        const user = await User.findOne({ _id: selectedUser.id });
-        if (!user) {
-            return { success: false, message: "User not found!" };
-        }
-
-        // Обновляем информацию о технике (технике) и времени работы
-        printer.tech.push(user._id);
-        printer.techStart = printer.techStart || new Date(); // Если еще не установлено, установим время начала работы
-        printer.techEnd = new Date();
-
-        // Обновляем информацию о состоянии и выполненных задачах
-        printer.condition.push(overallCondition, cleanliness, afterRefurbish);
-        printer.workable = workable === "Workable";
-        printer.repariable = workable !== "Not Repairable";
-        printer.changedParts.push(...changedParts);
-        printer.tasksPerformed.push(...tested);
-        
-        // Обновляем цену и другую информацию, если это применимо (например, по страницам)
-        printer.price = (printer.price || 0) + timeSpent * 10; // Пример: цена увеличивается в зависимости от времени работы
-
-        // Сохраняем изменения в принтере
-        await printer.save();
-
-        // Обновляем кеш страницы
-        revalidatePath(path);
-
-        return { success: true, message: "Printer updated successfully!" };
-
-    } catch (error) {
-        console.log(error);
-        throw error;
+    // Находим принтер по ID
+    const printer = await Printer.findOne({ _id: printerId });
+    if (!printer) {
+      return { success: false, message: "Printer not found!" };
     }
+
+    // Находим пользователя по ID
+    const user = await Employee.findOne({ _id: selectedUser.id });
+    if (!user) {
+      return { success: false, message: "User not found!" };
+    }
+
+    // Инициализируем массив tasksPerformed, если он отсутствует
+    if (!printer.tasksPerformed) {
+      printer.tasksPerformed = [];
+    }
+
+    // Создаем новый объект, который будет добавлен в массив tasksPerformed
+    const newTask = {
+      date: date || new Date(), // Используем переданную дату или текущую
+      user: user._id,
+      overallCondition,
+      cleanliness,
+      workable: workable === "Workable",
+      repariable: workable !== "Not Repairable",
+      changedParts,
+      afterRefurbish,
+      pagesNumber,
+      tested,
+      timeSpent,
+    };
+
+    // Добавляем новый объект в массив tasksPerformed
+    printer.tasksPerformed.push(newTask);
+
+    // Сохраняем изменения в принтере
+    // Сохраняем изменения в принтере
+    const savedPrinter = await printer.save();
+
+    // Проверка, что данные действительно сохранились
+    console.log('Saved Printer:', savedPrinter.tasksPerformed);
+
+    // Обновляем кеш страницы
+    revalidatePath(path);
+
+    return { success: true, message: "Printer updated successfully!" };
+
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 

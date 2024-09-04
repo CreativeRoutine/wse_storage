@@ -13,6 +13,7 @@ import ChangedParts from './forms/ChangedParts';
 import PagesNumber from './forms/PagesNumber';
 import Tested from './forms/Tested';
 import {updatePrinterWithCheck} from '@/lib/actions/printer.action';
+import moment from 'moment-timezone';
 
 interface Props {
   users: any;
@@ -109,18 +110,22 @@ const TechFormsComponent = ({users}: Props) => {
     const timeSpent = stopTimer(); // Stop timer and get the time spent in minutes
     console.log(`Time spent: ${timeElapsed} minutes`);
 
+    const createdOn = moment().tz("America/Chicago").toDate();
+    const date = createdOn.setHours(createdOn.getHours()); 
+
     const data = {
-        printerId: printerID._id,
-        selectedUser,
-        overallCondition,
-        cleanliness,
-        workable,
-        changedParts,
-        afterRefurbish,
-        pagesNumber,
-        tested,
-        timeSpent: timeElapsed,
-        path: window.location.pathname, // или другой путь, который нужно обновить
+      date: date,
+      printerId: printerID._id,
+      selectedUser,
+      overallCondition,
+      cleanliness,
+      workable,
+      changedParts,
+      afterRefurbish,
+      pagesNumber,
+      tested,
+      timeSpent: timeElapsed,
+      path: window.location.pathname, // или другой путь, который нужно обновить
     };
 
     try {

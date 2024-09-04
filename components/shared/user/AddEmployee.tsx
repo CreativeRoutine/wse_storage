@@ -152,11 +152,11 @@ export default function AddEmployeeForm ({mongoUserId}:Props){
                   <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
-                          {'Changing ...'}
+                          {'Adding ...'}
                         </>
                       ) : (
                         <>
-                        {'Change Admin status'}
+                        {'Add employee'}
                         </>
                       )}
                     </Button>

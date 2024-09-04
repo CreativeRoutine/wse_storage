@@ -28,6 +28,7 @@ export const ChangeUserSupervisorSchema = z.object({
 
 export const userSearchSchema = z.object({
   userName: z.string().min(0).max(30),
+  id: z.string().min(0).max(30),
 })
 
 // ===================  Pallet  ===================

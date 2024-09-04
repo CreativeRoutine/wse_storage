@@ -7,17 +7,18 @@ export interface IPrinter extends Document {
     productNumber: string;
     barcode: string;
     pallet?: Schema.Types.ObjectId;
-    updates: {
+    tasksPerformed: {
+        date: Date;
         user: Schema.Types.ObjectId;
-        techStart: Date;
-        techEnd: Date;
-        condition: string[];
+        overallCondition: string;
+        cleanliness: string;
         workable: boolean;
         repariable: boolean;
         changedParts: string[];
-        tasksPerformed: string[];
-        price: number;
-        updatedAt: Date;
+        afterRefurbish: string;
+        pagesNumber: number;
+        tested: string[];
+        timeSpent: number;
     }[];
     name: string;
 }
@@ -29,17 +30,18 @@ const PrinterSchema = new Schema({
     productNumber: { type: String, required: true},
     barcode: { type: String, required: true },
     pallet: { type: Schema.Types.ObjectId, ref: 'Pallet', required: false },
-    updates: [{
-        user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        techStart: { type: Date, required: true },
-        techEnd: { type: Date, required: true },
-        condition: [{ type: String, required: false }],
+    tasksPerformed: [{
+        date: { type: Date, default: Date.now },
+        user: { type: Schema.Types.ObjectId, ref: 'Employee', required: true },
+        overallCondition: { type: String, required: false },
+        cleanliness: { type: String, required: false },
         workable: { type: Boolean, required: false },
         repariable: { type: Boolean, required: false },
         changedParts: [{ type: String, required: false }],
-        tasksPerformed: [{ type: String, required: false }],
-        price: { type: Number, required: false },
-        updatedAt: { type: Date, default: Date.now, required: true },
+        afterRefurbish: { type: String, required: false },
+        pagesNumber: { type: Number, required: false },
+        tested: [{ type: String, required: false }],
+        timeSpent: { type: Number, required: false },
     }],
     name: { type: String, required: false },
 });
@@ -47,6 +49,7 @@ const PrinterSchema = new Schema({
 const Printer = models.Printer || model('Printer', PrinterSchema);
 
 export default Printer;
+
 
 
 // export interface IPrinter extends Document {
