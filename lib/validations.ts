@@ -131,6 +131,9 @@ export const deleteSupplierSchema = z.object({
 export const updateMakeName = z.object({
   name: z.string().min(0).max(30),
 })
+export const updateMakePreviewScheme = z.object({
+  preview: z.string().min(0).max(64),
+})
 export const deleteMakeSchema = z.object({
   _id: z.string().min(2).max(30),
 })

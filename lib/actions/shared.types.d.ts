@@ -87,6 +87,13 @@ export interface updatePrinterPONParams{
 
 }
 
+export interface updatePrinterPreviewParams{
+  _id: string;
+  preview: string;
+  path: string;
+
+}
+
 export interface FindPrinterBySnParams {
   sn: string;
 }
@@ -121,6 +128,12 @@ export interface UpdateMakesParams {
 export interface UpdateMakeName{
   name?: string;
   _id: string;
+  path: string;
+}
+
+export interface UpdateMakePreviewParams{
+  _id: string;
+  preview: string;
   path: string;
 }
 

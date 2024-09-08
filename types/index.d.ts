@@ -8,6 +8,10 @@ export interface SettingsLink {
   route: string;
   label: string;
 }
+export interface PreviewsLink {
+  make: string;
+  route: string;
+}
 
 export interface Users {
   id: string;

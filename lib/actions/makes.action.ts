@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreateMakesParams, GetAllMakesParams,GetMakeByIdParams, DeleteMakeParams, UpdateMakeName } from "./shared.types";
+import {  CreateMakesParams, GetAllMakesParams,GetMakeByIdParams, UpdateMakePreviewParams, DeleteMakeParams, UpdateMakeName } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import Makes from "@/database/makes.model";
@@ -148,3 +148,55 @@ export async function updateMake(params: UpdateMakeName) {
     return false
   }
 }
+
+export async function updateMakePreview(params: UpdateMakePreviewParams) {
+  try {
+    await connectToDatabase();
+    const { _id, preview, path } = params;
+
+    // Найдем модель `Make` по _id
+    const make = await Makes.findOne({ _id });
+    if (!make) {
+      return { success: false, message: "Make can't be updated!", info: "This Make does not exist in the database" }; 
+    }
+
+    // Обновим `Make` с новым значением поля `preview`
+    await Makes.findOneAndUpdate({ _id: make._id }, { $set: { preview: preview } });
+
+    // Найдем все принтеры, связанные с данным `Make`, по полю `productNumber`
+    const printers = await Printer.find({ productNumber: make.productNumber });
+    
+    // Логируем количество найденных принтеров
+    console.log("Printers found:", printers.length, printers);
+
+    if (printers.length === 0) {
+      return { success: false, message: "No printers found!", info: `No printers found for product number: ${make.productNumber}` };
+    }
+
+    // Обновляем все найденные принтеры
+    const updateResult = await Printer.updateMany(
+      { productNumber: make.productNumber },
+      { $set: { preview: preview } },
+      { writeConcern: { w: "majority" } }  // Убедитесь, что запись подтверждена большинством узлов
+    );
+    
+    const printersToUpdate = await Printer.find({
+      productNumber: make.productNumber,
+      preview: { $ne: preview }  // Только если значение preview отличается
+    });
+
+    
+
+    console.log("Update result:", updateResult);
+
+    // Перегенерируем кэш страницы, если путь указан
+    revalidatePath(path);
+
+    return { success: true, message: `Make preview updated successfully! ${updateResult.modifiedCount} printers updated.` };
+
+  } catch (error) {
+    console.error("Error updating Make and Printers:", error);
+    return { success: false, message: "An error occurred while updating the Make and Printers" };
+  }
+}
+

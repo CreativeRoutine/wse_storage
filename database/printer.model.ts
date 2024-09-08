@@ -21,6 +21,7 @@ export interface IPrinter extends Document {
         timeSpent: number;
     }[];
     name: string;
+    preview: string;
 }
 
 const PrinterSchema = new Schema({
@@ -44,6 +45,7 @@ const PrinterSchema = new Schema({
         timeSpent: { type: Number, required: false },
     }],
     name: { type: String, required: false },
+    preview: { type: String, required: false },
 });
 
 const Printer = models.Printer || model('Printer', PrinterSchema);

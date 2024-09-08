@@ -4,7 +4,7 @@ import Title from '@/components/shared/Title'
 import React from 'react'
 import Link from 'next/link'
 import {auth} from "@clerk/nextjs"
-
+import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
@@ -13,6 +13,7 @@ import { getMakeById } from '@/lib/actions/makes.action'
 
 import DeleteMake from '@/components/shared/make/DeleteMake'
 import UpdateMakeName from '@/components/shared/make/UpdateMakeName'
+import UpdateMakePreview from '@/components/shared/make/UpdateMakePreview'
 
 const page = async ({ params }: { params: { _id: string } }) => {
 
@@ -54,6 +55,14 @@ const page = async ({ params }: { params: { _id: string } }) => {
           <div className='flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <Subheading className="!text-white !text-lg">General info</Subheading>
             <DescriptionList className='mt-4'>
+              <DescriptionTerm className='text-white'>Make's preview:</DescriptionTerm>
+              <DescriptionDetails className='!text-white'>{make.preview ? (<Image 
+                src={make.preview} 
+                width={120} 
+                height={120} 
+                className="p-4"
+                alt="printer" 
+                />) : ("Not set")}</DescriptionDetails>
 
               <DescriptionTerm className='text-white'>Make's name:</DescriptionTerm>
               <DescriptionDetails className='!text-white'>{make.name ? make.name : "Not set"}</DescriptionDetails>
@@ -71,6 +80,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
             <div>
             <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
               <UpdateMakeName id={_id} />
+              <div className="mt-2">
+                <UpdateMakePreview id={_id} />
+              </div>
             </div>
             <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
               <DeleteMake id={_id} />

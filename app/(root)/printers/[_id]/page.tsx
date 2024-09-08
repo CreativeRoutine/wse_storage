@@ -50,22 +50,36 @@ const page = async ({ params }: { params: { _id: string } }) => {
     path: ''
   })
   const printers = JSON.parse(JSON.stringify(printer))
+  {console.log(printers)}
 
   if (printers) {
   return (
     <>
       <Title text={`Printer - ${printers.name ? printers.name : _id}`} />
 
+
       <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
 
         <div className='w-auto'>
-          <Image 
-          src="/assets/printers_preview/402.png" 
+          {
+            printers.preview ? (
+              <Image 
+          src={printers.preview} 
           width={240} 
           height={240} 
           className="p-4"
           alt="printer" 
           />
+            ) : (
+              <Image 
+                src="/assets/printers_preview/NoPreview.webp" 
+                width={240} 
+                height={240} 
+                className="p-4"
+                alt="printer" 
+              />
+            )
+          }
           <div className='w-full flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <UpdatePrinterPON mongoUserId={userId} id={_id} />
           </div>

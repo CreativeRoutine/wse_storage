@@ -24,7 +24,7 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
             <div className="flex items-center">
               <div className="mr-2">{i+ 1 }.</div>
               <div className="h-11 w-11 flex-shrink-0">
-                <img className="h-11 w-11 rounded-full" src="/assets/printers_preview/281.png" alt="" />
+                <img className="h-11 w-11 rounded-md" src={printer.preview ? printer.preview : "/assets/printers_preview/NoPreview.webp" } alt="" />
               </div>
               <div className="ml-4">
                 <div className="font-medium text-white">P/N: {printer.productNumber}</div>

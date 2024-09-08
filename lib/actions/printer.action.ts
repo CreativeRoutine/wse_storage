@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams,GetPrinterByBarcodeParams, FindPrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams,GetPrinterByBarcodeParams, updatePrinterPreviewParams, FindPrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
