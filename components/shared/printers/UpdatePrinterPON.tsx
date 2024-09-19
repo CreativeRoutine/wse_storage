@@ -103,7 +103,7 @@ export default  function UpdatePrinerPON ({mongoUserId, id}:Props){
                       </FormItem>
                   )}
                   />
-                  <Button type="submit" className="w-auto bg-primary-100 text-white" disabled={isSubmitting}>
+                  <Button type="submit" className="w-auto bg-primary-500 text-white" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           {'Changing ...'}

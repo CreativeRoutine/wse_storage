@@ -110,7 +110,7 @@ export default  function PinToPalletSchema ({id}:Props){
                   )}
                   />
                   
-                  <Button type="submit" onClick={onSubmit}  className="w-[115px] bg-primary-100 text-white" disabled={isSubmitting}>
+                  <Button type="submit" onClick={onSubmit}  className="w-[115px] bg-primary-500 text-white" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           {'Pinning ...'}

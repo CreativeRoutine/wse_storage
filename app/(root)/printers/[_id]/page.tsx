@@ -11,8 +11,26 @@ import { formatTime } from '@/lib/utils'
 import DeletePrinter from '@/components/shared/printers/DeletePrinter'
 import PinToPallet from '@/components/shared/printers/PinToPallet'
 import UpdatePrinterPON from '@/components/shared/printers/UpdatePrinterPON'
-import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/tw/description-list'
-import { Subheading } from '@/components/tw/heading'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 interface ITaskPerformed {
   date: Date;
@@ -50,7 +68,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
     path: ''
   })
   const printers = JSON.parse(JSON.stringify(printer))
-  {console.log(printers)}
 
   if (printers) {
   return (
@@ -58,18 +75,19 @@ const page = async ({ params }: { params: { _id: string } }) => {
       <Title text={`Printer - ${printers.name ? printers.name : _id}`} />
 
 
-      <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
+      <div className="flex flex-col gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 lg:flex-row">
 
-        <div className='w-auto'>
+        {/* // Preview */}
+        <div className='relative min-w-[300px]'>
           {
             printers.preview ? (
               <Image 
-          src={printers.preview} 
-          width={240} 
-          height={240} 
-          className="p-4"
-          alt="printer" 
-          />
+                src={printers.preview} 
+                width={240} 
+                height={240} 
+                className="p-4"
+                alt="printer" 
+                />
             ) : (
               <Image 
                 src="/assets/printers_preview/NoPreview.webp" 
@@ -80,109 +98,154 @@ const page = async ({ params }: { params: { _id: string } }) => {
               />
             )
           }
-          <div className='w-full flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg'>
-            <UpdatePrinterPON mongoUserId={userId} id={_id} />
+          {/* DIALOG */}
+          <div className='absolute top-0 right-0'>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="w-auto bg-primary-500 text-white">
+                  <Image 
+                    src="/assets/icons/gear.svg" 
+                    width={24} 
+                    height={24} 
+                    className="invert-color"
+                    alt="printer" 
+                  />
+                </Button>
+              </DialogTrigger>
+
+              <DialogContent className="sm:max-w-md bg-dark-100">
+                <DialogHeader>
+                  <DialogTitle className="text-white">Share link</DialogTitle>
+                  <DialogDescription className="text-white">
+                    Anyone who has this link will be able to view this.
+                  </DialogDescription>
+                </DialogHeader>
+                  <div className="w-full flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg gap-4">
+                    <UpdatePrinterPON mongoUserId={userId} id={_id} />
+                    {printers.pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet id={_id} mongoUserId={userId} /> }
+                    <DeletePrinter id={_id} mongoUserId={userId} />
+                  </div>
+                <DialogFooter className="sm:justify-end">
+                  <DialogClose asChild>
+                    <Button type="button" className="text-white" variant="secondary">
+                      Close
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
 
-          
-          <div className='w-full flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg'>
-            {printers.pallet ? <div className='text-white text-lg'>Added to pallet</div> : <PinToPallet id={_id} mongoUserId={userId} /> }
+          {/* // Detals */}
+          <div className="flex flex-col w-full bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+            <div className="!text-white !text-xl font-semibold">Printer details:</div>
+            
+            <div className='mt-4'>
+              <ul>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                  <div className='text-slate-400'>S/N:</div>
+                  <div className='flex justify-end '>{printer.sn}</div>
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                  <div className='text-slate-400'>PO number:</div>
+                  <div className='flex justify-end'>{printer.ponumber ? printer.ponumber : <span className="text-red-500">No PO number</span>}</div>
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>   
+                  <div className='text-slate-400'>Product number:</div>
+                  <div className='flex justify-end'>{printer.productNumber ? printer.productNumber : <span className="text-red-500">No product number</span>}</div>
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                  <div className='text-slate-400'>Barcode:</div>
+                  <div className='flex justify-end'>{printer.barcode ? printer.barcode : <span className="text-red-500">No barcode</span>}</div>
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                  <div className='text-slate-400'>Created on:</div>
+                  <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "date") : <span className="text-red-500">No date</span>}</div>
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                  <div className='text-slate-400'>Time:</div>
+                  <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "time") : <span className="text-red-500">No date</span>}</div>  
+                </li>
+                  {
+                    printer.pallet ? (
+                      <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                        <>
+                          <div className=''>Pallet / Location:</div>
+                          <div className=' flex justify-end'><Link href={`/storage/${JSON.parse(JSON.stringify(printer.pallet._id))}`}>{printer.pallet.barcode} {printer.pallet.location ? (`/ ${printer.pallet.location}`) : null } </Link></div>
+                        </>
+                      </li>
+                    ) : (null)
+                    }
+              </ul>
+
+
+            </div>
           </div>
-            <DeletePrinter id={_id} mongoUserId={userId} />
+
         </div>
 
-        {
-          <>
-          <div className="flex flex-col w-full lg:w-1/2  bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-            <Subheading className="!text-white !text-lg">Printer details:</Subheading>
-            <DescriptionList className='mt-4'>
+      
 
-              <DescriptionTerm className='text-white'>S/N:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.sn}</DescriptionDetails>
+      {/* // Tasks */}
+        <div className="flex flex-col w-auto max-w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+          <div className="!text-white !text-xl font-semibold mb-2 pb-4 border-b border-slate-400">Tasks</div>
 
-              <DescriptionTerm className='text-white'>PO number:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.ponumber ? printer.ponumber : <span className="text-red-500">No PO number</span>}</DescriptionDetails>
+          {/* <Accordion type="multiple" >
 
-              <DescriptionTerm className='text-white'>Product number:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.productNumber ? printer.productNumber : <span className="text-red-500">No product number</span>}</DescriptionDetails>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className='text-white'>Is it accessible?</AccordionTrigger>
+              <AccordionContent className='text-white'>
+                Yes. It adheres to the WAI-ARIA design pattern.
+              </AccordionContent>
+            </AccordionItem>
 
-              <DescriptionTerm className='text-white'>Barcode:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.barcode ? printer.barcode : <span className="text-red-500">No barcode</span>}</DescriptionDetails>
-
-              <DescriptionTerm className='text-white'>Created on:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "date") : <span className="text-red-500">No date</span>}</DescriptionDetails>
-
-              <DescriptionTerm className='text-white'>Time:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "time") : <span className="text-red-500">No date</span>}</DescriptionDetails>
-
-              <DescriptionTerm className='text-white'>Condition:</DescriptionTerm>
-              <DescriptionDetails className='!text-white flex justify-end'>{printer.addedOn ? printer.AddedOn : <span className="text-red-500">Not examined yet</span>}</DescriptionDetails>
-
-              
-
-              {
-                  printer.pallet ? 
-                  <>
-                    <DescriptionTerm className='text-white'>Pallet / Location:</DescriptionTerm>
-                    <DescriptionDetails className='!text-white flex justify-end'><Link href={`/storage/${JSON.parse(JSON.stringify(printer.pallet._id))}`}>{printer.pallet.barcode} {printer.pallet.location ? (`/ ${printer.pallet.location}`) : null } </Link></DescriptionDetails>
-                  </> : null
-                  
-                }
-
-
-            </DescriptionList>
-          </div>
-          </>
+          </Accordion> */}
           
-        }
-
-        <div className="flex flex-col w-auto max-w-1/s bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-          
-          {printer.tasksPerformed ? 
+          {printer.tasksPerformed && printer.tasksPerformed.length > 0 ?
           (
             printer.tasksPerformed.map((task: ITaskPerformed) => (
-              <div key={task.date.toString()} className='flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg'>
-                <Subheading className="!text-white !text-lg">Tasks</Subheading>
-                <DescriptionList className='mt-4'>
-                  <DescriptionTerm className='text-white'>Date:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.date ? formatTime(task.date, "date") : <span className="text-red-500">No date</span>}</DescriptionDetails>
+              <div key={task.date.toString()} className='flex flex-col '>
+                <ul className='mt-4'>
+                  <div className='text-white'>Date:</div>
+                  <div className='!text-white flex justify-end'>{task.date ? formatTime(task.date, "date") : <span className="text-red-500">No date</span>}</div>
 
-                  <DescriptionTerm className='text-white'>User:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.user ? task.user.name : <span className="text-red-500">No user</span>}</DescriptionDetails>
+                  <div className='text-white'>User:</div>
+                  <div className='!text-white flex justify-end'>{task.user ? task.user.name : <span className="text-red-500">No user</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Overall condition:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.overallCondition ? task.overallCondition : <span className="text-red-500">No condition</span>}</DescriptionDetails>
+                  <div className='text-white'>Overall condition:</div>
+                  <div className='!text-white flex justify-end'>{task.overallCondition ? task.overallCondition : <span className="text-red-500">No condition</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Cleanliness:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.cleanliness ? task.cleanliness : <span className="text-red-500">No cleanliness</span>}</DescriptionDetails>
+                  <div className='text-white'>Cleanliness:</div>
+                  <div className='!text-white flex justify-end'>{task.cleanliness ? task.cleanliness : <span className="text-red-500">No cleanliness</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Workable:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.workable ? "Yes" : "No"}</DescriptionDetails>
+                  <div className='text-white'>Workable:</div>
+                  <div className='!text-white flex justify-end'>{task.workable ? "Yes" : "No"}</div>
 
-                  <DescriptionTerm className='text-white'>Repariable:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.repariable ? "Yes" : "No"}</DescriptionDetails>
+                  <div className='text-white'>Repariable:</div>
+                  <div className='!text-white flex justify-end'>{task.repariable ? "Yes" : "No"}</div>
 
-                  <DescriptionTerm className='text-white'>Changed parts:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.changedParts ? task.changedParts.join(', ') : <span className="text-red-500">No parts</span>}</DescriptionDetails>
+                  <div className='text-white'>Changed parts:</div>
+                  <div className='!text-white flex justify-end'>{task.changedParts ? task.changedParts.join(', ') : <span className="text-red-500">No parts</span>}</div>
 
-                  <DescriptionTerm className='text-white'>After refurbish:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.afterRefurbish ? task.afterRefurbish : <span className="text-red-500">No refurbish</span>}</DescriptionDetails>
+                  <div className='text-white'>After refurbish:</div>
+                  <div className='!text-white flex justify-end'>{task.afterRefurbish ? task.afterRefurbish : <span className="text-red-500">No refurbish</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Pages number:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.pagesNumber ? task.pagesNumber : <span className="text-red-500">No pages</span>}</DescriptionDetails>
+                  <div className='text-white'>Pages number:</div>
+                  <div className='!text-white flex justify-end'>{task.pagesNumber ? task.pagesNumber : <span className="text-red-500">No pages</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Tested:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.tested ? task.tested.join(', ') : <span className="text-red-500">No parts</span>}</DescriptionDetails>
+                  <div className='text-white'>Tested:</div>
+                  <div className='!text-white flex justify-end'>{task.tested ? task.tested.join(', ') : <span className="text-red-500">No parts</span>}</div>
 
-                  <DescriptionTerm className='text-white'>Time spent:</DescriptionTerm>
-                  <DescriptionDetails className='!text-white flex justify-end'>{task.timeSpent ? (`${task.timeSpent} sec.` ) : "---"}</DescriptionDetails>
-                </DescriptionList>
+                  <div className='text-white'>Time spent:</div>
+                  <div className='!text-white flex justify-end'>{task.timeSpent ? (`${task.timeSpent} sec.` ) : "---"}</div>
+                </ul>
               </div>
             )
             )
 
           ) : 
-          (<div className="text-white text-xl font-bold">No works performed yet...</div>)}
+          (<div className="text-white text-xl font-bold mt-4">No works performed yet...</div>)
+          }
         </div>
       </div>
     </>

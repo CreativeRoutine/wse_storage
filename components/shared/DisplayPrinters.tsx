@@ -43,7 +43,7 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
           </td>
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             {
-              printer.tech.length > 0  ? (
+              printer.tech && printer.tech.length > 0  ? (
                 <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                   In progress
                 </span>

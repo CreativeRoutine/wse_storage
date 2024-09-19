@@ -30,6 +30,8 @@ const TechFormsComponent = ({users}: Props) => {
   // USER
   const [selectedUser, setSelectedUser] = useState<User>({ id: "", name: "Select Tech's name" });
 
+  console.log(selectedUser)
+
   // PRINTER
   const [printerID, setPrinterID] = useState({_id: '', barcode: '', name:'', sn: '', productNumber:'', preview: ''}); 
   
@@ -54,7 +56,6 @@ const TechFormsComponent = ({users}: Props) => {
     setFormReset(false);
   };
   
-
   // Запуск таймера
   const startTimer = () => {
     setTimerActive(true);
@@ -159,16 +160,11 @@ const TechFormsComponent = ({users}: Props) => {
         <FindPrinter setPrinterID={setPrinterID}/>
       </div>
 
-      <SelectOption label="Overall Condition" options={["Good", "Bad", "Broken"]} onSelect={setOverallCondition} reset={formReset} onResetComplete={handleResetComplete} />
+      <SelectOption label="Overall Condition" options={["Good", "Damaged", "Bad (not fixable)"]} onSelect={setOverallCondition} reset={formReset} onResetComplete={handleResetComplete} />
       <SelectOption label="Cleanliness" options={["Clean", "Dirty", "Very Dirty"]} onSelect={setCleanliness} reset={formReset} onResetComplete={handleResetComplete} />
-      <SelectOption label="Workable" options={["Workable", "Need Repair", "Not Repairable"]} onSelect={setWorkable} reset={formReset} onResetComplete={handleResetComplete} />
+      <SelectOption label="Workable" options={["Workable", "Not Repairable"]} onSelect={setWorkable} reset={formReset} onResetComplete={handleResetComplete} />
       <ChangedParts 
         onSelect={setChangedParts} 
-        reset={formReset} 
-        onResetComplete={handleResetComplete} 
-      />
-      <PagesNumber 
-        onInput={setPagesNumber} 
         reset={formReset} 
         onResetComplete={handleResetComplete} 
       />
@@ -177,7 +173,12 @@ const TechFormsComponent = ({users}: Props) => {
         reset={formReset} 
         onResetComplete={handleResetComplete} 
       />
-      <SelectOption label="After Refurbish" options={["Workable", "Refurbished", "Broken on process"]} onSelect={setAfterRefurbish} reset={formReset} onResetComplete={handleResetComplete} />
+      <PagesNumber 
+        onInput={setPagesNumber} 
+        reset={formReset} 
+        onResetComplete={handleResetComplete} 
+      />
+      <SelectOption label="After Refurbish" options={["Refurbished (workable)", "Parts (Broken on process)"]} onSelect={setAfterRefurbish} reset={formReset} onResetComplete={handleResetComplete} />
 
 
       <button onClick={handleSubmit} className="w-1/2  bg-primary-500 text-white p-4 rounded font-bold">
