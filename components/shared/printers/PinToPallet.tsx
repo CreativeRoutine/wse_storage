@@ -88,7 +88,7 @@ export default  function PinToPalletSchema ({id}:Props){
             <>
               <Form {...form}>  
                 <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
-                  <div className='w-full flex flex-row justify-center items-center gap-2'>
+                  <div className='w-full flex flex-row justify-between items-center gap-2'>
                   <FormField
                   control={form.control}
                   name="palletBarcode"

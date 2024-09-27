@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AddColumnForm from '@/components/shared/AddColumnForm';
 import { findPrinter } from '@/lib/actions/printer.action';
 import PrinterSearch from '@/components/shared/search/PrinterSearch';
@@ -12,8 +12,10 @@ import SelectOption from './forms/SelectOptions';
 import ChangedParts from './forms/ChangedParts';
 import PagesNumber from './forms/PagesNumber';
 import Tested from './forms/Tested';
-import {updatePrinterWithCheck} from '@/lib/actions/printer.action';
+import { updatePrinterWithCheck } from '@/lib/actions/printer.action';
 import moment from 'moment-timezone';
+import { Input } from "@/components/ui/input";
+import TextInput from './forms/TextInput'; // Импортируем новый компонент
 
 interface Props {
   users: any;
@@ -24,22 +26,20 @@ interface User {
   name: string;
 }
 
-const TechFormsComponent = ({users}: Props) => {
+const TechFormsComponent = ({ users }: Props) => {
   const usersData = JSON.parse(users);
 
   // USER
   const [selectedUser, setSelectedUser] = useState<User>({ id: "", name: "Select Tech's name" });
 
-  console.log(selectedUser)
-
   // PRINTER
   const [printerID, setPrinterID] = useState({_id: '', barcode: '', name:'', sn: '', productNumber:'', preview: ''}); 
-  
+
   // TIMER
   const [timerActive, setTimerActive] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
-  
+
   // PRINTER's CONDITION
   const [overallCondition, setOverallCondition] = useState<string | null>(null);
   const [cleanliness, setCleanliness] = useState<string | null>(null);
@@ -48,6 +48,8 @@ const TechFormsComponent = ({users}: Props) => {
   const [tested, setTested] = useState<string[]>([]);
   const [afterRefurbish, setAfterRefurbish] = useState<string | null>(null);
   const [changedParts, setChangedParts] = useState<string[]>([]);
+  const [additionalInfo, setAdditionalInfo] = useState<string>(""); // Состояние для дополнительной информации
+  const [status, setStatus] = useState<string>("In progress");
 
   const [formReset, setFormReset] = useState(false);
 
@@ -55,7 +57,7 @@ const TechFormsComponent = ({users}: Props) => {
   const handleResetComplete = () => {
     setFormReset(false);
   };
-  
+
   // Запуск таймера
   const startTimer = () => {
     setTimerActive(true);
@@ -84,6 +86,19 @@ const TechFormsComponent = ({users}: Props) => {
     setTimeElapsed(0);
   };
 
+  // STATUS CHANGE
+  useEffect(() => {
+    // Если принтер найден, запускать таймер
+    if (afterRefurbish) {
+      if (afterRefurbish === "Refurbished (workable)") {
+        setStatus("Refurbished");
+      } else if (afterRefurbish === "Parts (Broken on process)") {
+        setStatus("Taken apart");
+      }
+      
+    }
+  }, [afterRefurbish]);
+
 
   useEffect(() => {
     // Если принтер найден, запускать таймер
@@ -96,20 +111,12 @@ const TechFormsComponent = ({users}: Props) => {
     // Fetch users from the database
     async function fetchUsers() {
       const usersData = await getUsers({});
-      // const usersList = JSON.parse(JSON.stringify(usersData));
-      // setUsers(usersList);
     }
     fetchUsers();
   }, []);
 
-  const handleUserChange = () => {
-    console.log("SOMETHING")
-  //   setSelectedUser(e.target.value);
-  };
-
   const handleSubmit = async () => {
     const timeSpent = stopTimer(); // Stop timer and get the time spent in minutes
-    console.log(`Time spent: ${timeElapsed} minutes`);
 
     const createdOn = moment().tz("America/Chicago").toDate();
     const date = createdOn.setHours(createdOn.getHours()); 
@@ -125,7 +132,9 @@ const TechFormsComponent = ({users}: Props) => {
       afterRefurbish,
       pagesNumber,
       tested,
+      additionalInfo, // Добавляем дополнительную информацию
       timeSpent: timeElapsed,
+      status,
       path: window.location.pathname, // или другой путь, который нужно обновить
     };
 
@@ -142,8 +151,7 @@ const TechFormsComponent = ({users}: Props) => {
 
     setFormReset(true);
     resetTimer(); // Сброс таймера после отправки формы
-};
-
+  };
 
   return (
     <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl border border-dark-350 shadow-lg">
@@ -180,8 +188,10 @@ const TechFormsComponent = ({users}: Props) => {
       />
       <SelectOption label="After Refurbish" options={["Refurbished (workable)", "Parts (Broken on process)"]} onSelect={setAfterRefurbish} reset={formReset} onResetComplete={handleResetComplete} />
 
+      {/* Ввод дополнительной информации */}
+      <TextInput onInput={setAdditionalInfo} reset={formReset} onResetComplete={handleResetComplete} />
 
-      <button onClick={handleSubmit} className="w-1/2  bg-primary-500 text-white p-4 rounded font-bold">
+      <button onClick={handleSubmit} className="w-full mt-4 bg-primary-500 text-white p-4 rounded font-bold">
         Submit
       </button>
     </div>

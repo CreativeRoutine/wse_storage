@@ -289,7 +289,6 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     const printer = await Printer.find({_id: _id})
-
     .populate({path: 'pallet', model: Pallet, select: "barcode location"})
     .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
       .lean();
@@ -321,6 +320,8 @@ export async function updatePrinterWithCheck(params: any) {
       pagesNumber,
       tested,
       timeSpent,
+      additionalInfo,
+      status,
       path
     } = params;
 
@@ -354,6 +355,8 @@ export async function updatePrinterWithCheck(params: any) {
       pagesNumber,
       tested,
       timeSpent,
+      status,
+      additionalInfo,
     };
 
     // Добавляем новый объект в массив tasksPerformed

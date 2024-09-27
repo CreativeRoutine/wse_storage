@@ -19,6 +19,8 @@ export interface IPrinter extends Document {
         pagesNumber: number;
         tested: string[];
         timeSpent: number;
+        additionalInfo: string;
+        status: string;
     }[];
     name: string;
     preview: string;
@@ -43,6 +45,8 @@ const PrinterSchema = new Schema({
         pagesNumber: { type: Number, required: false },
         tested: [{ type: String, required: false }],
         timeSpent: { type: Number, required: false },
+        additionalInfo: { type: String, required: false },
+        status: { type: String, required: false },
     }],
     name: { type: String, required: false },
     preview: { type: String, required: false },

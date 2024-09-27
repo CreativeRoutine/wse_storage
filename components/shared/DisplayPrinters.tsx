@@ -42,7 +42,31 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
             <div className="text-white">{printer.barcode}</div>
           </td>
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+              {
+                // Проверяем, существует ли tasksPerformed и есть ли в нем элементы
+                printer.tasksPerformed && printer.tasksPerformed.length > 0 ? (
+                    
+                    printer.tasksPerformed[printer.tasksPerformed.length - 1].status === "Refurbished" ? (
+                      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status}
+                      </span>
+                    ) :  (
+                      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
+                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status}
+                      </span>
+                    )
+                  
+                ) : (
+                  // Если нет выполненных заданий, показываем, что только добавлено
+                  <span className="inline-flex items-center rounded-md bg-grey-50 px-2 py-1 text-xs font-medium text-grey-700 ring-2 ring-current ring-inset">
+                    Just added
+                  </span>
+                )
+              }
+            </td>
+          {/* <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             {
+              
               printer.tech && printer.tech.length > 0  ? (
                 <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                   In progress
@@ -53,7 +77,7 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
               </span>
             )
             }
-          </td>
+          </td> */}
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{formatTime(printer.createdOn, "full")}</td>
           <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
             {/* <a href={`/printers/${printer.barcode}`} className="text-indigo-600 hover:text-indigo-900 z-0"> */}

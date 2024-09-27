@@ -81,8 +81,8 @@ export default  function UpdatePrinerPON ({mongoUserId, id}:Props){
           {
             <>
               <Form {...form}>  
-                <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
-                  <div className='w-full flex flex-row justify-center items-center gap-2'>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                  <div className='w-auto flex flex-row justify-between items-center gap-2'>
                   <FormField
                   control={form.control}
                   name="ponumber"
@@ -90,20 +90,20 @@ export default  function UpdatePrinerPON ({mongoUserId, id}:Props){
                       // First Input
                       <FormItem>
                       <FormControl>
-                          <div className="flex">
+                          
                           <Input
-                              className="w-auto ouline-none bg-dark-400 text-white border-0 rounded-lg no-focus"
+                              className="outline-none bg-dark-400 text-white border-0 rounded-lg no-focus"
                               placeholder="PO number"
                               {...field}
                           />
-                          </div>
+                          
                       </FormControl>
 
                       <FormMessage />
                       </FormItem>
                   )}
                   />
-                  <Button type="submit" className="w-auto bg-primary-500 text-white" disabled={isSubmitting}>
+                  <Button type="submit" className="w-1/3 bg-primary-500 text-white" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           {'Changing ...'}
