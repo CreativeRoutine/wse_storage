@@ -206,13 +206,13 @@ const page = async ({ params }: { params: { _id: string } }) => {
         <div className="flex flex-col w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
           <div className="!text-white !text-xl font-semibold mb-2 pb-4 border-b border-slate-400">Tasks</div>
 
-          {printer.tasksPerformed && printer.tasksPerformed.length > 1 ?
+          {printer.tasksPerformed && printer.tasksPerformed.length >= 1 ?
           (
             <>
               <Accordion type="multiple" className='w-full py-2 mb-2' >
               {
                 printer.tasksPerformed.slice().reverse().map((task: ITaskPerformed) => (
-                  <AccordionItem value={task.date.toString()} className='w-full bg-dark-300 border-0 mb-3 rounded-lg shadow-lg'  >
+                  <AccordionItem key={task.date.toString()} value={task.date.toString()} className='w-full bg-dark-300 border-0 mb-3 rounded-lg shadow-lg'  >
 
                     <AccordionTrigger className='text-white min-w-[320px] px-4'>
                       <div className='text-slate-400 text-sm flex flex-row items-end'>Date:
