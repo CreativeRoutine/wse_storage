@@ -308,8 +308,8 @@ const page = async ({ params }: { params: { _id: string } }) => {
                             <div className='text-slate-400'>After refurbish:</div>
                             <div className='!text-white flex justify-end'>
                               { task.afterRefurbish === "Refurbished (workable)" ? 
-                                (<span className="text-green-500">Refurbished</span>) :
-                                (<span className="text-red-500">Broken in process</span>) 
+                                (<span className="text-green-500">{task.afterRefurbish}</span>) :
+                                (<span className="text-red-500">{task.afterRefurbish}</span>) 
                               }
                             </div>
                           </li>

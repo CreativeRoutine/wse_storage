@@ -1,71 +1,99 @@
 import React, { useState, useEffect } from 'react';
 
-interface PartsProps {
+interface Part {
   barcode: string;
   name: string;
-  location: string;
-  onChange: (updatedPart: { barcode: string; name: string; location: string }) => void;
-  reset: boolean;
-  onResetComplete: () => void;
+  location?: string;
+  quantity: number;
 }
 
-const Parts: React.FC<PartsProps> = ({ barcode, name, location, onChange, reset, onResetComplete }) => {
-  const [partBarcode, setPartBarcode] = useState<string>(barcode);
-  const [partName, setPartName] = useState<string>(name);
-  const [partLocation, setPartLocation] = useState<string>(location);
+interface PartsProps {
+  reset: boolean;
+  onResetComplete: () => void;
+  onAddPart: (part: Part) => void; // Обработчик для добавления запчасти
+  name: string; // Передаем имя принтера (make) из родительского компонента
+}
 
-  // Handle reset when `reset` is triggered
+const Parts: React.FC<PartsProps> = ({ reset, onResetComplete, onAddPart, name }) => {
+  const [partBarcode, setPartBarcode] = useState<string>('');
+  const [partName, setPartName] = useState<string>('');
+  const [partLocation, setPartLocation] = useState<string>('');
+  const [partQuantity, setPartQuantity] = useState<number>(1);
+
+  // Сбрасываем поля при reset
   useEffect(() => {
     if (reset) {
       setPartBarcode('');
       setPartName('');
       setPartLocation('');
-      onResetComplete(); // Notify parent that reset is done
+      setPartQuantity(1);
+      onResetComplete(); // Уведомляем родительский компонент, что сброс завершен
     }
   }, [reset, onResetComplete]);
 
-  // Update parent component when any field changes
-  useEffect(() => {
-    onChange({ barcode: partBarcode, name: partName, location: partLocation });
-  }, [partBarcode, partName, partLocation, onChange]);
+  // Добавление запчасти в массив и вызов родительской функции
+  const addPart = () => {
+    if (partBarcode && partName && partQuantity > 0) {
+      const newPart: Part = { barcode: partBarcode, name: partName, location: partLocation, quantity: partQuantity };
+      onAddPart(newPart); // Передаем новую запчасть родительскому компоненту
+      // Очищаем форму после добавления
+      setPartBarcode('');
+      setPartName('');
+      setPartLocation('');
+      setPartQuantity(1);
+    }
+  };
 
   return (
     <div className="parts-component">
-        <div className='w-full flex flex-row items-start space-y-0 mb-3'>
-          <label className="mb-3 text-base text-slate-300 font-semibold w-2/3">
-              Barcode:
-          </label>
-          <input
-              type="text"
-              value={partBarcode}
-              onChange={(e) => setPartBarcode(e.target.value)}
-              className="w-full outline-none bg-dark-600 text-slate-400 border-0 rounded-lg no-focus py-2 px-3"
-          />
-        </div>
+      <label className="block text-sm font-bold mb-2 text-white">
+        Barcode:
+      </label>
+      <input
+        type="text"
+        value={partBarcode}
+        onChange={(e) => setPartBarcode(e.target.value)}
+        className="input-field"
+        placeholder="Enter part barcode"
+      />
 
-        <div className='w-full flex flex-row items-start space-y-0 mb-3'>
-          <label className="mb-3 text-base text-slate-300 font-semibold w-2/3">
-            Name:
-          </label>
-          <input
-            type="text"
-            value={partName}
-            onChange={(e) => setPartName(e.target.value)}
-            className="w-full outline-none bg-dark-600 text-slate-400 border-0 rounded-lg no-focus  py-2 px-3"
-          />
-        </div>
-        <div className='w-full flex flex-row items-start space-y-0 mb-3'>
-          <label className="mb-3 text-base text-slate-300 font-semibold w-2/3">
-            Location:
-          </label>
-          <input
-            type="text"
-            value={partLocation}
-            onChange={(e) => setPartLocation(e.target.value)}
-            className="w-full outline-none bg-dark-600 text-slate-400 border-0 rounded-lg no-focus  py-2 px-3"
-          />
-        </div>
+      <label className="block text-sm font-bold mb-2 text-white">
+        Name:
+      </label>
+      <input
+        type="text"
+        value={partName}
+        onChange={(e) => setPartName(e.target.value)}
+        className="input-field"
+        placeholder="Enter part name"
+      />
 
+      <label className="block text-sm font-bold mb-2 text-white">
+        Location:
+      </label>
+      <input
+        type="text"
+        value={partLocation}
+        onChange={(e) => setPartLocation(e.target.value)}
+        className="input-field"
+        placeholder="Enter part location (optional)"
+      />
+
+      <label className="block text-sm font-bold mb-2 text-white">
+        Quantity:
+      </label>
+      <input
+        type="number"
+        value={partQuantity}
+        onChange={(e) => setPartQuantity(parseInt(e.target.value))}
+        className="input-field"
+        placeholder="Enter quantity"
+        min="1"
+      />
+
+      <button onClick={addPart} className="mt-4 bg-green-500 text-white px-4 py-2 rounded">
+        Add Part
+      </button>
     </div>
   );
 };

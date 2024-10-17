@@ -29,10 +29,10 @@ export default function ChangedParts({ onSelect, reset, onResetComplete }: Props
 
   return (
     <div className="my-2">
-      <div className="w-full flex flex-row items-start space-y-0">
-        <label className="text-base text-slate-300 font-semibold w-2/3">Parts changed</label>
-        <div className="flex flex-wrap justify-end gap-2">
-          {["Laser guard", "Front", "Fan", "Fuser","Fuser sleeve", "Scanner", "Screen", "Rolls", "Top", "Left side", "Right side", "Tray", "Rear Doors", "Solenoid #1", "Solenoid #2"].map(part => (
+      <div className="w-full flex flex-col items-start space-y-0">
+        <label className="text-sm text-slate-300 font-semibold w-2/3 mb-2 mt-3">Parts changed:</label>
+        <div className="flex flex-wrap  gap-2">
+          {["Laser guard", "Front", "Fan", "Fuser","Fuser sleeve", "Scanner", "Screen", "Rolls", "Tray rolls", "Tray's front", "Top", "Left side", "Right side", "Tray", "Rear Doors", "Formator's door", "Formator", "Pressure roll", "Solenoid #1", "Solenoid #2"].map(part => (
             <button
               key={part}
               onClick={() => handleSelect(part)}

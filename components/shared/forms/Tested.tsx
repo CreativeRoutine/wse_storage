@@ -29,10 +29,10 @@ export default function ChangedParts({ onSelect, reset, onResetComplete }: Props
 
   return (
     <div className="my-2">
-      <div className="mb-4 flex flex-row items-start space-y-0">
-        <label className="text-base text-slate-300 font-semibold">Tested and performed</label>
-        <div className="flex flex-wrap justify-end gap-2">
-            {["USB", "Scanner", "Network", "Cold Reset", "NVRam reset", "Maintenance Kit"].map(test => (
+      <div className="mb-4 flex flex-col items-start space-y-0">
+        <label className="text-sm text-slate-300 font-semibold mb-2 mt-3">Tested and performed:</label>
+        <div className="flex flex-wrap  gap-2">
+            {["USB", "Scanner", "Network", "Cold Reset", "Cleaning page", "NVRam reset", "Maintenance Kit"].map(test => (
               <button
                 key={test}
                 onClick={() => handleSelect(test)}

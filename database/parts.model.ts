@@ -1,42 +1,25 @@
 import { Schema, model, models, Document } from "mongoose";
 
 export interface IParts extends Document {
-    barcode: string;
+  printerName: string; // Имя принтера, которому принадлежат запчасти
+  parts: {
     name: string;
-    make: string;
-    // id: number;
-    // sn: Schema.Types.ObjectId[];
-    // palletSn: Schema.Types.ObjectId;
-    // tech: Schema.Types.ObjectId[];
-    // techStart: Date;
-    // techEnd: Date;
-    // cleanerStart: Date;
-    // cleanerEnd: Date;
-    // cleaner: Schema.Types.ObjectId[];
-    // condition: Schema.Types.ObjectId[];
-    // changedParts: Schema.Types.ObjectId[];
-    // timeSpent: number;
-    // price: number;
+    barcode: string;
+    location: string;
+    quantity: number;
+  }[];
 }
 
 const PartsSchema = new Schema({
-    barcode: { type: String, required: true },
-    name: { type: String, required: true },
-    make: { type: String, required: true },
-    // id: { type: Number, required: true, unique: true},
-    // sn: { type: Schema.Types.ObjectId, required: true, unique: true},
-    // palletSn: { type: Schema.Types.ObjectId, ref: 'Pallet', required: true },
-    
-    // tech: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    // techStart: { type: Date, default: Date.now , required: true },
-    // techEnd: { type: Date, required: true },
-    // cleanerStart: { type: Date, default: Date.now, required: true },
-    // cleanerEnd: { type: Date, required: true },
-    // cleaner: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    // condition: [{ type: Schema.Types.ObjectId, ref: 'Condition' }],
-    // changedParts: [{ type: Schema.Types.ObjectId, ref: 'Parts' }],
-    // timeSpent: { type: Number, required: true },
-    // price: { type: Number, required: true }
+  printerName: { type: String, required: true }, // Имя принтера
+  parts: [
+    {
+      name: { type: String, required: true }, // Название запчасти
+      barcode: { type: String, required: true }, // Штрихкод детали
+      location: { type: String, required: false }, // Местоположение детали
+      quantity: { type: Number, required: true, default: 0 }, // Количество запчастей
+    },
+  ],
 });
 
 const Parts = models.Parts || model('Parts', PartsSchema);

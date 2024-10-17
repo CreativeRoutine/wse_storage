@@ -29,7 +29,7 @@ export default function PagesNumber({ onInput, reset, onResetComplete }: Props) 
   return (
     <div className="my-2">
       <div className="flex flex-row items-start space-y-0">
-        <label className="w-2/3 text-base text-slate-300 font-semibold">Pages printed</label>
+        <label className="w-2/3 text-sm text-slate-300 font-semibold">Pages printed</label>
         <input
           type="number"
           value={inputValue}

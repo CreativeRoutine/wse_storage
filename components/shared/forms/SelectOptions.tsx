@@ -50,7 +50,7 @@ const SelectOption: React.FC<SelectOptionProps> = ({ label, options, onSelect, r
             name="option"
             render={({ field }) => (
               <FormItem className='flex flex-row items-start space-y-0'>
-                <FormLabel className="w-2/3  text-base text-slate-300 font-semibold">{label}</FormLabel>
+                <FormLabel className="w-2/3  text-sm text-slate-300 font-semibold">{label}</FormLabel>
                 <FormControl className="mt-0">
                   <Select
                     value={selectedOption} // Устанавливаем значение из состояния

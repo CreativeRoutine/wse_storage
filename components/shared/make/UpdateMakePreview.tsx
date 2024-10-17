@@ -120,7 +120,7 @@ export default function UpdateMakePreview ({id}:Props){
                           >
                           
                           <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0 bg-dark-400 text-left border-0 border-slate-300 text-slate-400">
-                              <SelectValue placeholder="Printer's name" className="text-left ml-0" />
+                              <SelectValue placeholder="Printer's preview" className="text-left ml-0" />
                           </SelectTrigger>
 
                           <SelectContent id="mySelect" className="bg-dark-400 p-0 text-white border-0">

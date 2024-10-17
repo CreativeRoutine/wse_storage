@@ -19,7 +19,7 @@ const LeftSidebar = () => {
   return (
     <section
       id="sidebar"
-      className="bg-dark-200 custom-scrollbar fixed left-0 top-0 flex h-screen flex-col justify-start overflow-y-auto border-r border-dark-300 pt-12 shadow-light-300 dark:shadow-none max-sm:hidden sm:w-[120px] lg:w-[300px] xl:w-[395px]"
+      className="bg-dark-200 custom-scrollbar fixed left-0 top-0 flex h-screen flex-col justify-start overflow-y-auto border-r border-dark-300 pt-12 shadow-light-300 dark:shadow-none max-sm:hidden sm:w-[120px]  xl:w-[395px]"
     >
       {/* Logo */}
       <Link
@@ -30,7 +30,7 @@ const LeftSidebar = () => {
           <div className="flex justify-center items-center h-10 w-10 bg-primary-500 rounded-lg">
             <Image width={32} height={32} src="/assets/logo.png" alt="logo" />
           </div>
-          <p className="text-white pl-2.5 font-bold uppercase hidden lg:flex">
+          <p className="text-white pl-2.5 font-bold uppercase hidden xl:flex">
             WSElectronics
           </p>
         </div>
@@ -55,7 +55,7 @@ const LeftSidebar = () => {
                   isActive
                     ? "bg-primary-500 rounded-lg text-light-900"
                     : "text-slate-200 "
-                } flex items-center justify-center gap-4 p-2 w-[40px] h-[40px] lg:p-4 sm:p-0  lg:h-[60px] lg:w-auto lg:justify-start`}
+                } flex items-center justify-center gap-4 p-2 w-[40px] h-[40px] xl:p-4 sm:p-0  xl:h-[60px] xl:w-auto xl:justify-start`}
               >
                 <Image
                   src={item.imgURL}
@@ -63,7 +63,7 @@ const LeftSidebar = () => {
                   width={20}
                   height={20}
                 />
-                <p className="base-bold hidden lg:block">{item.label}</p>
+                <p className="base-bold hidden xl:block">{item.label}</p>
               </Link>
             </div>
           );
