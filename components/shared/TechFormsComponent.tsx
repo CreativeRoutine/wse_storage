@@ -15,6 +15,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { createParts } from '@/lib/actions/parts.action';
 import { useTimer } from '../shared/hooks/useTimer';
 import { getUsers } from '@/lib/actions/user.action';
+// import TakeOffPart from './parts/TakeOffPart';
+import AddPartFromPrinter from './parts/AddPartFromPrinter';
 
 interface Props {
   users: any;
@@ -191,7 +193,7 @@ const TechFormsComponent = ({ users }: Props) => {
   };
 
   return (
-    <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl border border-dark-350 shadow-lg">
+    <div className="bg-secondary-200 px-6 mb-1 py-6 w-full rounded-xl border border-dark-350 shadow-lg">
       <div className="text-white font-bold px-1 mb-3 flex justify-between border-b-2 border-slate-400 pb-4">
         <div>{selectedUser.name ? selectedUser.name : 'User not selected!'}</div>
 
@@ -213,6 +215,7 @@ const TechFormsComponent = ({ users }: Props) => {
       </div>
 
       <SelectTech users={usersData} setSelectedUser={(user) => { clearError(); setSelectedUser(user); }} />
+      
       <FindPrinter setPrinterID={(printer) => { clearError(); setPrinterID(printer); }} />
 
       <div className="border-b border-slate-400 pb-1">
@@ -240,7 +243,15 @@ const TechFormsComponent = ({ users }: Props) => {
       </div>
 
       {condition === 'Bad (not fixable)' ? (
-        <div className="border-y border-slate-400 pb-1 mb-4">{/* Компонент для Parts здесь */}</div>
+        <div className="border-y border-slate-400 pb-1 mb-4">
+          
+          {/* <TakeOffPart printerID={printerID._id} productNumber={printerID.productNumber} />  */}
+          <AddPartFromPrinter
+            printerId={printerID._id} 
+            printerProductNumber={printerID.productNumber} 
+          />
+          
+          </div>
       ) : (
         <>
           <ChangedParts onSelect={(value) => { clearError(); setChangedParts(value); }} reset={formReset} onResetComplete={handleResetComplete} />

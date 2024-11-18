@@ -65,7 +65,6 @@ export default function CreatePrinter ({ mongoUserId }: Props){
         createdOn: createdOn,
       })
 
-
         setIsSubmitting(false); // Reset isSubmitting state
         // defined as a hook
         form.reset({}); // Reset form fields

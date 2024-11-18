@@ -78,24 +78,29 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                 {
                                   getPaletDataPlain.printers.map((printer:any, index:number) => {
                                     return(
-                                      <li key={printer._id} className='mt-2 w-full text-base text-slate-400 flex flex-row items-center justify-start'>
-                                        <div className='mr-3'>{index +1}.</div>
+                                      <li key={printer._id} className='mt-2 py-2 w-full text-base text-slate-400 flex flex-row items-center justify-between border-b border-slate-400 '>
+                                        <div className='flex gap-2'>
+                                          <div className='mr-2'>{index +1}.</div>
 
-                                        <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                          <div className='tex-sm text-slate-500 mr-2'>Barcode:</div><Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.barcode}</Link>
+                                          <div className='ml-1 mr-6  text-white text-md flex flex-row w-auto'>
+                                            <div className='tex-sm text-slate-500 mr-2'>Barcode:</div>
+                                            <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.barcode}</Link>
+                                          </div>
+
+                                          <div className='ml-1 mr-6  text-white text-md flex flex-row w-auto'>
+                                            <div className='tex-sm text-slate-500 mr-2'>S/N:</div>
+                                            <div className=''>{printer.sn}</div>
+                                          </div>
+
+                                          <div className='ml-1 mr-6 w-auto text-white text-md flex flex-row'>
+                                            <div className='tex-sm text-slate-500 mr-2'>Prod. num.:</div>
+                                            <div className=''>{printer.productNumber}</div>
+                                          </div>
                                         </div>
 
-                                        <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                          <div className='tex-sm text-slate-500 mr-2'>S/N:</div>
-                                          <div className=''>{printer.sn}</div>
+                                        <div className=''>
+                                          <UnPinPrinter id={_id} printerId={printer._id} mongoUserId={mongoUser._id} />
                                         </div>
-
-                                        <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
-                                          <div className='tex-sm text-slate-500 mr-2'>Prod. num.:</div>
-                                          <div className=''>{printer.productNumber}</div>
-                                        </div>
-
-                                        <UnPinPrinter id={_id} printerId={printer._id} mongoUserId={mongoUser._id} />
 
                                       </li>
                                     ) 

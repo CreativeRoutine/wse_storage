@@ -37,11 +37,14 @@ interface Props {
 }
 
 export default function DeleteMake({ id }: Props) {
+  
+  const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
 
+  // 1. Define your form.
   const form = useForm<z.infer<typeof deleteMakeSchema>>({
     resolver: zodResolver(deleteMakeSchema),
     defaultValues: {
@@ -51,7 +54,6 @@ export default function DeleteMake({ id }: Props) {
 
   async function onSubmit() {
     
-    const { toast } = useToast();
 
     setIsSubmitting(true);
   

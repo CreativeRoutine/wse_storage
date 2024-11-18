@@ -150,11 +150,25 @@ export interface DeleteMakeParams {
 // /////////////////////
 // PART TYPES
 // /////////////////////
+export interface CreatePartParams {
+  productNumber: string;
+}
+
+
 export interface CreatePartModelParams {
   pn: string;
   name: string;
   path: string;
 }
+
+export interface GetAllPartsParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  filter?: string;
+}
+
+
 
 export interface GetPartsParams {
   page?: number;
@@ -166,6 +180,7 @@ export interface DeletePartsParams {
   partId: string;
   path: string;
 }
+
 
 
 

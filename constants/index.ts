@@ -17,10 +17,15 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Printers",
   },
   {
-    imgURL: "/images/icons/users.svg",
-    route: "/users",
-    label: "Users",
+    imgURL: "/images/icons/printer.svg",
+    route: "/parts",
+    label: "Parts",
   },
+  // {
+  //   imgURL: "/images/icons/users.svg",
+  //   route: "/users",
+  //   label: "Users",
+  // },
   // {
   //   imgURL: "/assets/icons/parts.svg",
   //   route: "/parts",
@@ -55,12 +60,24 @@ export const sidebarLinks: SidebarLink[] = [
 
 export const settingsLinks: SettingsLink[] = [
   {
-    route: "/settings/suppliers",
+    route: "suppliers",
     label: "Suppliers",
   },
   {
-    route: "/settings/makes",
+    route: "makes",
     label: "Makes",
+  },
+  {
+    route: "printer-parts",
+    label: "Printer parts",
+  },
+  {
+    route: "list",
+    label: "Parts list",
+  },
+  {
+    route: "users",
+    label: "Users",
   },
 ];
 

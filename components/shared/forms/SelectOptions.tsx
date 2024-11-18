@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Form,
   FormControl,
@@ -31,7 +31,7 @@ const SelectOption: React.FC<SelectOptionProps> = ({ label, options, onSelect, r
     },
   });
 
-  const [selectedOption, setSelectedOption] = React.useState(""); // Локальное состояние для выбора
+  const [selectedOption, setSelectedOption] = useState(""); // Локальное состояние для выбора
 
   useEffect(() => {
     if (reset) {

@@ -3,6 +3,7 @@
 import { connectToDatabase } from "../mongoose";
 import {  CreateMakesParams, GetAllMakesParams,GetMakeByIdParams, UpdateMakePreviewParams, DeleteMakeParams, UpdateMakeName } from "./shared.types";
 import Printer from "@/database/printer.model";
+import Parts from "@/database/parts.model";
 import { revalidatePath } from "next/cache";
 import Makes from "@/database/makes.model";
 import { constants } from "fs/promises";
@@ -105,7 +106,7 @@ export async function deleteMake(params: DeleteMakeParams) {
     if (!make) {
       return { success: false, message: "Make can't be deleted!", info: "This Make does not exist in the database" }; 
     }
-    if (make.printers.length > 0) {
+    if (make.printers.length != 0) {
       return { success: false, message: "Make can't be deleted!", info: "This supplier has pallets or printers. Please delete them first" }; 
     }
     await Makes.deleteOne({ _id: make._id });
@@ -125,6 +126,7 @@ export async function updateMake(params: UpdateMakeName) {
     await connectToDatabase();
     const { _id, name, path } = params;
 
+    // 1.
     const make = await Makes.findOne({ _id });
     if (!make) {
       return { success: false, message: "Make can't be updated!", info: "This Make does not exist in the database" }; 
@@ -134,9 +136,17 @@ export async function updateMake(params: UpdateMakeName) {
 
     // const printers = await Printer.find({productNumber: make.productNumber});
     
+    // 2.
     const printersNames = await Printer.updateMany(
       { productNumber: make.productNumber }, 
       { $set: { name: name } }
+    );
+
+    // 3.
+    const parts = await Parts.findOneAndUpdate(
+      {productNumber: make.productNumber}, 
+      { $set: { printerName: name } },
+      {new: true}
     );
 
     revalidatePath(path);

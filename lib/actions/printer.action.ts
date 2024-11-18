@@ -8,71 +8,79 @@ import moment from 'moment-timezone';
 import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
+
 import { FilterQuery } from "mongoose";
 import mongoose from 'mongoose';
 import User from '@/database/user.model';
 import Employee from "@/database/employee.model";
+import Parts from "@/database/parts.model";
 
-// Messaging ready
+// AFTER PARTS IMPLEMENTATION
+// CONFIRMED AS WORKABLE
 export async function createPrinter(params: CreatePrinterParams) {
-    
   try {
-      await connectToDatabase(); // Добавьте await, чтобы дождаться подключения к базе данных
-      const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
+    await connectToDatabase(); // Подключение к базе данных
 
-      // Searching if printer exists
-      const existingPrinter = await Printer.findOne({ sn, barcode });
-      if (existingPrinter) {
-        return { success: false, message: "Printer already exests!"}; 
-      }
+    const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
 
-      let printerModel;
+    // Checking if the printer already exists
+    const existingPrinter = await Printer.findOne({ sn, barcode });
+    if (existingPrinter) {
+      return { success: false, message: "Printer already exists!" };
+    }
 
-      const printerMake = await Makes.findOne({ productNumber: productNumber });  
+    let printerModel;
 
-      if(printerMake){
-        printerModel = printerMake.name;
-      } else 
-        {
-          printerModel = "";
-        }
+    // Search by productNumber
+    const printerMake = await Makes.findOne({ productNumber });
 
-      // Создание нового принтера
-      const newPrinter = await Printer.create({
-        ponumber,
-        sn, 
-        productNumber, 
-        barcode,
-        createdOn,
-        name: printerModel,
+    if (printerMake) {
+      printerModel = printerMake.name;
+    } else {
+      printerModel = "";
+    }
+
+    const printerPart = await Parts.findOne({ productNumber: productNumber });
+    if (!printerPart) {
+      await Parts.create({
+        productNumber: productNumber,
+        printerName: printerModel,
+        parts: [],
       });
+    }
 
+    // Create a new printer
+    const newPrinter = await Printer.create({
+      ponumber,
+      sn,
+      productNumber,
+      barcode,
+      createdOn,
+      name: printerModel,
+    });
 
-      // Обновляем существующего поставщика
-      await Supplier.findOneAndUpdate(
-        { ponumber: ponumber },
-        { $push: { printers: newPrinter._id } },
-        { new: true, upsert: true },
-      );
+    // Update the supplier (Supplier)
+    await Supplier.findOneAndUpdate(
+      { ponumber },
+      { $push: { printers: newPrinter._id } },
+      { new: true, upsert: true }
+    );
 
-      // Обновляем или создаем запись в Makes
-      await Makes.findOneAndUpdate(
-        { productNumber: productNumber },
-        { $push: { printers: newPrinter._id } },
-        { new: true, upsert: true, setDefaultsOnInsert: true },
-      );
+    // Update or create a record in Makes
+    await Makes.findOneAndUpdate(
+      { productNumber },
+      { $push: { printers: newPrinter._id } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
 
-      revalidatePath(path);
+    revalidatePath(path);
 
-      // Преобразование нового принтера в простой JavaScript объект
-      const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
-      // return newPrinterPlain;
-      return { success: true, message: "Printer addet to pallet successfully!"}; 
+    // Возвращаем успешный результат
+    return { success: true, message: "Printer and parts record created successfully!" };
+
   } catch (error) {
-    
     console.error("An error occurred while creating the printer:", error);
-    return "An error occurred while creating the printer";
+    return { success: false, message: "An error occurred while creating the printer" };
   }
 }
 
@@ -367,7 +375,7 @@ export async function updatePrinterWithCheck(params: any) {
     const savedPrinter = await printer.save();
 
     // Проверка, что данные действительно сохранились
-    console.log('Saved Printer:', savedPrinter.tasksPerformed);
+    // console.log('Saved Printer:', savedPrinter.tasksPerformed);
 
     // Обновляем кеш страницы
     revalidatePath(path);

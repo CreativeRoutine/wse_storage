@@ -17,7 +17,7 @@ interface Props {
     _id: string;
     params: any;
 }
-const page = async ({ params }: { params: { _id: string } }) => {
+const userPage = async ({ params }: { params: { _id: string } }) => {
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -166,4 +166,4 @@ const page = async ({ params }: { params: { _id: string } }) => {
     </>
   )
 }
-export default page
+export default userPage

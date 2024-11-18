@@ -1,27 +1,42 @@
 import { Schema, model, models, Document } from "mongoose";
 
-export interface IParts extends Document {
-  printerName: string; // Имя принтера, которому принадлежат запчасти
-  parts: {
-    name: string;
-    barcode: string;
-    location: string;
-    quantity: number;
-  }[];
+export interface IPart extends Document {
+    productNumber: string;
+    printerName?: string;
+    parts: {
+        partsName: string;
+        maxParts: number;
+        part: {
+            _id: string;
+            barcode: string;
+            location: string;
+            from?: Schema.Types.ObjectId;
+            to?: Schema.Types.ObjectId;
+            used: boolean;
+            createdOn?: Date;
+        }[];
+    };
 }
 
-const PartsSchema = new Schema({
-  printerName: { type: String, required: true }, // Имя принтера
-  parts: [
-    {
-      name: { type: String, required: true }, // Название запчасти
-      barcode: { type: String, required: true }, // Штрихкод детали
-      location: { type: String, required: false }, // Местоположение детали
-      quantity: { type: Number, required: true, default: 0 }, // Количество запчастей
-    },
-  ],
+const PartSchema = new Schema({
+    productNumber: { type: String, required: true },
+    printerName: { type: String, required: false },
+    parts: [{
+        partsName: { type: String, required: true },
+        maxParts: { type: Number, required: true },
+        part: [
+            {
+                barcode: { type: String, required: true },
+                location: { type: String, required: true },
+                from: { type: Schema.Types.ObjectId, ref: 'Printer', required: false },
+                to: { type: Schema.Types.ObjectId, ref: 'Printer', required: false },
+                used: { type: Boolean, required: true },
+                createdOn: { type: Date, default: Date.now, required: false}
+            },
+        ],
+    }],
 });
 
-const Parts = models.Parts || model('Parts', PartsSchema);
+const Parts = models.Parts || model<IPart>("Parts", PartSchema);
 
 export default Parts;

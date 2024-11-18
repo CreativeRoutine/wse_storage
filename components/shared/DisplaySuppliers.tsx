@@ -11,7 +11,7 @@ interface Props {
 
 const DisplaySuppliers = async ({suppliers}:Props) => {
     
-    if(suppliers == 0){
+    if(suppliers.length == 0){
       return(<div className="mt-6 text-white text-left">"You didn't add any Supplier (PO number) yet!"</div>)
     }
 

@@ -104,11 +104,6 @@ export const updatePrinterPONSchema = z.object({
   ponumber: z.string().min(0).max(30),
 })
 
-export const addPartSchema = z.object({
-  name: z.string().min(2).max(30), 
-  pn: z.string().min(1).max(30),
-})
-
 export const addWorkSchema = z.object({
   name: z.string().min(2).max(30), 
   // user: z.string().min(3).max(12),
@@ -136,4 +131,65 @@ export const updateMakePreviewScheme = z.object({
 })
 export const deleteMakeSchema = z.object({
   _id: z.string().min(2).max(30),
+})
+
+// ===================  Part  ===================
+// export const addPartSchema = z.object({
+//   barcode: z.string().min(0).max(30),
+//   make: z.string().min(5).max(30), 
+//   name: z.string().min(3).max(30),
+//   options: z.string().min(3).max(30),
+//   location: z.string().min(2).max(30),
+
+// })
+export const addPartSchema = z.object({
+  productNumber: z.string().min(3).max(30),
+})
+
+export const addGenericPartSchema = z.object({
+  barcode: z.string().min(0).max(30),
+  location: z.string().min(0).max(30),
+  partName: z.string().min(5).max(30),
+  productNumber: z.string().min(3).max(30), 
+})
+
+export const addPartNameSchema = z.object({
+  // barcode: z.string().min(0).max(30),
+  // printerName: z.string().min(5).max(30), 
+  partName: z.string().min(3).max(30),
+  // options: z.string().min(3).max(30),
+  // location: z.string().min(2).max(30),
+
+})
+
+export const assignNameSchema = z.object({
+  name: z.string().min(0).max(30),
+})
+
+export const renamePartInListSchema = z.object({
+  oldName: z.string().min(1).max(30),
+  newName: z.string().min(1).max(30),
+})
+
+export const deletePartFromListSchema = z.object({
+  oldName: z.string().min(1).max(30),
+})
+
+export const deletePrinterPartSchema = z.object({
+  _id: z.string().min(0).max(30),
+})
+
+export const addPartFromPrinterSchema = z.object({
+  printerId: z.string().min(0).max(30),
+  printerProductNumber: z.string().min(0).max(30),
+  partName: z.string().min(0).max(30),
+  barcode: z.string().min(0).max(30),
+  location: z.string().min(0).max(30),
+})
+
+
+export const addPartToStorageSchema = z.object({ 
+  productNumber: z.string().min(3).max(30),
+  barcode: z.string().min(3).max(30),
+  location: z.string().min(3).max(30),
 })

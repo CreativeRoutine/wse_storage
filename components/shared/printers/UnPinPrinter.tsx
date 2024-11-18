@@ -82,7 +82,7 @@ export default  function UnPinPrinter ({id, printerId}:Props){
                 <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
 
                   
-                  <Button type="submit" onClick={onSubmit}  className="w-full bg-red-500 text-white mt-3" disabled={isSubmitting}>
+                  <Button type="submit" onClick={onSubmit}  className="w-full max-w-[120px] bg-red-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           {'Unpinning ...'}

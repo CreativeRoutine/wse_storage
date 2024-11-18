@@ -17,11 +17,6 @@ import UpdateMakePreview from '@/components/shared/make/UpdateMakePreview'
 
 const page = async ({ params }: { params: { _id: string } }) => {
 
-  const people = [
-    { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-    // More people...
-  ]
-
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})
@@ -35,17 +30,16 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const makeData = await getMakeById({_id})
   const make = JSON.parse(JSON.stringify(makeData))
-  // console.log(make)
 
   return (
 
     <>
+        
       {
-        make.name ? ( <Title text={`Make - ${make.name}`} /> ) :
-        (<Title text={`Make - ${_id}`} />)
+        make.name ? ( <Title text={`Make - ${make.name}`}  link="/settings/makes" linkText="Back" /> ) :
+        (<Title text={`Make - ${_id}`} link="/settings/makes" linkText="Back" />)
       }
       
-
       <div className="flex flex-col bg-dark-600 rounded-xl border border-dark-350 p-4">
 
         {/* =========== */}
@@ -135,7 +129,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
                             {
                               make.printers.map( 
                                 (item:any, i:number) => (
-                                  <>
                                     <tr key={item._id} className="even:bg-secondary-100 rounded-lg even:rounded-xl">
                                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-400 sm:pl-3">
                                         {i+1}
@@ -148,7 +141,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                         <Link className='text-indigo-600 hover:text-indigo-900' href={`/printers/${item._id}`}>View</Link>
                                       </td>
                                     </tr>                 
-                                  </>
                                 )
                               )
                             }

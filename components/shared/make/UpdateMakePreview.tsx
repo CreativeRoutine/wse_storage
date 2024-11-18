@@ -74,7 +74,7 @@ export default function UpdateMakePreview ({id}:Props){
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/make/${id}`)
+      router.push(`/settings/makes/${id}`)
 
       return (
         response.success ? toast({

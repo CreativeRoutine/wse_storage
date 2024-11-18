@@ -20,9 +20,6 @@ const PrintersSetings = async ({searchParams}: SearchParamsProps) => {
   const result = await getAllMakes({
     searchQuery: searchParams.q
   })
-  console.log(result)
-  // const makes = JSON.parse(JSON.stringify(makesRaw))
-
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')

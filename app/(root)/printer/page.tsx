@@ -35,9 +35,16 @@ const Printer = async () => {
       <Title text={"Work with printer"} />
 
       <div className="mt-4 bg-dark-600 rounded-xl  p-4 text-white">
-        <div className="flex  flex-col rounded-lg flex flex-row gap-4 mt-4 w-full">
+        <div className="flex  flex-col lg:flex-row rounded-lg  gap-4 mt-4 w-full">
 
+
+        <div className='w-1/2'>
           <TechFormsComponent users={JSON.stringify(users)}/>
+        </div>
+        <div className='w-1/2'>
+          <TechFormsComponent users={JSON.stringify(users)}/>
+        </div>
+          
 
           </div>
       </div>  

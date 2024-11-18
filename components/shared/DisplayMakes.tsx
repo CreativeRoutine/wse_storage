@@ -11,7 +11,7 @@ interface Props {
 
 const DisplayMakes = async ({makes}: Props) => {
 
-  if(makes == 0){
+  if(makes.length == 0){
     return(<div className="mt-6 text-white text-left">"You didn't add any Makes (Priner's names) yet!"</div>)
   }
 
@@ -67,7 +67,7 @@ const DisplayMakes = async ({makes}: Props) => {
           </td>
           {/* <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{formatTime(make.createdOn, "full")}</td> */}
           <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-            <a href={`/make/${make._id}`} className="text-indigo-600 hover:text-indigo-900 z-0">
+            <a href={`/settings/makes/${make._id}`} className="text-indigo-600 hover:text-indigo-900 z-0">
               View
             </a>
           </td>

@@ -14,10 +14,11 @@ export interface IPrinter extends Document {
         cleanliness: string;
         workable: boolean;
         repariable: boolean;
-        changedParts: string[];
+        changedParts: Schema.Types.ObjectId[];
         afterRefurbish: string;
+        disassembled: Schema.Types.ObjectId[];
         pagesNumber: number;
-        tested: string[];
+        tested: Schema.Types.ObjectId[];
         timeSpent: number;
         additionalInfo: string;
         status: string;
@@ -30,18 +31,19 @@ const PrinterSchema = new Schema({
     ponumber: { type: String, required: false },
     createdOn: { type: Date, default: Date.now },
     sn: { type: String, required: true },
-    productNumber: { type: String, required: true},
-    barcode: { type: String, required: true },
+    productNumber: { type: String, required: true, index: true },
+    barcode: { type: String, required: true, unique: true },
     pallet: { type: Schema.Types.ObjectId, ref: 'Pallet', required: false },
     tasksPerformed: [{
         date: { type: Date, default: Date.now },
         user: { type: Schema.Types.ObjectId, ref: 'Employee', required: true },
-        overallCondition: { type: String, required: false },
+        overallCondition: { type: String, required: true },
         cleanliness: { type: String, required: false },
         workable: { type: Boolean, required: false },
         repariable: { type: Boolean, required: false },
-        changedParts: [{ type: String, required: false }],
+        changedParts: [{ type: Schema.Types.ObjectId, ref: "Parts", required: false }],
         afterRefurbish: { type: String, required: false },
+        disassembled: [{ type: Schema.Types.ObjectId, ref: "Parts", required: false }],
         pagesNumber: { type: Number, required: false },
         tested: [{ type: String, required: false }],
         timeSpent: { type: Number, required: false },
@@ -56,52 +58,3 @@ const Printer = models.Printer || model('Printer', PrinterSchema);
 
 export default Printer;
 
-
-
-// export interface IPrinter extends Document {
-//     ponumber?: string;
-//     createdOn: Date;
-//     sn?: string;
-//     productNumber: string;
-//     barcode: string;
-//     pallet?: Schema.Types.ObjectId;
-//     tech: Schema.Types.ObjectId[];
-//     techStart: Date;
-//     techEnd: Date;
-//     cleaner: Schema.Types.ObjectId[];
-//     cleanerStart: Date;
-//     cleanerEnd: Date;
-//     condition: string[];
-//     workable: boolean;
-//     repariable: boolean;
-//     changedParts: string[];
-//     tasksPerformed: string[];
-//     price: number;
-//     name: string;
-// }
-
-// const PrinterSchema = new Schema({
-//     ponumber: { type: String, required: false },
-//     createdOn: { type: Date, default: Date.now },
-//     sn: { type: String, required: true },
-//     productNumber: { type: String, required: true},
-//     barcode: { type: String, required: true },
-//     pallet: { type: Schema.Types.ObjectId, ref: 'Pallet', required: false},
-//     tech: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-//     techStart: { type: Date, required: false },
-//     techEnd: { type: Date, required: false },
-//     cleaner: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-//     cleanerStart: { type: Date, required: false },
-//     cleanerEnd: { type: Date, required: false },
-//     condition: [{ type: String, required: false }],
-//     workable: { type: Boolean, required: false },
-//     repariable: { type: Boolean, required: false },
-//     changedParts: [{ type: String, required: false }],
-//     tasksPerformed: [{ type: String, required: false }],
-//     price: { type: Number, required: false },
-//     name: { type: String, required: false },
-// });
-
-// const Printer = models.Printer || model('Printer', PrinterSchema);
-
-// export default Printer;

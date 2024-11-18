@@ -29,7 +29,7 @@ const SetingsNav = () => {
           return (
             
               <Link
-              href={item.route}
+              href={`/settings/${item.route}`}
               key={item.label}
               className={`${
                 isActive
