@@ -51,8 +51,6 @@ const PrintersSetings = async ({searchParams}: SearchParamsProps) => {
                 otherClasses="mb-4 bg-dark-600"
               /> 
             </div>
-            
-
             <div className="mt-8 flow-root  rounded-lg">
               <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -105,5 +103,4 @@ const PrintersSetings = async ({searchParams}: SearchParamsProps) => {
       </>
   )
 }
-
 export default PrintersSetings

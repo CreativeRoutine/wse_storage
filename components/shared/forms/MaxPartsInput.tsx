@@ -39,7 +39,6 @@ export default function MaxPartsInput({ initialLimit, printerPN, label }: MaxPar
 
   return (
     <div className="flex items-center space-x-2">
-      {/* <label className="text-sm text-slate-300 font-semibold">{label}</label> */}
       <input
         type="number"
         value={limit}

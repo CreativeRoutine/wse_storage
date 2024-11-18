@@ -48,55 +48,7 @@ const PartsPage = async () => {
         <div className="mt-2 flow-root w-full rounded-lg">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-
-                {/* <table className="min-w-full divide-y divide-gray-300">
-                  <thead>
-                    <tr>
-                    <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Printer Make
-                      </th>
-                      <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Product number
-                      </th>
-                      <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Product number
-                      </th>
-
-                      <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Part Names
-                      </th>
-
-                      {/* <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Parts max qtty
-                      </th> */}
-
-                      {/* <th 
-                        scope="col" 
-                        className="relative  py-3.5 pl-3 pr-4 sm:pr-0"
-                      >
-                        <span className="sr-only hidden">Edit</span>
-                      </th>
-                    </tr>
-                  </thead> */}
-                  {/* <tbody className="divide-y divide-gray-200 bg-transparent"> */}
-                    <DisplayAllParts parts={parts}/>
-                  {/* </tbody>
-                </table> */}
+                <DisplayAllParts parts={parts}/>
               </div>
             </div>
           </div>

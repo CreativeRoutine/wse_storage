@@ -21,7 +21,6 @@ const addPart = async () => {
 
   const partResponse = await getAllPartsModels({})
   const parts = JSON.parse(JSON.stringify(partResponse))
-  // console.log("PARTS =====>",parts)
 
   async function choosePartName(productNumber: string){
     console.log("productNumber ===>",productNumber)

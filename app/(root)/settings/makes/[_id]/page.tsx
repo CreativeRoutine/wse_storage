@@ -30,6 +30,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const makeData = await getMakeById({_id})
   const make = JSON.parse(JSON.stringify(makeData))
+  // console.log(make)
 
   return (
 

@@ -15,12 +15,8 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
   const response:any = await getPartsByProductNumber({ productNumber });
   const parts = JSON.parse(JSON.stringify(response));
 
-
-
-
   const partsListResponse = await getAllPartsList();
   // const partsList = JSON.parse(JSON.stringify(partsListResponse));
-
   // console.log("parts ====>",Object.entries(parts).length)
   // console.log("partsList ====>",partsListResponse)
   // console.log("response[0] ====>",response[0])
@@ -48,21 +44,7 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
         <div className="w-1/2 bg-secondary-200 rounded-lg p-4 border border-dark-350 shadow-lg"> 
           <Subheading className="!text-white !text-lg">Printer parts settings</Subheading>
 
-          {/* {response.map((part: any) => ( */}
-            <DescriptionList className="mt-4" 
-            // key={part.printerName}
-            >
-              {/* <DescriptionTerm className="text-white">Printer preview</DescriptionTerm>
-              <DescriptionDetails className="!text-white">
-                <div className="h-11 w-11 flex-shrink-0">
-                  <img
-                    className="h-11 w-11 rounded-md"
-                    src={response.preview ? response.preview : "/assets/printers_preview/NoPreview.webp"}
-                    alt=""
-                  />
-                </div>
-              </DescriptionDetails> */}
-
+            <DescriptionList className="mt-4" >
               <DescriptionTerm className="text-white">Printer name:</DescriptionTerm>
               <DescriptionDetails className="!text-white">
                 {response[0].printerName ? response[0].printerName : <div className="text-red-500 ">Name not set</div>}
@@ -94,7 +76,7 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
                 </ul>
               </DescriptionDetails>
             </DescriptionList>
-          {/* ))} */}
+
         </div>
 
         {/* SWITCHERS */}

@@ -32,8 +32,6 @@ const PrinterParts = async ({searchParams}: SearchParamsProps) => {
   const result = await getAllParts({
     searchQuery: searchParams.q
   })
-
-  // console.log("P-Parts_PAGE ====>",result)
   
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -90,7 +88,7 @@ const PrinterParts = async ({searchParams}: SearchParamsProps) => {
           <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
 
           {/* LOCAL SEARCHBAR */}
-          <div className="sticky mt-8 flow-root  rounded-lg">
+          {/* <div className="sticky mt-8 flow-root  rounded-lg">
             <LocalSearchbar 
               route="/settings/printer-parts" 
               iconPosition="left" 
@@ -98,8 +96,7 @@ const PrinterParts = async ({searchParams}: SearchParamsProps) => {
               placeholder="Filter by makes's name or product number" 
               otherClasses="mb-4 bg-dark-600"
             /> 
-          </div>
-            
+          </div> */}
 
           <div className="mt-8 flow-root  rounded-lg">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

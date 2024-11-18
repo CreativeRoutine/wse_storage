@@ -39,8 +39,6 @@ const PartsList = async ({searchParams}: SearchParamsProps) => {
   
   const result = await getAllPartsList()
 
-  console.log(result)
-
   return (
     <>
         <Title text="Settings page" />
@@ -88,7 +86,6 @@ const PartsList = async ({searchParams}: SearchParamsProps) => {
                                   
                                   <DeletePartNameFromList oldPartName={part}/>
 
-                                  {/* </div> */}
                                 <DialogFooter className="sm:justify-end">
                                 <DialogClose asChild>
                                   <Button type="button" className="text-white border border-slate-500" variant="secondary">
@@ -116,7 +113,6 @@ const PartsList = async ({searchParams}: SearchParamsProps) => {
                                 
                                 <RenamePartInList oldPartName={part}/>
 
-                                {/* </div> */}
                               <DialogFooter className="sm:justify-end">
                               <DialogClose asChild>
                                 <Button type="button" className="text-white border border-slate-500" variant="secondary">

@@ -65,6 +65,7 @@ export function PartsSwitcher({ label, printerPN, state }: Props) {
         className="bg-gray-500"
         onCheckedChange={(checked) => settingsChanged(checked)} 
       />
+      {/* TEST INPUT TO DELETE */}
       <Label htmlFor="part-switch" className="text-white text-md">{label}</Label>
     </div>
   );
