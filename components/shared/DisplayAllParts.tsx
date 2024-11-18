@@ -71,11 +71,13 @@ const DisplayParts = async ({parts}:Props) => {
               )
             )
           ) : (
+            // test
             <li key={printer._id}>
               <span className="font-bold">{printer.printerName}</span> -{" "}
               <span className="text-gray-600">{printer.productNumber}</span>:{" "}
               <span className="text-red-500">No Parts Available</span>
             </li>
+
           )
         )}
       </ul>
