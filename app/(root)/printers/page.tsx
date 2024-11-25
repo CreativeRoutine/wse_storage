@@ -34,12 +34,13 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
   
   return (
     <>
-      <Title text={`Printers page (${result.totalPrinters})`} />
+      <Title text={`Printers page - (${result.totalPrinters})`} />
   
       {/* LIST OF PRINTERS */}
       <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
         <div className="px-4 sm:px-6 lg:px-8 rounded-lg">
 
+          {/* SEARCHBAR */}
           <div className="sticky mt-8 flow-root  rounded-lg">
             <LocalSearchbar 
               route="/printers" 
@@ -49,13 +50,16 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
               otherClasses="mb-4 bg-dark-600"
             /> 
           </div>
+
+          {/* FILTER WITH BUTTONS */}
           <PrintersFilters />
 
-          <div className="mt-8 flow-root  rounded-lg">
+          {/* TABLE */}
+          <div className="mt-8 flow-root rounded-lg">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                 <table className="min-w-full divide-y divide-gray-300">
-                  <thead>
+                  <thead className="sticky top-[10px]">
                     <tr>
                       <th 
                         scope="col" 

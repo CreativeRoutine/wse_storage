@@ -48,6 +48,7 @@ export default function AddPart ({ mongoUserId }: Props){
     resolver: zodResolver(addPartSchema),
     defaultValues: {
       productNumber:"",
+      make:"",
     },
   });
 
@@ -65,7 +66,7 @@ export default function AddPart ({ mongoUserId }: Props){
 
       const response:any = await createPrinterPart({
         productNumber: values.productNumber,
-        // printerName: values.printerName,
+        make: values.make,
       })
 
       setIsSubmitting(false); // Reset isSubmitting state
@@ -109,7 +110,30 @@ export default function AddPart ({ mongoUserId }: Props){
                   render={({ field }) => (
                     // First Input
                     <FormItem>
-                      <FormLabel className="mb-1 text-base text-slate-300 font-semibold">Make:</FormLabel>
+                      <FormLabel className="mb-1 text-base text-slate-300 font-semibold">Printer's Product Number:</FormLabel>
+                      <FormControl>
+                        <div className="flex">
+                          <Input
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="Product number"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Make - Product Number */}
+                <FormField
+                  control={form.control}
+                  name="make"
+                  render={({ field }) => (
+                    // First Input
+                    <FormItem>
+                      <FormLabel className="mb-1 text-base text-slate-300 font-semibold">Printer's Make:</FormLabel>
                       <FormControl>
                         <div className="flex">
                           <Input

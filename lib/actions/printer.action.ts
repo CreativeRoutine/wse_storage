@@ -136,6 +136,33 @@ export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
   }
 }
 
+export async function getPrinterById(params: any){
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const {id} = params;
+
+    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    const printer = await Printer.findOne({_id: id}).lean()
+    
+    if(!printer){
+      return console.log("PRINTER NOT FOUND")
+    }
+
+    // .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
+    // .populate({path: "supplier", model: Supplier})
+    // //.populate({path: 'author', model: User}) 
+    const printerPlain = JSON.parse(JSON.stringify(printer))
+
+    return printerPlain
+
+  } catch (error) {
+    
+    throw error;
+  }
+}
+
 // Messaging ready
 export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
   

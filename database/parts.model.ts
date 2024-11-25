@@ -8,8 +8,8 @@ export interface IPart extends Document {
         maxParts: number;
         part: {
             _id: string;
-            barcode: string;
-            location: string;
+            barcode?: string;
+            location?: string;
             from?: Schema.Types.ObjectId;
             to?: Schema.Types.ObjectId;
             used: boolean;
@@ -26,8 +26,8 @@ const PartSchema = new Schema({
         maxParts: { type: Number, required: true },
         part: [
             {
-                barcode: { type: String, required: true },
-                location: { type: String, required: true },
+                barcode: { type: String, required: false },
+                location: { type: String, required: false },
                 from: { type: Schema.Types.ObjectId, ref: 'Printer', required: false },
                 to: { type: Schema.Types.ObjectId, ref: 'Printer', required: false },
                 used: { type: Boolean, required: true },

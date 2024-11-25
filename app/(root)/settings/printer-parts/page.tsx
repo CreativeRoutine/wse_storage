@@ -61,8 +61,8 @@ const PrinterParts = async ({searchParams}: SearchParamsProps) => {
               <DialogContent className="sm:max-w-md bg-dark-100 border-0">
                 <DialogHeader>
                   <DialogTitle className="text-white mb-2">Create partition for new printer's parts</DialogTitle>
-                  <DialogDescription className="invisible h-0">
-                    Make changes to your profile here. Click save when you're done.
+                  <DialogDescription className="text-white text-sm">
+                    Make sure you adding printer model not existing in the database.
                   </DialogDescription>
                   </DialogHeader>
                     {/* <div className="w-full flex flex-col bg-secondary-200 px-6 mb-2 pt-6 pb-6 rounded-xl border border-dark-350 shadow-lg gap-4"> */}

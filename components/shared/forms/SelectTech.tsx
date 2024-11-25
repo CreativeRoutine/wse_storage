@@ -1,3 +1,4 @@
+
 // SelectTech.tsx
 "use client";
 import React, { useState } from 'react';
@@ -29,10 +30,11 @@ interface User {
 
 interface Props {
   users: User[]; // Обратите внимание, что здесь мы типизируем массив users как массив объектов User
-  setSelectedUser: (user: User) => void; // Типизируем setSelectedUser, чтобы он ожидал объект User
+  // setSelectedUser: (user: User) => void; // Типизируем setSelectedUser, чтобы он ожидал объект User
+  setUser: any;
 }
 
-export default function SelectTech({ users, setSelectedUser }: Props) {
+export default function SelectTech({ users, setUser }: Props) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,8 +50,9 @@ export default function SelectTech({ users, setSelectedUser }: Props) {
   function handleUserSelect(id: string) {
     const selectedUser = users.find(user => user.id === id); // Ищем пользователя по id
     if (selectedUser) {
-      setSelectedUser(selectedUser); // Устанавливаем выбранного пользователя
+      setUser(selectedUser); // Устанавливаем выбранного пользователя
     }
+    // console.log("THIS IS SELECTED USER",users)
   }
 
   return (
@@ -65,8 +68,8 @@ export default function SelectTech({ users, setSelectedUser }: Props) {
                   <FormControl>
                     <div className="flex">
                       <Select onValueChange={handleUserSelect}>
-                        <SelectTrigger className="w-full focus:outline-none bg-dark-600 border-0">
-                          <SelectValue placeholder="Tech's name" />
+                        <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
+                          <SelectValue placeholder="User's name" />
                         </SelectTrigger>
                         <SelectContent className="bg-dark-400 p-0 text-white border-0">
                           <SelectGroup className="py-4">

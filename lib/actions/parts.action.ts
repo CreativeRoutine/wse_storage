@@ -69,7 +69,7 @@ export async function createPrinterPart(params: CreatePartParams){
   try{
     connectToDatabase(); // Connect to the database
     
-    const { productNumber} = params;
+    const { productNumber, make} = params;
 
     const existingPart = await Parts.findOne({ productNumber: productNumber });
     
@@ -79,7 +79,7 @@ export async function createPrinterPart(params: CreatePartParams){
     // create part with such productNumber
     const newPart = await Parts.create({
       productNumber: productNumber,
-      printerName: "",
+      printerName: make,
       partName: "",
       maxParts: 10, 
       parts: []
@@ -90,10 +90,12 @@ export async function createPrinterPart(params: CreatePartParams){
 
     const exestingPrinter = await Makes.findOne({productNumber: productNumber});
 
-    if(exestingPrinter){
-      const newPart = await Parts.findOneAndUpdate(
-        {productNumber}, 
-        {printerName: exestingPrinter.name});
+    if(!exestingPrinter){
+      // Create new printer with _id of the pallet
+      const newMake = await Makes.create({
+        productNumber: productNumber,
+        name: make, 
+      });
     }
 
     return {success: true, message: "Part created successfully"};
@@ -301,23 +303,20 @@ export async function getPartsById(params: any){
 
 export async function getPartsByProductNumber(params: any){
   try{
-    connectToDatabase(); // Connect to the database
-
-    const {productNumber} = params;
-
-    const part = await Parts.find({productNumber: productNumber})
-
-    if(!part){
-      return {success: false, message: "Parts for this printer not found!"};
-    }
-    const partPN = part[0].productNumber;
-
-    const allParts = await Parts.find({productNumber: partPN}).lean();
-
-
 
     
-    return allParts;
+    const { productNumber } = params;
+    
+
+    if (!productNumber) throw new Error("Product number is missing");
+
+    connectToDatabase();
+
+    const partsResponse = await Parts.findOne({ productNumber }).lean();
+    const parts = JSON.stringify(partsResponse);
+    
+
+    return parts;
 
   }catch(error){
     console.error("An error occurred while getting the part:", error);
@@ -377,6 +376,54 @@ export async function addGenericPart(data: {
   }
 }
 
+export async function addPartFromPrinter(data: { 
+  createdOn: Date;
+  partName: string;
+  productNumber: string;
+  printerId?: string; // Опциональный ID принтера
+  used?: boolean; // Поле used
+}) {
+  try {
+    await connectToDatabase();
+
+    const { createdOn, productNumber, printerId, used = false } = data;
+
+    const part = await Parts.findOne({ productNumber });
+    if (!part) {
+      return { success: false, message: "Part not found!" };
+    }
+
+    // Проверяем, существует ли часть с таким именем
+    const existingPart = part.parts.find((part: any) => part.partsName === data.partName);
+    if (!existingPart) {
+      return { success: false, message: "Part not found in list" };
+    }
+
+    // Проверяем лимит
+    if (existingPart.part.length >= existingPart.maxParts) {
+      return {
+        success: false,
+        message: `Cannot add part: limit of ${existingPart.maxParts} reached for ${data.partName}`,
+      };
+    }
+
+    // Добавляем новую часть в массив `part`
+    existingPart.part.push({
+      addedAt: createdOn,
+      from: printerId,
+      used: false, // Указываем значение для used
+    });
+
+    // Сохраняем изменения
+    await part.save();
+
+    return { success: true, message: "Part added successfully" };
+  } catch (error) {
+    console.error("Error adding generic part:", error);
+    return { success: false, message: "An error occurred while adding part" };
+  }
+}
+
 export async function getAllPartsModels(params: any){
   try{
     connectToDatabase(); // Connect to the database
@@ -384,12 +431,15 @@ export async function getAllPartsModels(params: any){
 
     const parts = await Parts.find({}).lean()
 
-    // console.log("Parts ====>", parts);
-
     if(!parts){
+      
       return {success: false, message: "Parts for this printer not found!"};
     }
     
+    
+    
+    // const rawParts = JSON.stringify(parts);
+
     return parts;
 
   }catch(error){
@@ -404,6 +454,12 @@ export async function getAllPartsModels(params: any){
 //  END OF MY NEW FUNCTIONS
 // 
 // 
+
+
+
+
+
+
 
 
 

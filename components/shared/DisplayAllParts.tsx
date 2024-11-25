@@ -48,39 +48,41 @@ const DisplayParts = async ({parts}:Props) => {
 
   return (
     <>
-      <ul className="list-disc ml-4">
-        {parts.map((printer:any) =>
+      
+        {parts.map((printer:any, i:any) =>
           printer.parts.length > 0 ? (
             printer.parts.map((part: any) =>
               part.part.length > 0 ? (
                 part.part.map((item: any, index: number) => (
-                  <li key={`${printer._id}-${part.partsName}-${index}`} className="mb-2">
-                    <span className="font-bold">{printer.printerName}</span> -{" "}
-                    <span className="text-gray-600">{printer.productNumber}</span>,{" "}
-                    <span className="text-blue-500">{part.partsName}</span>:{" "}
-                    <span className="text-green-600">{item.location || "No Location"}</span>
-                  </li>
+                  <tr key={`${printer._id}-${part.partsName}-${index}`} className="mb-4 h-14 font-bold border-b-0">
+                    <td className="font-bold text-white">{printer.printerName}</td>
+                    <td className="">{printer.productNumber}</td>
+                    <td className="">{part.partsName}</td>
+                    <td className="">{part.location || "Location not set"}</td>
+                  </tr>
                 ))
               ) : (
-                <li key={`${printer._id}-${part.partsName}`}>
-                  <span className="font-bold">{printer.printerName}</span> -{" "}
-                  <span className="text-gray-600">{printer.productNumber}</span>,{" "}
-                  <span className="text-blue-500">{part.partsName}</span>:{" "}
-                  <span className="text-red-500">No Parts Available</span>
-                </li>
+                <tr key={`${printer._id}-${part.partsName}`}>
+                  <td className="font-bold">{printer.printerName}</td>
+                  <td className="">{printer.productNumber}</td>
+                  <td className="">{part.partsName}</td>
+                  <td className="">No Parts Available</td>
+                </tr>
               )
             )
-          ) : (
+          ) 
+          : (
             // test
-            <li key={printer._id}>
-              <span className="font-bold">{printer.printerName}</span> -{" "}
-              <span className="text-gray-600">{printer.productNumber}</span>:{" "}
-              <span className="text-red-500">No Parts Available</span>
-            </li>
+            <tr key={printer._id} className="h-14 font-bold">
+              <td className="font-bold text-white">{printer.printerName}</td>
+              <td className="">{printer.productNumber}</td>
+              <td className="">No Parts Available</td>
+              <td className="">{printer.location || "Location not set"}</td>
+            </tr>
 
           )
         )}
-      </ul>
+      
 
 
 

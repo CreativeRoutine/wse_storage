@@ -152,6 +152,7 @@ export interface DeleteMakeParams {
 // /////////////////////
 export interface CreatePartParams {
   productNumber: string;
+  make: string;
 }
 
 

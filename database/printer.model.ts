@@ -14,11 +14,11 @@ export interface IPrinter extends Document {
         cleanliness: string;
         workable: boolean;
         repariable: boolean;
-        changedParts: Schema.Types.ObjectId[];
+        changedParts: string[];
         afterRefurbish: string;
         disassembled: Schema.Types.ObjectId[];
         pagesNumber: number;
-        tested: Schema.Types.ObjectId[];
+        tested: string[];
         timeSpent: number;
         additionalInfo: string;
         status: string;
@@ -41,11 +41,12 @@ const PrinterSchema = new Schema({
         cleanliness: { type: String, required: false },
         workable: { type: Boolean, required: false },
         repariable: { type: Boolean, required: false },
-        changedParts: [{ type: Schema.Types.ObjectId, ref: "Parts", required: false }],
+        changedParts: [{ type: String, required: false }],
         afterRefurbish: { type: String, required: false },
         disassembled: [{ type: Schema.Types.ObjectId, ref: "Parts", required: false }],
         pagesNumber: { type: Number, required: false },
         tested: [{ type: String, required: false }],
+        // tested: [{ type: String, required: false }],
         timeSpent: { type: Number, required: false },
         additionalInfo: { type: String, required: false },
         status: { type: String, required: false },

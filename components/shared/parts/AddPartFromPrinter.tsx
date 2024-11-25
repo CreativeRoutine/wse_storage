@@ -1,15 +1,12 @@
-// AddPartFromPrinter.tsx
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useRouter } from 'next/navigation';
-import moment from 'moment-timezone';
-import { useToast } from "@/components/ui/use-toast";
-import { addPartToLocation } from "@/lib/actions/parts.action"; // Экшн для добавления детали
-import { fetchPartsList } from "@/lib/actions/partsList.action"; // Экшн для получения списка запчастей
 import { addPartFromPrinterSchema } from "@/lib/validations";
+import { useRouter } from "next/navigation";
+import { addPartFromPrinter, getPartsByProductNumber } from "@/lib/actions/parts.action";
+
 import {
   Form,
   FormControl,
@@ -18,157 +15,146 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import moment from "moment-timezone";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Props {
   printerId: string;
   printerProductNumber: string;
 }
+interface FormData {
+  partName: string;
+  productNumber: string;
+}
 
-export default function AddPartFromPrinter({ printerId, printerProductNumber }: Props) {
+export default function AddPart({ printerId, printerProductNumber }: Props) {
   const { toast } = useToast();
-  const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [partsList, setPartsList] = useState<string[]>([]); // Список доступных частей
 
-  // Форма и схема валидации
-  const form = useForm<z.infer<typeof addPartFromPrinterSchema>>({
-    resolver: zodResolver(addPartFromPrinterSchema),
+  const [partsData, setPartsData] = useState<any[]>([]); // Сохраняем данные о частях принтера
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+
+  const form = useForm<FormData>({
     defaultValues: {
-      printerId: printerId,
-      printerProductNumber: printerProductNumber,
       partName: "",
-      barcode: "",
-      location: "",
+      productNumber: printerProductNumber || "",
     },
   });
 
-  // Загрузка списка доступных частей при изменении printerProductNumber
+  
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetchPartsList(printerProductNumber);
+    if (printerProductNumber) {
+      getPrinterData();
+    }
+  }, [printerProductNumber]);
 
-      if (response.success && response.parts) {
-        setPartsList(response.parts as string[]); // Приводим parts к типу string[]
-      } else {
-        console.error(response.message);
-        toast({
-          title: "Error",
-          description: response.message,
-          variant: "destructive",
-        });
-      }
-    };
-    fetchData();
-  }, [printerProductNumber, toast]);
-
-  // Обработчик отправки формы
-  async function onSubmit(values: z.infer<typeof addPartFromPrinterSchema>) {
-    setIsSubmitting(true);
-    const createdOn = moment().tz("America/Chicago").toDate();
-  
-    const partData = {
-      printerId,
-      printerProductNumber,
-      partName: values.partName,
-      barcode: values.barcode,
-      location: values.location,
-      createdOn: createdOn,
-    };
-  
-    console.log("Submitting part data:", partData); // Лог данных для отладки
-  
+  async function getPrinterData() {
     try {
-      const response = await addPartToLocation(partData);
-  
+      const response: any = await getPartsByProductNumber({
+        productNumber: printerProductNumber,
+      });
+      const parts = JSON.parse(response); // Преобразуем строку в объект
+      setPartsData(parts.parts || []); // Сохраняем данные о частях принтера
+    } catch (error) {
+      console.error("Error fetching printer data:", error);
+    }
+  }
+
+  async function onSubmit(values: FormData) {
+    setIsSubmitting(true);
+
+    console.log("partsData =====",partsData)
+    
+    const createdOn = moment().tz("America/Chicago").toDate();
+    createdOn.setHours(createdOn.getHours() - 5);
+    
+    try {
+      console.log("On submit")
+      const response: any = await addPartFromPrinter({
+        createdOn: createdOn,
+        partName: values.partName,
+        productNumber: printerProductNumber,
+        printerId: printerId, // Опциональный ID принтера
+        used: false,
+      });
+
       setIsSubmitting(false);
       form.reset();
-      router.refresh();
-  
+      // router.push(`/addpart`); // Редирект после успешного добавления
+
       toast({
-        title: response.success ? "Part added successfully" : "Error adding part",
-        description: response.message,
+        title: response.message,
         variant: response.success ? "default" : "destructive",
       });
     } catch (error) {
-      console.error("An error occurred while adding the part:", error);
-      toast({
-        title: "Error",
-        description: "An error occurred while adding the part",
-        variant: "destructive",
-      });
+      console.error("Error adding part:", error);
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="bg-transparent px-0 mb-2 py-2 w-full rounded-xl border-0 shadow-lg">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
-          <FormField
-            control={form.control}
-            name="partName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base text-slate-300 font-semibold">Part Name</FormLabel>
-                <FormControl>
-                <div className="flex">
-                  <Select
-                    onValueChange={(value) => field.onChange(value)}
-                  >
-                    <SelectTrigger className="w-full focus:outline-none bg-dark-600 border-0">
-                      <SelectValue placeholder="Select Part Name" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-dark-400 p-0 text-white border-0">
-                      <SelectGroup className="py-4">
-                        {partsList.map((part) => (
-                          <SelectItem key={part} value={part} className='py-2 text-white hover:bg-dark-200'>{part}</SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+    <div className="border-b border-slate-400 my-4">
+      <div className="bg-secondary-200 mb-1 py-6 w-full lg:w-1/2 rounded-xl border border-dark-350">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
+            {/* Select Part Name */}
+            {partsData.length > 0 && (
+              <FormField
+                control={form.control}
+                name="partName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base text-slate-300 text-md font-semibold mb-2">
+                      Part to be disassembled:
+                    </FormLabel>
+                    <FormControl>
+                      <Select onValueChange={(value) => field.onChange(value)}>
+                        <SelectTrigger className="w-full focus:outline-none bg-dark-600 border-0 text-white">
+                          <SelectValue placeholder="Select Part Name" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-dark-400 p-0 text-white border-0">
+                          <SelectGroup className="py-4">
+                            {partsData.map((part: any, index: number) => (
+                              <SelectItem
+                                key={index}
+                                value={part.partsName}
+                                className="py-2 text-white hover:bg-dark-200"
+                              >
+                                {part.partsName}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
 
-          <FormField
-            control={form.control}
-            name="barcode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base text-slate-300 font-semibold">Barcode (optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter Barcode" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base text-slate-300 font-semibold">Storage Location (optional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter Storage Location" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit" className="bg-primary-500 text-white text-lg w-full p-6" disabled={isSubmitting}>
-            {isSubmitting ? "Adding..." : "Add Part"}
-          </Button>
-        </form>
-      </Form>
+            <Button
+              type="submit"
+              className="bg-primary-500 text-white text-lg w-full p-6"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Remove part"}
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }
