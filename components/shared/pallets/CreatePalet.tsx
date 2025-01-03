@@ -38,8 +38,8 @@ export default function CreatePalet ({ mongoUserId }: Props){
   const form = useForm<z.infer<typeof addPalletSchema>>({
     resolver: zodResolver(addPalletSchema),
     defaultValues: {
-      ponumber:"",
       barcode:"",
+      // location:"",
     },
   });
 
@@ -51,29 +51,20 @@ export default function CreatePalet ({ mongoUserId }: Props){
     const createdOn = new Date();
 
     try {
-      // this function took from lib/actions/pallet.action.ts to create a new printer model
-      // await createPalet({
-      //   ponumber: JSON.parse(JSON.stringify(values.ponumber)),
-      //   barcode: JSON.parse(JSON.stringify(values.barcode)),
-      //   user: JSON.parse(JSON.stringify(mongoUserId)),
-      //   path: usepathname,
-      //   createdOn: createdOn
-      // })
+
 
       //This is the function that will be called when the form is submitted.
       // it changed to return a response from the createPalet function and then display a toast message
       const response:any = await createPalet({
-        ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
-        user: JSON.parse(JSON.stringify(mongoUserId)),
         path: usepathname,
-        createdOn: createdOn
+        
       });
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       form.reset({}); // Reset form fields
-      router.push("/storage")
+      router.push(`/storage/${response.paletId}`); // Redirect to the newly created pallet
       
 
       return (
@@ -103,29 +94,9 @@ export default function CreatePalet ({ mongoUserId }: Props){
             <div className='flex gap-6'>
               <div className="w-full">
 
-                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Pallet:</div>
+                <div className="mb-4 text-lg text-slate-300 font-semibold">Create pallet for storage:</div>
 
-                <FormField
-                  control={form.control}
-                  name="ponumber"
-                  render={({ field }) => (
-                    // First Input
-                    <FormItem className='mb-4'>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">PO number:</FormLabel>
-                      <FormControl>
-                        <div className="flex">
-                          <Input
-                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="PO number"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-
-                      <FormMessage className='text-red-500'/>
-                    </FormItem>
-                  )}
-                />
+                
                 {/* Item #2 */}
                 <FormField
                   control={form.control}
@@ -148,6 +119,28 @@ export default function CreatePalet ({ mongoUserId }: Props){
                     </FormItem>
                   )}
                 />
+
+              {/* <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    // First Input
+                    <FormItem className='mb-4'>
+                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Location (may leave empty):</FormLabel>
+                      <FormControl>
+                        <div className="flex">
+                          <Input
+                            className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="location"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage className='text-red-500'/>
+                    </FormItem>
+                  )}
+                /> */}
               </div>
             </div>
 

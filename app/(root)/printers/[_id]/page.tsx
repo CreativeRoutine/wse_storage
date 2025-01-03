@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import CommentToPrinter from '@/components/shared/printers/CommentToPrinter'
+import InvoiceNumberOnPrinterPage from '@/components/shared/workForms/InvoiceNumberOnPrinterPage'
 
 interface ITaskPerformed {
   date: Date;
@@ -49,6 +51,21 @@ interface ITaskPerformed {
   timeSpent: number;
   additionalInfo: string;
   status: string;
+  comment?: string;
+  performedCleaner?: {
+    date: Date;
+    user: {
+      name: string;
+      lastName: string;
+    };
+    overallCondition: string;
+    cleanliness: string;
+    afterRefurbish: string;
+    timeSpent: number;
+    status: string;
+    additionalInfo: string;
+    invoiceNumber: string;
+  }[];
 }
 
 const page = async ({ params }: { params: { _id: string } }) => {
@@ -62,13 +79,15 @@ const page = async ({ params }: { params: { _id: string } }) => {
     return(<VisitorNotification />)
   }
 
-  const { _id } = params
+  const { _id } = params;
 
   const printer = await getPrinterPopulated({
     _id,
     path: ''
   })
   const printers = JSON.parse(JSON.stringify(printer))
+
+  console.log("THIS IS PRINTER: ",printers)
 
   function formatTimeSpent(seconds: number): string {
     if (seconds >= 3600) {
@@ -93,21 +112,21 @@ const page = async ({ params }: { params: { _id: string } }) => {
       <div className="flex flex-col gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 lg:flex-row">
 
         {/* // Preview */}
-        <div className='relative min-w-[300px]'>
+        <div className='relative w-1/3'>
           {
             printers.preview ? (
               <Image 
                 src={printers.preview} 
-                width={240} 
-                height={240} 
+                width={220} 
+                height={220} 
                 className="p-4"
                 alt="printer" 
                 />
             ) : (
               <Image 
                 src="/assets/printers_preview/NoPreview.webp" 
-                width={240} 
-                height={240} 
+                width={220} 
+                height={220} 
                 className="p-4"
                 alt="printer" 
               />
@@ -158,29 +177,33 @@ const page = async ({ params }: { params: { _id: string } }) => {
             
             <div className='mt-4'>
               <ul>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>S/N:</div>
                   <div className='flex justify-end '>{printer.sn}</div>
                 </li>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>PO number:</div>
                   <div className='flex justify-end'>{printer.ponumber ? printer.ponumber : <span className="text-red-500">No PO number</span>}</div>
                 </li>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>   
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>   
                   <div className='text-slate-400'>Product number:</div>
                   <div className='flex justify-end'>{printer.productNumber ? printer.productNumber : <span className="text-red-500">No product number</span>}</div>
                 </li>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Barcode:</div>
                   <div className='flex justify-end'>{printer.barcode ? printer.barcode : <span className="text-red-500">No barcode</span>}</div>
                 </li>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Created on:</div>
                   <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "date") : <span className="text-red-500">No date</span>}</div>
                 </li>
-                <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Time:</div>
                   <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "time") : <span className="text-red-500">No date</span>}</div>  
+                </li>
+                <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
+                  <div className='text-slate-400'>Storage:</div>
+                  <div className='flex justify-end'>{printer.location ? printer.location : <span className="text-red-500">Not in storage</span>}</div>
                 </li>
                   {
                     printer.pallet ? (
@@ -197,13 +220,28 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
             </div>
           </div>
+          {/* Performs */}
+          <div className="flex flex-col w-full bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+            <div className="!text-white !text-xl font-semibold mb-2 pb-2 ">Add Comment (reason of return)</div>
+            {printer.tasksPerformed && printer.tasksPerformed.length >= 1 ?
+            (
+              <>
+                <CommentToPrinter  id={_id}/>
+
+                <InvoiceNumberOnPrinterPage id={_id}/>
+              </>
+
+            ) : 
+            (<div className="text-white text-normal font-normal mt-4">No works performed yet... So nothing to comment &#x1F600;</div>)
+            }
+          </div>
 
         </div>
 
       
 
       {/* // Tasks */}
-        <div className="flex flex-col w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+        <div className="flex flex-col w-full lg:w-2/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
           <div className="!text-white !text-xl font-semibold mb-2 pb-4 border-b border-slate-400">Tasks</div>
 
           {printer.tasksPerformed && printer.tasksPerformed.length >= 1 ?
@@ -220,8 +258,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
                       </div>
                     </AccordionTrigger>
 
-                    <AccordionContent className='text-white bg-dark-400 px-4'>
-                      <div key={task.date.toString()} className='flex flex-col '>
+                    <AccordionContent className='text-white bg-dark-200 px-4 flex flex-row gap-4'>
+                      {/* COL #1 */}
+                      <div key={task.date.toString()} className='flex flex-col w-1/2'>
                         <ul className='mt-4'>
                           {/* TECH'S NAME */}
                           <li className='flex justify-between border-b border-gray-700 py-3'>
@@ -313,14 +352,94 @@ const page = async ({ params }: { params: { _id: string } }) => {
                               }
                             </div>
                           </li>
-                          <li className='flex justify-between border-b border-gray-700 py-3'>
+                          {/* RETURNING COMMENT */}
+                          {task.comment ? (
+                            <li className='flex justify-between py-3 border-b border-gray-700'>
+                              <div className='text-slate-400'>Return comment:</div>
+                              <div className='!text-white flex justify-end'>{ task.comment}</div>
+                            </li>
+
+                          ): null}
+                          <li className='flex justify-between  py-3'>
                             <div className='text-slate-400'>Status:</div>
                             <div className='!text-white flex justify-end'>
                               { task.status ? task.status : "No status" }
                             </div>
                           </li>
+                          
                         </ul>
                       </div>
+
+                      {/* COL #2 */}
+                      {
+                        
+
+                          task.performedCleaner && task.performedCleaner.length >= 1 ? (
+                              task.performedCleaner.slice(-1).map(cleaner=>(
+                                <div key={cleaner.date.toString()} className='flex flex-col w-1/2'>
+                                  <ul className='mt-4'>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Cleaner:</div>
+                                      <div className='!text-white flex justify-end font-bold text-md'>{cleaner.user ? cleaner.user.name : <span className="text-red-500">No user</span>}</div>
+                                    </li>
+  
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Date:</div>
+                                      <div className='!text-white flex justify-end'>
+                                        {
+                                          cleaner.date ? (
+                                            formatTime(cleaner.date, "date")) : <span className="text-red-500">No date</span>
+                                        }
+                                      </div>
+                                    </li>
+  
+  
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Overall condition:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.overallCondition ? (
+                                        cleaner.overallCondition === "Good" ? <span className="text-green-500 text-md">{cleaner.overallCondition}</span> :
+                                        cleaner.overallCondition === "Damaged" ? <span className="text-yellow-500 text-md">{cleaner.overallCondition}</span> :
+                                        <span className="text-red-500 text-md">{cleaner.overallCondition}</span>
+                                        ) : <span className="text-red-500 text-md">Dirty</span>}</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Grade:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.cleanliness ? (
+                                        cleaner.cleanliness === "Clean" ? <span className="text-black p-2 bg-white rounded-lg">{cleaner.cleanliness}</span> :
+                                        cleaner.cleanliness === "Dirty" ? <span className="text-white p-2 bg-stone-500 rounded-lg">{cleaner.cleanliness}</span> :
+                                        <span className=" p-2 text-red-500 bg-dark-100 rounded-lg">{cleaner.cleanliness}</span>
+                                        ) : null }</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>After cleaning:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.afterRefurbish ? cleaner.afterRefurbish : null}</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Additional info:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.additionalInfo ? cleaner.additionalInfo : null}</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Time spent:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.timeSpent ? formatTimeSpent(cleaner.timeSpent) : null}</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Status:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.status ? cleaner.status : null}</div>
+                                    </li>
+                                    <li className='flex justify-between border-b border-gray-700 py-3'>
+                                      <div className='text-slate-400'>Invoice number:</div>
+                                      <div className='!text-white flex justify-end'>{cleaner.invoiceNumber ? cleaner.invoiceNumber : null}</div>
+                                    </li>
+  
+                                  </ul>  
+                                </div>    
+                              ))
+                          ) : null
+                     
+
+                      }
+                      
+                      
                     </AccordionContent>
                   </AccordionItem>
                   
@@ -333,6 +452,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
           (<div className="text-white text-xl font-bold mt-4">No works performed yet...</div>)
           }
         </div>
+        
       </div>
     </>
   )

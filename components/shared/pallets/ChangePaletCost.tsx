@@ -19,15 +19,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { addCostToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
-import { updatePaletCost } from '@/lib/actions/pallet.action';
-// import { updatePalet } from '@/lib/actions/pallet.action';
 import { useToast } from "@/components/ui/use-toast"
+import { updateSupplierPalletCostAndPrinters } from '@/lib/actions/supplier.action';
 
 const type:any = 'create';
 
 interface Props {
   id: string;
-  mongoUserId: string;
 }
 
 export default  function AddCostToPallet ({id}:Props){
@@ -42,28 +40,27 @@ export default  function AddCostToPallet ({id}:Props){
   const form = useForm<z.infer<typeof addCostToPalletSchema>>({
     resolver: zodResolver(addCostToPalletSchema),
     defaultValues: {
-      price: "0",
+      price: 0,
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof addCostToPalletSchema>,) {
+    console.log("Pallet start")
     setIsSubmitting(true);
-    // const numericPrice = parseFloat(values.price); // Convert price to a number
-
     try {
 
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      const response: any = await updatePaletCost({
-        price: values.price, 
-        id: id,
-        path: usepathname,
-      })
+      const response: any = await updateSupplierPalletCostAndPrinters(
+        Number(values.price),
+        id,
+        usepathname,
+      )
 
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${id}`)
+      router.refresh()
 
       return (
         response.success ? toast({
@@ -97,23 +94,22 @@ export default  function AddCostToPallet ({id}:Props){
                     control={form.control}
                     name="price"
                     render={({ field }) => (
-                      // First Input
                       <FormItem>
-                        
-                        <FormControl className=''>
+                        <FormControl className="">
                           <div className="flex flex-row gap-2">
                             <Input
+                              type="number"
                               className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="100..."
+                              placeholder=""
                               {...field}
+                              value={field.value || ""} // Обработка пустого значения
+                              onChange={(e) => field.onChange(Number(e.target.value) || 0)} // Преобразование в число
                             />
                           </div>
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
-                    )
-                  }
+                    )}
                   />
                   <Button type="submit" className="bg-primary-500 text-white mt-3" disabled={isSubmitting}>
                       {isSubmitting ? (
@@ -122,7 +118,7 @@ export default  function AddCostToPallet ({id}:Props){
                         </>
                       ) : (
                         <>
-                        {'Add Price'}
+                        {'Add pallet cost'}
                         </>
                       )}
                   </Button>

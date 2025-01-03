@@ -17,7 +17,7 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Printers",
   },
   {
-    imgURL: "/images/icons/printer.svg",
+    imgURL: "/assets/icons/parts.svg",
     route: "/parts",
     label: "Parts",
   },

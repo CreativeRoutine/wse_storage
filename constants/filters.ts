@@ -29,9 +29,11 @@ export const AnswerFilters = [
   export const PrintersPageFilters = [
     { name: "Newest", value: "newest" },
     { name: "Oldest", value: "oldest" },
-    // { name: "Frequent", value: "frequent" },
-    // { name: "Unanswered", value: "unanswered" },
+    { name: "Refurbished", value: "Refurbished" },
+    { name: "Cleaned", value: "Cleaned" },
+    { name: "Invoice", value: "invoice" }, // Новый фильтр
   ];
+
   export const PrintersCountPageFilters = [
     { name: "20", value: "20" },
     { name: "50", value: "50" },

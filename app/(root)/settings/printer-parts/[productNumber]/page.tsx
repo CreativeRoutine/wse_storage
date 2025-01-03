@@ -13,7 +13,11 @@ import Link from "next/link";
 const DisplayPartsSettings = async ({ params }: { params: { productNumber: string } }) => {
   const { productNumber } = params;
   const response:any = await getPartsByProductNumber({ productNumber });
+  // const printerResponse = JSON.parse(JSON.stringify(response));
+  // console.log(typeof response.parts)
+  
   const parts = JSON.parse(JSON.stringify(response));
+  console.log(parts._id)
 
   const partsListResponse = await getAllPartsList();
   // const partsList = JSON.parse(JSON.stringify(partsListResponse));
@@ -47,27 +51,28 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
             <DescriptionList className="mt-4" >
               <DescriptionTerm className="text-white">Printer name:</DescriptionTerm>
               <DescriptionDetails className="!text-white">
-                {response[0].printerName ? response[0].printerName : <div className="text-red-500 ">Name not set</div>}
+                
+                {parts.printerName ? parts.printerName : <div className="text-red-500 ">Name not set</div>}
               </DescriptionDetails>
 
               <DescriptionTerm className="text-white">Printer's product number</DescriptionTerm>
               <DescriptionDetails className="!text-white">
-                {response[0].productNumber ? response[0].productNumber : <span className="text-red-500">Not set</span>}
+                {parts.productNumber ? parts.productNumber : <span className="text-red-500">Not set</span>}
               </DescriptionDetails>
 
               <DescriptionTerm>Parts</DescriptionTerm>
               <DescriptionDetails className="!text-white">
-                {response[0].parts.length}
+                {parts.parts.length}
               </DescriptionDetails>
               
               <DescriptionTerm>Parts list</DescriptionTerm>
               <DescriptionDetails className="!text-white">
                 <ul>
                   {
-                    response[0].parts && response[0].parts.length > 0 ? response[0].parts.map((partName:any) => (partName.partsName ? 
+                    parts.parts && parts.parts.length > 0 ? parts.parts.map((partName:any) => (partName.partsName ? 
                     <li key={partName.partsName} className="flex w-full justify-between items-center border-b border-gray-700 py-2">
                       {partName.partsName}
-                      <MaxPartsInput initialLimit={partName.maxParts} printerPN={response[0].productNumber} label={partName.partsName} />
+                      <MaxPartsInput initialLimit={partName.maxParts} printerPN={parts.productNumber} label={partName.partsName} />
                     </li> : 
                     null)) :
                      "No parts added"
@@ -87,14 +92,14 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
             {
               partsListResponse && partsListResponse.partName.length > 0 ? partsListResponse.partName.map((part:string) => {
                 // Check if partName is in parts array
-                const state = parts[0].parts.some((item:any) => item.partsName === part);
+                const state = parts.parts.some((item:any) => item.partsName === part);
                 
                 return (
                   <li key={part} className="py-1">
                     <PartsSwitcher 
                       label={part}
                       state={state} 
-                      printerPN={parts[0].productNumber} 
+                      printerPN={parts.productNumber} 
                     />
                   </li>
                 );

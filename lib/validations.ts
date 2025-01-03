@@ -34,8 +34,8 @@ export const userSearchSchema = z.object({
 // ===================  Pallet  ===================
 
 export const addPalletSchema = z.object({
-  ponumber: z.string().min(3).max(30),
   barcode: z.string().min(5).max(30),
+  // location: z.string().min(3).max(30),
   // user: z.string().min(3).max(24),
   // printers: z.array(z.string().min(1).max(15)).min(1).max(99),  
 })
@@ -45,7 +45,7 @@ export const addLocationToPalletSchema = z.object({
 })
 
 export const addCostToPalletSchema = z.object({
-  price: z.string().min(0).max(7),
+  price: z.number().min(1).max(999999),
 })
 
 export const deletePalletSchema = z.object({
@@ -57,7 +57,7 @@ export const deletePalletSchema = z.object({
 // ===================  Printer  ===================
 
 export const addPrinterSchema = z.object({
-  ponumber: z.string().min(0).max(30),
+  // ponumber: z.string().min(0).max(30),
   sn: z.string().min(5).max(30), 
   productNumber: z.string().min(3).max(30),
   barcode: z.string().min(3).max(30),
@@ -78,6 +78,12 @@ export const printerWorkerNameSchema = z.object({
 export const addPrinterToPalletSchema = z.object({
   sn: z.string().min(5).max(30), 
   productNumber: z.string().min(3).max(30),
+  barcode: z.string().min(3).max(30),
+})
+
+export const addPrinterToStoragePalletSchema = z.object({
+  // sn: z.string().min(5).max(30), 
+  // productNumber: z.string().min(3).max(30),
   barcode: z.string().min(3).max(30),
 })
 
@@ -104,6 +110,18 @@ export const updatePrinterPONSchema = z.object({
   ponumber: z.string().min(0).max(30),
 })
 
+export const addCostToPrinterSchema = z.object({
+  price: z.number().min(1).max(999999),
+})
+
+export const addPrinterCommentSchema = z.object({
+  comment: z.string().min(1).max(999),
+})
+
+export const addInvoiceNumberSchema = z.object({
+  invoiceNumber: z.string().min(1).max(999),
+})
+
 export const addWorkSchema = z.object({
   name: z.string().min(2).max(30), 
   // user: z.string().min(3).max(12),
@@ -115,6 +133,13 @@ export const findPrinterBySnSchema = z.object({
 })
 
 // ===================  Supplier  ===================
+export const addSuppliersPallet = z.object({
+  ponumber: z.string().min(0).max(30),
+  // createdOn: z.date(),
+})
+export const addPalletToSuppliersName = z.object({
+  barcode: z.string().min(0).max(30),
+})
 export const updateSuppliersName = z.object({
   name: z.string().min(0).max(30),
 })
@@ -152,6 +177,13 @@ export const addGenericPartSchema = z.object({
   location: z.string().min(0).max(30),
   partName: z.string().min(5).max(30),
   productNumber: z.string().min(3).max(30), 
+})
+
+export const changePartLocationSchema = z.object({
+  // partName: z.string().min(3).max(30),
+  location: z.string().min(0).max(30),
+  // id: z.string().min(0).max(30),
+  barcode: z.string().min(0).max(30),
 })
 
 export const addPartFromPrinterSchema = z.object({
@@ -194,3 +226,38 @@ export const addPartToStorageSchema = z.object({
   barcode: z.string().min(3).max(30),
   location: z.string().min(3).max(30),
 })
+
+
+
+// ===================  Options  ===================
+export const addOptionSchema = z.object({ 
+  option: z.string().min(3).max(30),
+})
+
+export const partsChangedSchema = z.object({
+  button: z.array(z.string().min(1).max(30)).min(1).max(30),
+})
+
+export const totalPageCountSchema = z.object({
+  totalPageCount: z.number().min(1).max(999999),
+})
+
+export const addAdditionalInfoSchema = z.object({ 
+  text: z.string().min(3).max(1000),
+})
+
+export const cleanerFormSchema = z.object({
+  name: z.string().min(3).max(30),
+  barcode: z.string().min(0).max(30),
+  grade: z.string().min(3).max(30),
+  broken: z.boolean(),
+})
+
+
+
+
+
+
+
+
+

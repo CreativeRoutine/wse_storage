@@ -55,7 +55,9 @@ export default function AddPart({ parts }: any) {
     if (selectedPart) {
       setPartsNames(selectedPart.parts.map((p: any) => p.partsName)); // Извлекаем partsName
     } else {
+
       setPartsNames([]);
+      setSelectedProductNumber("");
     }
   };
 
@@ -75,14 +77,22 @@ export default function AddPart({ parts }: any) {
       });
 
       setIsSubmitting(false);
-      form.reset();
-      // router.refresh();
-      router.push(`/addpart`)
 
+      // router.refresh();
+      // router.push(`/addpart`)
+      router.push(`/parts`)
+      form.reset();
+      
+      // setSelectedProductNumber(""); // Сбрасываем выбор принтера
+      // setPartsNames([]); // Сбрасываем список частей
+
+      
+      
       toast({
         title: response.message,
         variant: response.success ? "default" : "destructive",
       });
+      
     } catch (error) {
       console.error("THIS IS AN ERROR", error);
     }
@@ -108,7 +118,10 @@ export default function AddPart({ parts }: any) {
                       handleProductNumberChange(value);
                     }}
                   >
-                    <SelectTrigger className="w-full focus:outline-none bg-dark-600 border-0 text-white">
+                    <SelectTrigger
+                      value={field.value || undefined} // Добавлено связывание значения
+                      className="w-full focus:outline-none bg-dark-600 border-0 text-white"
+                    >
                       <SelectValue placeholder="Select Printer by Product number" />
                     </SelectTrigger>
                     <SelectContent className="bg-dark-400 p-0 text-white border-0">

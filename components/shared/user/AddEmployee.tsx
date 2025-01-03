@@ -65,7 +65,8 @@ export default function AddEmployeeForm ({mongoUserId}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/users/${mongoUserId}`)
+      // router.push(`/users/${mongoUserId}`)
+      router.refresh();
 
     } catch (error) {
       console.error(error); 

@@ -22,6 +22,7 @@ import { addPrinterToPallet } from '@/lib/actions/printer.action';
 import { addPrinterToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { useToast } from "@/components/ui/use-toast"
+import { addPrinterToSupplierPallet } from '@/lib/actions/supplier.action';
 
 const type:any = 'create';
 
@@ -55,7 +56,7 @@ export default  function AddPrinterToPalet ({id}:Props){
     try {
       
       // this function took from lib/actions/printer.action.ts to create a new printer model
-      const response: any = await addPrinterToPallet({
+      const response: any = await addPrinterToSupplierPallet({
         sn: values.sn, 
         productNumber: values.productNumber,
         barcode: values.barcode,
@@ -66,7 +67,7 @@ export default  function AddPrinterToPalet ({id}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/storage/${id}`)
+      router.refresh();
       
       
       if (response.success) {

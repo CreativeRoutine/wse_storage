@@ -19,7 +19,7 @@ const LeftSidebar = () => {
   return (
     <section
       id="sidebar"
-      className="bg-dark-200 custom-scrollbar fixed left-0 top-0 flex h-screen flex-col justify-start overflow-y-auto border-r border-dark-300 pt-12 shadow-light-300 dark:shadow-none max-sm:hidden sm:w-[120px]  xl:w-[395px]"
+      className="bg-dark-200 custom-scrollbar fixed left-0 top-0 flex h-screen flex-col justify-start overflow-y-auto border-r border-dark-300 pt-12 shadow-light-300 dark:shadow-none max-sm:hidden sm:w-28  xl:w-96"
     >
       {/* Logo */}
       <Link

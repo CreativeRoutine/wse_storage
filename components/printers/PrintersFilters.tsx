@@ -20,98 +20,82 @@ import {
 export const PrintersFilters = ({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) => {
-
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: new Date(),
-  })
+  });
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [active, setActive] = useState('')
+  const [active, setActive] = useState("");
 
   const handleDateChange = (date: DateRange | undefined) => {
     setDate(date);
-  
+
     if (date?.from && date?.to) {
       let searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('from', date.from.toISOString());
-      searchParams.set('to', date.to.toISOString());
-  
+      searchParams.set("from", date.from.toISOString());
+      searchParams.set("to", date.to.toISOString());
+
       const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
       router.push(newUrl, { scroll: false });
     }
   };
-    
+
   const handleClickTypeDate = (item: string) => {
-    if(active === item) {
-      setActive("")
+    const formattedFilter = item.toLowerCase(); // Форматируем для передачи в экшн
+    if (active === formattedFilter) {
+      setActive("");
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'filter',
-        value: null
-      })
+        key: "filter",
+        value: null,
+      });
       router.push(newUrl, { scroll: false });
     } else {
-      setActive(item)
+      setActive(formattedFilter);
       const newUrl = formUrlQuery({
         params: searchParams.toString(),
-        key: 'filter',
-        value: item.toLowerCase()
-      })
+        key: "filter",
+        value: formattedFilter,
+      });
       router.push(newUrl, { scroll: false });
     }
-  }
+  };
 
-  const handleClickTypeQtty = (item: string) => {
+  const handleResetFilters = () => {
+    // Очищаем все параметры из URL
+    const baseUrl = pathname;
+    router.push(baseUrl, { scroll: false });
 
-    if(active === item) {
-      setActive("")
-      const newUrl = formUrlQuery({
-          params: searchParams.toString(),
-          key: 'filter',
-          value: null
-      })
+    // Сбрасываем локальное состояние
+    setDate(undefined);
+    setActive("");
+  };
 
-      router.push(newUrl, { scroll: false });
-
-    } else {
-      setActive(item)
-
-      const newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: 'qtty',
-        value: item.toLowerCase()
-      })
-
-      router.push(newUrl, { scroll: false });
-
-    }
-  }
+  return (
+    <div className="mt-2 flex flex-row justify-between">
       
-
-  return(
-    <div className="mt-2 hidden flex-row justify-start md:flex md:justify-between">
       {/* OLD / NEW FILTER */}
       <div className="flex gap-3">
-      {
-          PrintersPageFilters.map(item => (
-              <Button 
-                  key={item.value}
-                  onClickCapture={() => handleClickTypeDate(item.value)}
-                  className={`text-white ${active === item.value ? 'bg-dark-500' : 'bg-dark-400'}`}
-              >
-                  {item.name}
-              </Button>
-          ))
-      }
+        {PrintersPageFilters.map((item) => (
+          <Button
+            key={item.value}
+            onClickCapture={() => handleClickTypeDate(item.value)}
+            className={`text-white ${
+              active === item.value ? "bg-dark-500" : "bg-dark-400"
+            }`}
+          >
+            {item.name}
+          </Button>
+        ))}
       </div>
 
       {/* CALENDAR FILTER */}
       <div className={cn("grid gap-2", className)}>
-        <Popover  >
+        <Popover>
           <PopoverTrigger asChild>
             <Button
               id="date"
@@ -142,7 +126,6 @@ export const PrintersFilters = ({
               mode="range"
               defaultMonth={date?.from}
               selected={date}
-              // onSelect={setDate}
               onSelect={handleDateChange}
               numberOfMonths={1}
             />
@@ -150,21 +133,15 @@ export const PrintersFilters = ({
         </Popover>
       </div>
 
-      {/* QTTY FILTER */}
+      {/* RESET FILTERS BUTTON */}
       <div className="flex gap-3">
-        {
-          PrintersCountPageFilters.map(item => (
-              <Button 
-                  key={item.value}
-                  onClickCapture={() => handleClickTypeQtty(item.value)}
-                  className={`text-white ${active === item.value ? 'bg-dark-500' : 'bg-dark-400'}`}
-              >
-                  {item.name}
-              </Button>
-          ))
-        }
+        <Button
+          className="text-white bg-red-500 hover:bg-red-600"
+          onClick={handleResetFilters}
+        >
+          Reset Filters
+        </Button>
       </div>
-
     </div>
-  )
-}
+  );
+};

@@ -38,7 +38,6 @@ const type:any = 'create';
 
 interface Props {
   id: string;
-  mongoUserId: string;
 }
 
 export default  function DeletePallet ({id}:Props){

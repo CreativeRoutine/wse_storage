@@ -1,11 +1,10 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { addPartFromPrinterSchema } from "@/lib/validations";
 import { useRouter } from "next/navigation";
-import { addPartFromPrinter, getPartsByProductNumber } from "@/lib/actions/parts.action";
+import moment from "moment-timezone";
+import { useToast } from "@/components/ui/use-toast";
 
 import {
   Form,
@@ -24,13 +23,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import moment from "moment-timezone";
-import { useToast } from "@/components/ui/use-toast";
+
+import { addPartFromPrinter, getPartsByProductNumberPlain } from "@/lib/actions/parts.action";
 
 interface Props {
   printerId: string;
   printerProductNumber: string;
 }
+
 interface FormData {
   partName: string;
   productNumber: string;
@@ -38,11 +38,9 @@ interface FormData {
 
 export default function AddPart({ printerId, printerProductNumber }: Props) {
   const { toast } = useToast();
-
-  const [partsData, setPartsData] = useState<any[]>([]); // Сохраняем данные о частях принтера
+  const [partsData, setPartsData] = useState<any[]>([]); // Список деталей
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -50,9 +48,6 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
       productNumber: printerProductNumber || "",
     },
   });
-
-  
-
 
   useEffect(() => {
     if (printerProductNumber) {
@@ -62,11 +57,12 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
 
   async function getPrinterData() {
     try {
-      const response: any = await getPartsByProductNumber({
+      const response: any = await getPartsByProductNumberPlain({
         productNumber: printerProductNumber,
       });
-      const parts = JSON.parse(response); // Преобразуем строку в объект
-      setPartsData(parts.parts || []); // Сохраняем данные о частях принтера
+
+      const parts = JSON.parse(JSON.stringify(response));
+      setPartsData(parts.parts || []); // Сохраняем детали
     } catch (error) {
       console.error("Error fetching printer data:", error);
     }
@@ -75,31 +71,44 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
   async function onSubmit(values: FormData) {
     setIsSubmitting(true);
 
-    console.log("partsData =====",partsData)
-    
     const createdOn = moment().tz("America/Chicago").toDate();
     createdOn.setHours(createdOn.getHours() - 5);
-    
+
     try {
-      console.log("On submit")
       const response: any = await addPartFromPrinter({
-        createdOn: createdOn,
+        createdOn,
         partName: values.partName,
         productNumber: printerProductNumber,
-        printerId: printerId, // Опциональный ID принтера
+        printerId, // Опционально
         used: false,
       });
 
-      setIsSubmitting(false);
-      form.reset();
-      // router.push(`/addpart`); // Редирект после успешного добавления
+      if (response.success) {
+        toast({
+          title: "Success",
+          description: response.message,
+          variant: "default",
+        });
 
-      toast({
-        title: response.message,
-        variant: response.success ? "default" : "destructive",
-      });
+        // Удаляем добавленную деталь из списка partsData
+        setPartsData((prevParts) => prevParts.filter((part) => part.partsName !== values.partName));
+
+        form.reset({ partName: "" });
+      } else {
+        toast({
+          title: "Error",
+          description: response.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error("Error adding part:", error);
+      toast({
+        title: "Submission failed",
+        description: "An error occurred while submitting the form.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
     }
   }

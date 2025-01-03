@@ -48,11 +48,15 @@ const DisplayPrinters = async ({printers, printersCount}:Props) => {
                     
                     printer.tasksPerformed[printer.tasksPerformed.length - 1].status === "Refurbished" ? (
                       <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status}
+                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status} / 
+                        {
+                          printer.tasksPerformed[printer.tasksPerformed.length - 1].performedCleaner && printer.tasksPerformed[printer.tasksPerformed.length - 1].performedCleaner.length >= 1  ? (" " +  printer.tasksPerformed[printer.tasksPerformed.length - 1].performedCleaner[0].status) : (" Not performed")
+                        }
                       </span>
                     ) :  (
                       <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status}
+                        {printer.tasksPerformed[printer.tasksPerformed.length - 1].status} / "Not performed"
+                        {/* {printer.tasksPerformed[printer.tasksPerformed.length - 1].performedCleaner ? ("YES") : ("NO")} */}
                       </span>
                     )
                   

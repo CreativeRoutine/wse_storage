@@ -64,13 +64,16 @@ export default function SelectTech({ users, setUser }: Props) {
               control={form.control}
               name="userName"
               render={({ field }) => (
+
                 <FormItem className="mt-2">
                   <FormControl>
+                    
                     <div className="flex">
                       <Select onValueChange={handleUserSelect}>
                         <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
                           <SelectValue placeholder="User's name" />
                         </SelectTrigger>
+                        
                         <SelectContent className="bg-dark-400 p-0 text-white border-0">
                           <SelectGroup className="py-4">
                             {users.map(user => (

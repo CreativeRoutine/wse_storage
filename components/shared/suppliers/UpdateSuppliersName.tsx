@@ -88,8 +88,8 @@ export default function UpdateSuppliersName ({id}:Props){
           {
             <>
               <Form {...form}>  
-                <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
-                  <div className='w-full flex flex-row justify-center items-center gap-2'>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-auto">
+                  <div className='w-full flex flex-row justify-start items-center gap-2'>
                     <FormField
                     control={form.control}
                     name="name"
@@ -99,7 +99,7 @@ export default function UpdateSuppliersName ({id}:Props){
                         <FormControl>
                             <div className="flex">
                             <Input
-                                className="w-auto ouline-none bg-dark-400 text-white border-0 rounded-lg no-focus"
+                                className="w-full ouline-none bg-dark-400 text-white border-0 rounded-lg no-focus"
                                 placeholder="Supplier name"
                                 {...field}
                             />
@@ -110,7 +110,7 @@ export default function UpdateSuppliersName ({id}:Props){
                         </FormItem>
                     )}
                     />
-                    <Button type="submit" className="w-auto bg-primary-100 text-white" disabled={isSubmitting}>
+                    <Button type="submit" className="w-1/3 bg-primary-500 text-white font-bold" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
                             {'Updating ...'}

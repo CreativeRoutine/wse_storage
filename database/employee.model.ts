@@ -5,6 +5,8 @@ export interface IEmployee extends Document {
   lastName: string;
   nickName?: string;
   department: string;
+  active?: boolean;
+  printers?: Schema.Types.ObjectId[];
 }
 
 const EmployeeSchema = new Schema({
@@ -12,6 +14,14 @@ const EmployeeSchema = new Schema({
   lastName: { type: String, required: true },
   nickName: { type: String },
   department: { type: String, required: true }, // Указываем отдел, к которому принадлежит сотрудник
+  active: { type: Boolean, default: true }, // Указываем активен ли сотрудник
+  printers: [
+    {
+      printerId: { type: Schema.Types.ObjectId, ref: "Printer", required: true },
+      timeSpent: { type: Number, required: false },
+      date: { type: Date, default: Date.now, required: false },
+    },
+  ],
 });
 
 const Employee = models.Employee || model("Employee", EmployeeSchema);

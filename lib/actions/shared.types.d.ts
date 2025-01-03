@@ -13,12 +13,13 @@ export interface AddPrinterToPalletParams {
   path: string;
 }
 export interface CreatePrinterParams {
-  ponumber: string;
+  // ponumber?: string;
   sn: string;
   productNumber: string;
   barcode: string;
   path: string;
   createdOn: Date;
+  preview?: string;
 }
 
 export interface CreatePrinterModelParams {
@@ -60,9 +61,14 @@ export interface GetPrintersParams {
   filter?: string;
   from?: any;
   to?: any;
+  status?: string;
 }
 
 export interface FindPrinterParams {
+  barcode: string;
+}
+
+export interface FindPrinterCleanerParams {
   barcode: string;
 }
 
@@ -83,6 +89,20 @@ export interface GetPrinterParams{
 export interface updatePrinterPONParams{
   _id: string;
   ponumber: string;
+  path: string;
+
+}
+
+export interface addPrinterCommentParams{
+  _id: string;
+  comment: string;
+  path: string;
+
+}
+
+export interface addPrinterInvoiceNumberParams{
+  _id: string;
+  invoiceNumber: string;
   path: string;
 
 }
@@ -189,16 +209,20 @@ export interface DeletePartsParams {
 // PALLET TYPES
 // /////////////////////
 export interface CreatePalet{
-  ponumber: Schema.Types.ObjectId | ISupplier;
+  location?: string;
   barcode: string; 
-  createdOn: Date;
-  user: Schema.Types.ObjectId | IUser;
   path: string;
 }
 
 export interface UpdatePaletLocation{
   location: string;
   id: string;
+  path: string;
+}
+
+export interface AddPrinterToStoragePalet{
+  palletId: string;
+  barcode: string;
   path: string;
 }
 
@@ -238,11 +262,37 @@ export interface GetPaletByIdParams{
 // /////////////////////
 // SUPPLIERS TYPES
 // /////////////////////
+export interface CreateSuppliersParams {
+  ponumber: string;
+
+  createdOn: Date;
+}
+
+export interface AddPalletToSupplierParams{
+  _id: string;
+  barcode: string;
+  createdOn: Date;
+  path: string;
+}
+
+export interface DeleteEmptySuppliersPalletParams {
+  id: string;
+  path: string;
+}
+
 export interface GetSuppliersParams {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
   filter?: string;
+}
+
+export interface AddPrinterToSupplierPalletParams {
+  sn: string,
+  productNumber: string, 
+  barcode: string, 
+  palletId: string, 
+  path: string
 }
 
 export interface UpdateSuppliersName{

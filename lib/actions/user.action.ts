@@ -2,6 +2,7 @@
 
 import User from "@/database/user.model";
 import Employee from "@/database/employee.model";
+import Printer from "@/database/printer.model";
 import mongoose from 'mongoose';
 import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, UpdateUserParams, DeleteUserParams } from "./shared.types";
@@ -124,6 +125,25 @@ export async function getEmployees(params: any){
         throw error;
     }
 }
+
+export async function getEmployeesById(params: any){
+
+    try {
+        connectToDatabase();
+
+        const {_id} = params;
+
+        const user = await Employee.findOne({_id})
+        // .populate({path: 'printers', model: Printer, select: "name barcode"})
+        .lean();
+
+        return user;
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 
 
 export async function changeUserDepartment(params: any){

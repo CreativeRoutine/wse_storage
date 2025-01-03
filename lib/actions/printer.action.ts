@@ -1,7 +1,7 @@
 "use server"
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams,GetPrinterByBarcodeParams, updatePrinterPreviewParams, FindPrinterParams, AddPrinterToPalletParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams } from "./shared.types";
+import {  CreatePrinterParams,GetPrinterByBarcodeParams, updatePrinterPreviewParams, FindPrinterParams, FindPrinterCleanerParams, AddPrinterToPalletParams, addPrinterCommentParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams, addPrinterInvoiceNumberParams } from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
 import moment from 'moment-timezone';
@@ -21,52 +21,59 @@ export async function createPrinter(params: CreatePrinterParams) {
   try {
     await connectToDatabase(); // Подключение к базе данных
 
-    const { ponumber, sn, productNumber, barcode, path, createdOn } = params;
+    const { 
+      // ponumber, 
+      sn, 
+      productNumber, 
+      barcode, 
+      path, 
+      createdOn } = params;
 
-    // Checking if the printer already exists
-    const existingPrinter = await Printer.findOne({ sn, barcode });
-    if (existingPrinter) {
-      return { success: false, message: "Printer already exists!" };
+    // Проверяем, существует ли принтер с таким же barcode
+    const existingBarcode = await Printer.findOne({ barcode });
+    if (existingBarcode) {
+      return { success: false, message: `Printer with barcode ${barcode} already exists!` };
     }
 
-    let printerModel;
+    let printerModel = "";
+    let printerPreview = "";
 
-    // Search by productNumber
+    // Поиск по productNumber
     const printerMake = await Makes.findOne({ productNumber });
-
     if (printerMake) {
-      printerModel = printerMake.name;
-    } else {
-      printerModel = "";
+      printerModel = printerMake.name || "";
+      printerPreview = printerMake.preview || "";
     }
 
-    const printerPart = await Parts.findOne({ productNumber: productNumber });
+    // Проверяем, существует ли запись в Parts
+    const printerPart = await Parts.findOne({ productNumber });
     if (!printerPart) {
       await Parts.create({
-        productNumber: productNumber,
+        productNumber,
         printerName: printerModel,
         parts: [],
       });
     }
 
-    // Create a new printer
+    // Создаем новый принтер
     const newPrinter = await Printer.create({
-      ponumber,
+      // ponumber,
       sn,
       productNumber,
       barcode,
       createdOn,
       name: printerModel,
+      preview: printerPreview,
     });
 
-    // Update the supplier (Supplier)
-    await Supplier.findOneAndUpdate(
-      { ponumber },
-      { $push: { printers: newPrinter._id } },
-      { new: true, upsert: true }
-    );
+    // Обновляем Supplier
+    // await Supplier.findOneAndUpdate(
+    //   { ponumber },
+    //   { $push: { printers: newPrinter._id } },
+    //   { new: true, upsert: true }
+    // );
 
-    // Update or create a record in Makes
+    // Обновляем или создаем запись в Makes
     await Makes.findOneAndUpdate(
       { productNumber },
       { $push: { printers: newPrinter._id } },
@@ -75,7 +82,6 @@ export async function createPrinter(params: CreatePrinterParams) {
 
     revalidatePath(path);
 
-    // Возвращаем успешный результат
     return { success: true, message: "Printer and parts record created successfully!" };
 
   } catch (error) {
@@ -91,12 +97,45 @@ export async function findPrinter(params: FindPrinterParams) {
     await connectToDatabase();
 
     const { barcode } = params;
+
     if (!barcode) {
       return { success: false, message: "Barcode is required!" }; 
     }
 
     // Find the printer by barcode
-    const result = await Printer.findOne({ barcode }).lean();
+    const result = await Printer.findOne({ barcode })
+    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' })
+    .lean();
+
+    if (!result) {
+      return { success: false, message: "Printer not found!" };
+    }
+
+    // Convert the result to a plain object if necessary
+    const printer = JSON.parse(JSON.stringify(result));
+
+    return { success: true, message: "Printer was found", printer }; 
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function findPrinterCleaner(params: FindPrinterCleanerParams) {
+  try {
+    // Connect to the database
+    await connectToDatabase();
+
+    const { barcode } = params;
+
+    if (!barcode) {
+      return { success: false, message: "Barcode is required!" }; 
+    }
+
+    // Find the printer by barcode
+    const result = await Printer.findOne({ barcode })
+    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' })
+    .lean();
 
     if (!result) {
       return { success: false, message: "Printer not found!" };
@@ -246,27 +285,214 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 }
 
 // receiving all printers with filters
-export async function getPrinters(params: GetPrintersParams){
+// export async function getPrinters(params: GetPrintersParams) {
+//   try {
+//     // Подключение к базе данных
+//     await connectToDatabase();
+
+//     const { searchQuery, filter, from, to, page = 1, pageSize } = params;
+
+//     const skipAmount = (page - 1) * pageSize;
+
+//     const query: FilterQuery<typeof Printer> = {};
+
+//     if (searchQuery) {
+//       query.$or = [
+//         { productNumber: { $regex: new RegExp(searchQuery, "i") } },
+//         { barcode: { $regex: new RegExp(searchQuery, "i") } },
+//         { ponumber: { $regex: new RegExp(searchQuery, "i") } },
+//         { sn: { $regex: new RegExp(searchQuery, "i") } },
+//         { name: { $regex: new RegExp(searchQuery, "i") } },
+//         {
+//           $expr: {
+//             $regexMatch: {
+//               input: { $arrayElemAt: ["$tasksPerformed.status", -1] },
+//               regex: new RegExp(searchQuery, "i"),
+//             },
+//           },
+//         },
+//         {
+//           $expr: {
+//             $regexMatch: {
+//               input: {
+//                 $arrayElemAt: [
+//                   {
+//                     $map: {
+//                       input: "$tasksPerformed",
+//                       as: "task",
+//                       in: {
+//                         $arrayElemAt: ["$$task.performedCleaner.status", -1],
+//                       },
+//                     },
+//                   },
+//                   -1,
+//                 ],
+//               },
+//               regex: new RegExp(searchQuery, "i"),
+//             },
+//           },
+//         },
+//       ];
+//     }
+
+//     if (from && to) {
+//       query.createdOn = {
+//         $gte: new Date(from),
+//         $lte: new Date(to),
+//       };
+//     }
+
+//     let sortOptions = {};
+
+//     switch (filter) {
+//       case "newest":
+//         sortOptions = { createdOn: -1 };
+//         break;
+//       case "oldest":
+//         sortOptions = { createdOn: 1 };
+//         break;
+
+//       default:
+//         sortOptions = { createdOn: -1 };
+//         break;
+//     }
+
+//     // Запрос к базе данных
+//     const printers = await Printer.find(query)
+//       .skip(skipAmount)
+//       .limit(pageSize)
+//       .sort(sortOptions)
+//       .lean();
+
+//     const totalPrinters = await Printer.countDocuments(query);
+//     const isNext = totalPrinters > skipAmount + printers.length;
+
+//     let total = totalPrinters / pageSize;
+
+//     return { printers, isNext, total, totalPrinters };
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+// export async function getPrinters(params: GetPrintersParams) {
+//   try {
+//     // Подключение к базе данных
+//     await connectToDatabase();
+
+//     const { searchQuery, filter, status, from, to, page = 1, pageSize } = params;
+
+//     const skipAmount = (page - 1) * pageSize;
+
+//     const query: FilterQuery<typeof Printer> = {};
+
+//     if (searchQuery) {
+//       query.$or = [
+//         { productNumber: { $regex: new RegExp(searchQuery, "i") } },
+//         { barcode: { $regex: new RegExp(searchQuery, "i") } },
+//         { ponumber: { $regex: new RegExp(searchQuery, "i") } },
+//         { sn: { $regex: new RegExp(searchQuery, "i") } },
+//         { name: { $regex: new RegExp(searchQuery, "i") } },
+//         {
+//           $expr: {
+//             $regexMatch: {
+//               input: { $arrayElemAt: ["$tasksPerformed.status", -1] },
+//               regex: new RegExp(searchQuery, "i"),
+//             },
+//           },
+//         },
+//         {
+//           $expr: {
+//             $regexMatch: {
+//               input: {
+//                 $arrayElemAt: [
+//                   {
+//                     $map: {
+//                       input: "$tasksPerformed",
+//                       as: "task",
+//                       in: {
+//                         $arrayElemAt: ["$$task.performedCleaner.status", -1],
+//                       },
+//                     },
+//                   },
+//                   -1,
+//                 ],
+//               },
+//               regex: new RegExp(searchQuery, "i"),
+//             },
+//           },
+//         },
+//       ];
+//     }
+
+//     // Добавляем фильтр по статусу
+//     if (status) {
+//       query["tasksPerformed"] = {
+//         $exists: true,
+//         $ne: [],
+//       };
+//       query["tasksPerformed.status"] = { $regex: new RegExp(status, "i") };
+
+//       query.$expr = {
+//         $eq: [
+//           { $arrayElemAt: ["$tasksPerformed.status", -1] }, // Берем последний элемент массива
+//           status,
+//         ],
+//       };
+//     }
+
+//     if (from && to) {
+//       query.createdOn = {
+//         $gte: new Date(from),
+//         $lte: new Date(to),
+//       };
+//     }
+
+//     let sortOptions = {};
+
+//     switch (filter) {
+//       case "newest":
+//         sortOptions = { createdOn: -1 };
+//         break;
+//       case "oldest":
+//         sortOptions = { createdOn: 1 };
+//         break;
+
+//       default:
+//         sortOptions = { createdOn: -1 };
+//         break;
+//     }
+
+//     // Запрос к базе данных
+//     const printers = await Printer.find(query)
+//       .skip(skipAmount)
+//       .limit(pageSize)
+//       .sort(sortOptions)
+//       .lean();
+
+//     const totalPrinters = await Printer.countDocuments(query);
+//     const isNext = totalPrinters > skipAmount + printers.length;
+
+//     let total = totalPrinters / pageSize;
+
+//     return { printers, isNext, total, totalPrinters };
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+export async function getPrinters_СТАРЫЙ_РАБОЧИЙ(params: GetPrintersParams) {
   try {
-    // Connect to the database
+    // Подключение к базе данных
     await connectToDatabase();
 
-    const {searchQuery, filter, from, to, page = 1, pageSize} = params;
+    const { searchQuery, filter, from, to, page = 1, pageSize, status } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
     const query: FilterQuery<typeof Printer> = {};
 
-    if(searchQuery){
-      query.$or = [
-        {productNumber: {$regex: new RegExp(searchQuery, "i")}},
-        {barcode: {$regex: new RegExp(searchQuery, "i")}},
-        {ponumber: {$regex: new RegExp(searchQuery, "i")}},
-        {sn: {$regex: new RegExp(searchQuery, "i")}},
-        {name: {$regex: new RegExp(searchQuery, "i")}},
-      ];
-    }
-
+    // Фильтрация по дате
     if (from && to) {
       query.createdOn = {
         $gte: new Date(from),
@@ -274,45 +500,188 @@ export async function getPrinters(params: GetPrintersParams){
       };
     }
 
+    // Фильтрация по другим полям
+    if (searchQuery) {
+      query.$or = [
+        { productNumber: { $regex: new RegExp(searchQuery, "i") } },
+        { barcode: { $regex: new RegExp(searchQuery, "i") } },
+        { ponumber: { $regex: new RegExp(searchQuery, "i") } },
+        { sn: { $regex: new RegExp(searchQuery, "i") } },
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
     let sortOptions = {};
 
     switch (filter) {
       case "newest":
-        sortOptions = {createdOn: -1};
+        sortOptions = { createdOn: -1 };
         break;
       case "oldest":
-        sortOptions = {createdOn: 1};
+        sortOptions = { createdOn: 1 };
         break;
-      
-      default:
-        sortOptions = {createdOn: -1};
-        break
+        
 
+      default:
+        sortOptions = { createdOn: -1 };
+        break;
     }
 
-    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+    // Этап агрегации
+    const aggregatedData = await Printer.aggregate([
+      {
+        $match: query, // Сначала фильтруем по дате
+      },
+      {
+        $addFields: {
+          lastTask: { $arrayElemAt: ["$tasksPerformed", -1] }, // Берем последний объект из tasksPerformed
+        },
+      },
+      {
+        $match: {
+          "lastTask.status": status || "Refurbished", // Затем фильтруем по статусу
+        },
+      },
+      {
+        $count: "refurbishedPrinters", // Подсчитываем количество
+      },
+    ]);
+
+    // Основной запрос к базе данных для остальных данных
     const printers = await Printer.find(query)
-    .skip(skipAmount)
-    .limit(pageSize)
-    .sort(sortOptions)
-    .lean()
-    // .populate({path: 'makes', model: Makes, select: 'productNumber'})
-    // .populate({path: "makes", model: Makes, select: "productNumber"})
-    // .populate({path: "pallets", model: Pallet})
-    // //.populate({path: 'author', model: User}) 
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions)
+      .lean();
 
     const totalPrinters = await Printer.countDocuments(query);
-    const isNext = totalPrinters > skipAmount + printers.length
+    const isNext = totalPrinters > skipAmount + printers.length;
 
     let total = totalPrinters / pageSize;
 
-    return{printers, isNext, total, totalPrinters}
+    const refurbishedCount =
+      aggregatedData.length > 0 ? aggregatedData[0].refurbishedPrinters : 0;
 
+    return { printers, isNext, total, totalPrinters, refurbishedCount };
   } catch (error) {
-    
     throw error;
   }
 }
+
+export async function getPrinters(params: GetPrintersParams) {
+  try {
+    await connectToDatabase();
+
+    const { searchQuery, filter, from, to, page = 1, pageSize } = params;
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const query: any = {};
+
+    // Фильтрация по дате
+    if (from && to) {
+      query.createdOn = {
+        $gte: new Date(from),
+        $lte: new Date(to),
+      };
+    }
+
+    // Фильтрация по поисковому запросу
+    if (searchQuery) {
+      query.$or = [
+        { productNumber: { $regex: new RegExp(searchQuery, "i") } },
+        { barcode: { $regex: new RegExp(searchQuery, "i") } },
+        { ponumber: { $regex: new RegExp(searchQuery, "i") } },
+        { sn: { $regex: new RegExp(searchQuery, "i") } },
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    // Установка опций сортировки
+    let sortOptions = {};
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdOn: -1 };
+        break;
+      case "oldest":
+        sortOptions = { createdOn: 1 };
+        break;
+      default:
+        sortOptions = { createdOn: -1 };
+        break;
+    }
+
+    // Условие для фильтров Refurbished, Cleaned и наличия invoiceNumber
+    const filterCondition = [];
+    if (filter === "refurbished") {
+      filterCondition.push({
+        $and: [
+          { "lastTask.status": "Refurbished" }, // Проверяем статус `Refurbished` в последнем `tasksPerformed`
+        ],
+      });
+    }
+    if (filter === "cleaned") {
+      filterCondition.push({
+        $and: [
+          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } }, // Убедимся, что массив `performedCleaner` не пуст
+          { "lastCleaner.status": "Cleaned" }, // Проверяем статус `Cleaned` в последнем объекте `performedCleaner`
+        ],
+      });
+    }
+    if (filter === "invoice") {
+      filterCondition.push({
+        $and: [
+          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } }, // Убедимся, что массив `performedCleaner` не пуст
+          { "lastCleaner.invoiceNumber": { $exists: true, $ne: "" } }, // Проверяем, что invoiceNumber не пуст
+        ],
+      });
+    }
+
+    // Агрегация для фильтрации
+    const aggregationPipeline = [
+      {
+        $match: query, // Основная фильтрация по дате и поисковому запросу
+      },
+      {
+        $addFields: {
+          lastTask: { $arrayElemAt: ["$tasksPerformed", -1] }, // Последний объект из `tasksPerformed`
+          lastCleaner: {
+            $arrayElemAt: ["$tasksPerformed.performedCleaner", -1], // Последний объект из `performedCleaner`
+          },
+        },
+      },
+      {
+        $match: {
+          $or: filterCondition.length > 0 ? filterCondition : [{}], // Применяем фильтрацию по статусу
+        },
+      },
+    ];
+
+    // Выполняем агрегацию
+    const printers = await Printer.aggregate(aggregationPipeline)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort(sortOptions)
+      .exec();
+
+    // Подсчёт общего количества документов
+    const totalPrinters = await Printer.aggregate(aggregationPipeline).count("total");
+
+    const isNext = totalPrinters.length > skipAmount + printers.length;
+
+    return {
+      printers,
+      totalPrinters: totalPrinters.length,
+      isNext,
+      total: Math.ceil(totalPrinters.length / pageSize),
+    };
+  } catch (error) {
+    console.error("Error fetching printers:", error);
+    throw new Error("Error fetching printers");
+  }
+}
+
+
 
 // Used on Printer's page
 export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
@@ -326,7 +695,13 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
     const printer = await Printer.find({_id: _id})
     .populate({path: 'pallet', model: Pallet, select: "barcode location"})
     .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
+    .populate({
+      path: 'tasksPerformed.performedCleaner.user',
+      model: 'Employee',
+      select: '_id name',
+    })
       .lean();
+      
 
     return printer[0]
 
@@ -338,6 +713,7 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
 
 
 // Messaging ready
+// FORM FOR TECHNICIAN
 export async function updatePrinterWithCheck(params: any) {
   try {
     // Подключаемся к базе данных
@@ -371,6 +747,22 @@ export async function updatePrinterWithCheck(params: any) {
     if (!user) {
       return { success: false, message: "User not found!" };
     }
+
+    // Проверяем, существует ли массив printers, если нет — создаем
+    if (!user.printers) {
+      user.printers = [];
+    }
+
+    // Добавляем объект с данными (printerId, timeSpent, date) в массив printers
+    user.printers.push({
+      printerId: printerId,
+      timeSpent,
+      date: date || new Date(), // Если дата не передана, используем текущую
+    });
+
+    // Сохраняем изменения в пользователе
+    await user.save();
+
 
     // Инициализируем массив tasksPerformed, если он отсутствует
     if (!printer.tasksPerformed) {
@@ -415,6 +807,100 @@ export async function updatePrinterWithCheck(params: any) {
   }
 }
 
+// Messaging ready
+// FORM FOR CLEANER
+export async function updatePrinterWithCheckCleaner(params: any) {
+  try {
+    await connectToDatabase();
+
+    const {
+      date,
+      printerId,
+      selectedUser,
+      overallCondition,
+      cleanliness,
+      afterRefurbish,
+      additionalInfo,
+      timeSpent,
+      status,
+      testedAfterCleaning,
+      invoiceNumber,
+      path,
+    } = params;
+
+    // Находим принтер по ID
+    const printer = await Printer.findOne({ _id: printerId });
+    if (!printer) {
+      return { success: false, message: "Printer not found!" };
+    }
+
+    // Проверяем, есть ли массив tasksPerformed
+    if (!printer.tasksPerformed || printer.tasksPerformed.length === 0) {
+      return { success: false, message: "No tasks performed to update." };
+    }
+
+    // Находим пользователя по ID
+    const user = await Employee.findOne({ _id: selectedUser.id });
+    if (!user) {
+      return { success: false, message: "User not found!" };
+    }
+
+    // Проверяем, существует ли массив printers, если нет — создаем
+    if (!user.printers) {
+      user.printers = [];
+    }
+
+    // Добавляем объект с данными (printerId, timeSpent, date) в массив printers
+    user.printers.push({
+      printerId: printerId,
+      timeSpent,
+      date: date || new Date(), // Если дата не передана, используем текущую
+    });
+
+    // Сохраняем изменения в пользователе
+    console.log("User printers before save:", user.printers);
+    await user.save();
+
+    // Получаем последний объект в массиве tasksPerformed
+    const lastTaskIndex = printer.tasksPerformed.length - 1;
+    const lastTask = printer.tasksPerformed[lastTaskIndex];
+
+    // Инициализируем поле performedCleaner, если оно отсутствует
+    if (!lastTask.performedCleaner) {
+      lastTask.performedCleaner = [];
+    }
+
+    // Добавляем новую запись в массив performedCleaner
+    lastTask.performedCleaner.push({
+      date: date || new Date(),
+      user: user._id,
+      overallCondition: overallCondition || "Default Condition",
+      cleanliness: cleanliness || "Default Cleanliness",
+      afterRefurbish: afterRefurbish || "Default Refurbish Status",
+      timeSpent: timeSpent || 0,
+      status: status || "Pending",
+      additionalInfo: additionalInfo || "No additional info",
+      invoiceNumber: invoiceNumber || "No invoice number",
+      tested: testedAfterCleaning
+    });
+
+    // Сохраняем изменения в принтере
+    printer.markModified(`tasksPerformed.${lastTaskIndex}.performedCleaner`);
+    const savedPrinter = await printer.save();
+
+    console.log("Saved printer:", savedPrinter);
+
+    // Обновляем кеш страницы
+    revalidatePath(path);
+
+    return { success: true, message: "PerformedCleaner updated successfully!" };
+  } catch (error) {
+    console.error("Error during update:", error);
+    return { success: false, message: "An error occurred while updating the printer." };
+  }
+}
+
+
 
 // Messaging ready
 export async function updatePrinterPON(params:updatePrinterPONParams){
@@ -454,6 +940,117 @@ export async function updatePrinterPON(params:updatePrinterPONParams){
       return false
   }
 
+}
+
+export async function addPrinterComment(params: addPrinterCommentParams) {
+  try {
+    connectToDatabase();
+    const { _id, comment, path } = params;
+
+    const printer = await Printer.findOne({ _id: _id });
+    if (!printer) {
+      return { success: false, message: "Printer not found!" };
+    }
+
+    const lastTask = printer.tasksPerformed?.at(-1);
+    if (!lastTask) {
+      return { success: false, message: "No tasks performed found!" };
+    }
+
+    // Добавляем комментарий к последнему объекту
+    lastTask.comment = comment;
+
+    // Сохраняем изменения в базе данных
+    await printer.save();
+
+    console.log("Updated last task:", lastTask);
+
+    revalidatePath(path);
+
+    return { success: true};
+
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function addPrinterInvoiceNumber(params: addPrinterInvoiceNumberParams) {
+  try {
+    connectToDatabase();
+    const { _id, invoiceNumber, path } = params;
+
+    // Найти принтер по ID
+    const printer = await Printer.findOne({ _id: _id });
+    if (!printer) {
+      return { success: false, message: "Printer not found!" };
+    }
+
+    // Получить последний объект из tasksPerformed
+    const lastTask = printer.tasksPerformed?.at(-1);
+    if (!lastTask) {
+      return { success: false, message: "No tasks performed found!" };
+    }
+
+    // Проверяем, есть ли performedCleaner, и получаем последний объект
+    const lastPerformedCleaner = lastTask.performedCleaner?.at(-1);
+    if (!lastPerformedCleaner) {
+      return { success: false, message: "No performedCleaner found in the last task!" };
+    }
+
+    // Добавляем invoiceNumber к последнему объекту performedCleaner
+    lastPerformedCleaner.invoiceNumber = invoiceNumber;
+
+    // Сохраняем изменения в базе данных
+    await printer.save();
+
+
+    // Обновляем страницу
+    revalidatePath(path);
+
+    return { success: true, message: "Invoice number added successfully!" };
+
+  } catch (error) {
+    console.error("Error adding invoice number:", error);
+    return { success: false, message: "An error occurred while adding the invoice number." };
+  }
+}
+
+export async function addPrinterCost(
+  price: number,
+  id: string,
+  path: string
+) {
+  try {
+    await connectToDatabase();
+
+    
+
+    
+
+    const printer = await Printer.findOneAndUpdate(
+      { _id: id },
+      { $set: {price: price } }, // Adding printer's produc number
+      { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    );
+
+
+
+
+    // Обновить страницу, если требуется
+    revalidatePath(path);
+
+    return {
+      success: true,
+      message: "Printers' price updated successfully!",
+    };
+  } catch (error) {
+    console.error("Error updating printer cost:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating the printer's cost.",
+    };
+  }
 }
 
 // Messaging ready / Dialog Alert implemented
@@ -519,19 +1116,19 @@ export async function unPinPrinter(params:UnPinPrinterParams) {
     )
 
     // clean printer from pallet
-    const printer = await Printer.find({_id: printerId})
-    await Printer.findByIdAndUpdate(
-      printerId, 
-      { $unset: { pallet: "", ponumber:"" } },
-      { new: true }
-    )
+    // const printer = await Printer.find({_id: printerId})
+    // await Printer.findByIdAndUpdate(
+    //   printerId, 
+    //   { $unset: { pallet: "", ponumber:"" } },
+    //   { new: true }
+    // )
 
 
-    const supplier = await Supplier.findOneAndUpdate(
-      { ponumber: pallet.ponumber },
-      { $pull: { printers: printerId } }, // Добавляем _id палета
-      //{ new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-    );
+    // const supplier = await Supplier.findOneAndUpdate(
+    //   { ponumber: pallet.ponumber },
+    //   { $pull: { printers: printerId } }, // Добавляем _id палета
+    //   //{ new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
+    // );
     
     // Revalidate the path
     revalidatePath(path);

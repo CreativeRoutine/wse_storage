@@ -40,7 +40,7 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
       <div className="flex  bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
         <div className='w-full flex p-4 gap-4'>
           {/* LEFT SIDE */}
-          <div className='w-1/2 flex bg-secondary-200 px-8  py-6 w-full rounded-xl border border-dark-350 shadow-lg'>
+          <div className='flex bg-secondary-200 px-8  py-6 w-full rounded-xl border border-dark-350 shadow-lg'>
             <div className='flex flex-col w-full'>
 
               <div className="w-full text-white text-lg" key={user._id}>
@@ -76,7 +76,7 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
                       </div> : 
                       user.employees && user.employees.length > 0 ? (
                         <div className="flex flex-col justify-start w-full">
-                          <div className="text-lg text-lime-500">Employees:</div>
+                          <div className="text-lg text-lime-500">Department's employees:</div>
                           <ul>
                             {
                               user.employees.map((employee:any, index:number) => (
@@ -85,7 +85,7 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
 
                                   <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
                                     <div className='tex-sm text-slate-500 mr-2'>Name:</div>
-                                    <Link href={`/employees/${employee.name}`} className='hover:text-sky-600 font-bold'>{employee.name}</Link>
+                                    <Link href={`/employees/${employee._id}`} className='hover:text-sky-600 font-bold'>{employee.name}</Link>
                                   </div>
 
                                   <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
@@ -93,10 +93,10 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
                                     <div className='font-bold'>{employee.lastName}</div>
                                   </div>
 
-                                  <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
+                                  {/* <div className='ml-1 mr-6  text-white text-lg flex flex-row'>
                                     <div className='tex-sm text-slate-500 mr-2'>Nickname:</div>
                                     <div className='font-bold'>{employee.nickName}</div>
-                                  </div>
+                                  </div> */}
                                 </li>
                               )) 
                             }
@@ -108,7 +108,7 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
                   }
                 </div>
 
-                <div className="w-full  mb-2 py-2 flex justify-between">
+                {/* <div className="w-full  mb-2 py-2 flex justify-between">
                   {
                     user.printers.length === 0 ?
                       <div className="flex justify-start">
@@ -145,7 +145,7 @@ const userPage = async ({ params }: { params: { _id: string } }) => {
                         
                       </div>
                   }
-                </div>
+                </div> */}
                 
               </div>
 

@@ -92,10 +92,8 @@ export default function AddPart ({ mongoUserId }: Props){
 
 
   return (
-    <div className="bg-transparent px-0 mb-2 py-2 w-full rounded-xl  border-0 shadow-lg">
 
-      <div className="mb-4">
-        {/* ======================================================================= */}
+        
         <Form {...form}>    
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
 
@@ -227,9 +225,6 @@ export default function AddPart ({ mongoUserId }: Props){
           </form>
         </Form>
 
-      </div>
 
-
-    </div>
   )
 }

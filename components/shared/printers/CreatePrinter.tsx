@@ -38,7 +38,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   const form = useForm<z.infer<typeof addPrinterSchema>>({
     resolver: zodResolver(addPrinterSchema),
     defaultValues: {
-      ponumber: "",
+      // ponumber: "",
       sn: "",
       productNumber:"",
       barcode:"",
@@ -49,41 +49,46 @@ export default function CreatePrinter ({ mongoUserId }: Props){
   // addPrinterSchema took from lib/validations.ts to validate the form
   async function onSubmit(values: z.infer<typeof addPrinterSchema>) {
     setIsSubmitting(true);
-
-
+  
     const createdOn = moment().tz("America/Chicago").toDate();
-    createdOn.setHours(createdOn.getHours() - 5); 
-
+    createdOn.setHours(createdOn.getHours() - 5);
+  
     try {
-      // this function took from lib/actions/pallet.action.ts to create a new printer model
       const response = await createPrinter({
-        ponumber: JSON.parse(JSON.stringify(values.ponumber)),
+        // ponumber: JSON.parse(JSON.stringify(values.ponumber)),
         sn: JSON.parse(JSON.stringify(values.sn)),
         productNumber: JSON.parse(JSON.stringify(values.productNumber)),
         barcode: JSON.parse(JSON.stringify(values.barcode)),
         path: usepathname,
         createdOn: createdOn,
-      })
-
-        setIsSubmitting(false); // Reset isSubmitting state
-        // defined as a hook
-        form.reset({}); // Reset form fields
-        router.push("/printers")
-
-        response ? ( toast({
+      });
+  
+      setIsSubmitting(false); // Reset isSubmitting state
+  
+      if (response.success) {
+        // Если принтер успешно создан, показываем успешное уведомление
+        toast({
           title: "Printer created successfully!",
-          variant: 'default',
-        })) :(
-          toast({
-            title: "Printer with such Barcode already in DataBase!",
-            description: "Check the serial number, product number or barcode.",
-            variant: 'custom',
-          })
-        )
-      
-      
+          variant: "default",
+        });
+        form.reset({}); // Reset form fields
+        router.push("/printers");
+      } else {
+        // Если ошибка, показываем сообщение об ошибке
+        toast({
+          title: "Error creating printer!",
+          description: response.message,
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error("THIS IS AN ERROR", error); 
+      console.error("THIS IS AN ERROR", error);
+      setIsSubmitting(false); // Сбрасываем состояние при ошибке
+      toast({
+        title: "Unexpected Error",
+        description: "An error occurred while creating the printer. Please try again.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -98,9 +103,9 @@ export default function CreatePrinter ({ mongoUserId }: Props){
             <div className='flex gap-6'>
               <div className="w-full">
 
-                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printer:</div>
+                <div className="mb-4 text-lg text-slate-300 font-semibold">Add Printer (not belongs to specific Supplier):</div>
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="ponumber"
                   render={({ field }) => (
@@ -120,7 +125,7 @@ export default function CreatePrinter ({ mongoUserId }: Props){
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
 
                 <FormField
                   control={form.control}

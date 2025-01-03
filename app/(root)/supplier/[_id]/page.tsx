@@ -5,6 +5,7 @@ import React from 'react'
 import Link from 'next/link'
 import {auth} from "@clerk/nextjs"
 
+
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
@@ -12,6 +13,7 @@ import { formatTime } from '@/lib/utils'
 import { getSupplier } from '@/lib/actions/supplier.action'
 import UpdateSuppliersName from '@/components/shared/suppliers/UpdateSuppliersName'
 import DeleteSupplier from '@/components/shared/suppliers/DeleteSupplier'
+import AddPalletToSupplier from '@/components/shared/suppliers/AddPalletToSupplier'
 
 const page = async ({ params }: { params: { _id: string } }) => {
 
@@ -32,18 +34,18 @@ const page = async ({ params }: { params: { _id: string } }) => {
   return (
     <>
       {
-        supplier.name ? ( <Title text={`Supplier - ${supplier.name}`} /> ) :
-        (<Title text={`Supplier - ${supplier.ponumber}`} />)
+        supplier.name ? ( <Title text={`Supplier - ${supplier.name}`} link="/settings/suppliers" linkText="Back" /> ) :
+        (<Title text={`Supplier - ${supplier.ponumber}`} link="/settings/suppliers" linkText="Back" />)
       }
       
 
       <div className="flex flex-col bg-dark-600 rounded-xl border border-dark-350 p-4">
         {/* Top Side */}
-        <div className="flex flex-row gap-2">
-          <div className='flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
+        <div className="flex flex-row gap-4">
+          <div className='flex flex-col w-full lg:w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <Subheading className="!text-white !text-lg">General info</Subheading>
             <DescriptionList className='mt-4'>
-            <DescriptionTerm className='text-white'>PO ID</DescriptionTerm>
+              <DescriptionTerm className='text-white'>PO ID</DescriptionTerm>
               <DescriptionDetails className='!text-white'>{supplier._id}</DescriptionDetails>
 
               <DescriptionTerm className='text-white'>Full name</DescriptionTerm>
@@ -59,14 +61,21 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <DescriptionDetails className='!text-white'>{supplier.printers ? supplier.printers.length : 0 }</DescriptionDetails>
             </DescriptionList>
           </div>
-          <div className='flex flex-col justify-center align-center items-center w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
-            <div>
-            <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
-              <UpdateSuppliersName id={_id} />
-            </div>
-            <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
-              <DeleteSupplier id={_id} />
-            </div>
+          <div className='flex flex-col justify-start items-start w-full lg:w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
+            <div className='flex flex-col gap-2 w-full'>
+              <div className='bg-dark-600 rounded-xl border border-dark-350 p-4 '>
+                <h3 className='text-white font-semibold mb-2'>Add / Change Supplier's name.</h3>
+                <UpdateSuppliersName id={_id} />
+              </div>
+              <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
+              <h3 className='text-white font-semibold mb-2'>Add pallet.</h3>
+                <AddPalletToSupplier id={_id} />
+              </div>
+              <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
+                <h3 className='text-white font-semibold mb-2'>Delete Supplier.</h3>
+                <h6 className='text-xs mb-2 text-slate-400'>You can delete Supplier if there are no pallets / printers inside.</h6>
+                <DeleteSupplier id={_id} />
+              </div>
             </div>
           </div>
         </div>
@@ -94,12 +103,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                       >
                         Barcode
                       </th>
-                      <th 
-                        scope="col" 
-                        className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
-                      >
-                        Location
-                      </th>
+                      
                       <th 
                         scope="col" 
                         className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
@@ -112,6 +116,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                       >
                         Created on
                       </th>
+                     
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-transparent">
@@ -125,15 +130,13 @@ const page = async ({ params }: { params: { _id: string } }) => {
                               </div>
                             </td>
                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.barcode}</Link></div>
+                              <div className="text-white"><Link href={`/supplier/pallet/${item._id}`}>{item.barcode}</Link></div>
                             </td>
                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.location}</Link></div>
+                              <div className="text-white"><Link href={`/supplier/pallet/${item._id}`}>{item.printers.length}</Link></div>
                             </td>
-                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                              <div className="text-white"><Link href={`/storage/${item._id}`}>{item.printers.length}</Link></div>
-                            </td>
-                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><Link href={`/storage/${item._id}`}>{formatTime(item.createdOn, "full")}</Link></td>
+                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500"><Link href={`/supplier/pallet/${item._id}`}>{formatTime(item.createdOn, "full")}</Link></td>
+                            
                           </tr>
                         ))}
                   </tbody>

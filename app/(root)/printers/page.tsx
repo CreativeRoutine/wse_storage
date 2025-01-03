@@ -11,6 +11,7 @@ import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 import { SearchParamsProps } from "@/types";
 import { getPrinters } from "@/lib/actions/printer.action";
 import {PrintersFilters} from "@/components/printers/PrintersFilters";
+import { Console } from "console";
 
 const Printers = async ({searchParams}: SearchParamsProps) => {
 
@@ -22,6 +23,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     page: searchParams.page ? +searchParams.page : 1,
     pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })
+
   
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -34,7 +36,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
   
   return (
     <>
-      <Title text={`Printers page - (${result.totalPrinters})`} />
+      <Title text={`Printers page - (${result.printers.length})`} />
   
       {/* LIST OF PRINTERS */}
       <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">

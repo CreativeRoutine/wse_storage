@@ -5,12 +5,31 @@ import {formatTime} from "@/lib/utils";
 import Link from "next/link";
 import { getPallets } from "@/lib/actions/pallet.action";
 import Image from 'next/image'
+import LocalSearchbar from './search/LocalSearchbar';
+import { SearchParamsProps } from "@/types";
+
 const DisplayPallets = async () => {
 
-  const resultPallets = await getPallets({})
+  const resultPallets = await getPallets({
+
+  })
   const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
+
+  // console.log(pallets)
+
+
   return (
     <>
+      {/* SEARCHBAR */}
+      {/* <div className="sticky mt-2 flow-root  rounded-lg">
+            <LocalSearchbar 
+              route="/storage" 
+              iconPosition="left" 
+              imgSrc="/assets/icons/search.svg" 
+              placeholder="Filter items by make, product number, serial number, PO number or barcode" 
+              otherClasses="mb-4 bg-dark-600"
+            /> 
+          </div> */}
       <div className="py-4 px-8 mb-2 mt-6 bg-dark-600 text-white rounded-xl flex-col items-center justify-between border border-dark-350 shadow-lg">
         <div className="w-full text-lg font-bold mb-4">
           Empty pallets.
@@ -33,14 +52,19 @@ const DisplayPallets = async () => {
                     <div className="font-normal pr-2 text-slate-400">Barcode: </div>
                     <div className="font-bold text-white">{pallet.barcode}</div>
                   </div>
-                  <div className="flex items-center text-white mr-[24px]">
-                    <div className="font-normal pr-2 text-slate-400">PO number: </div>
-                    <div className="font-bold text-white">{pallet.ponumber}</div>
-                  </div>
+
                   <div className="flex items-center text-white mr-[24px]">
                     <div className="font-normal pr-2 text-slate-400">Printers inside: </div>
                     <div className={`font-bold ${pallet.printers.length == 0 ? 'text-red-400' : 'text-white'}`}>{pallet.printers.length}</div>
                   </div>
+                  {
+                    pallet.location && (
+                      <div className="flex items-center text-white mr-[24px]">
+                        <div className="font-normal pr-2 text-slate-400">Location: </div>
+                        <div className="text-white font-bold">{pallet.location ? pallet.location : null}</div>
+                      </div>
+                    )
+                  }
                   
                   <Link href={`/storage/${pallet._id}`} className="flex rounded-lg bg-primary-500 text-white p-4 ml-auto">
                     Edit Pallet

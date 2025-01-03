@@ -5,15 +5,13 @@ import { getPalet  } from '@/lib/actions/pallet.action'
 import Link from 'next/link'
 import AddPrinterToPalet from '@/components/shared/pallets/AddPrinterToPalet'
 import ChangePaletLocation from '@/components/shared/pallets/ChangePaletLocation'
-import ChangePaletCost from '@/components/shared/pallets/ChangePaletCost'
 import {auth} from "@clerk/nextjs"
-import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from '@/components/shared/VisitorNotification'
-import { Button } from '@/components/ui/button'
 import DeletePalet from '@/components/shared/pallets/DeletePalet'
 import UnPinPrinter from '@/components/shared/printers/UnPinPrinter'
+import AddPrinterToStoragePallet from '@/components/shared/pallets/AddPrinterToStoragePallet'
 
 
 const page = async ({ params }: { params: { _id: string } }) => {
@@ -31,7 +29,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const getPaletData = await getPalet({ _id});
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  
 
   
   return (
@@ -46,10 +43,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
               {
                 getPaletDataPlain ? (
                   <div className="w-full text-white text-lg" key={getPaletDataPlain._id as Key}>
-                    <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
-                      <div className="text-slate-400">PO number:</div>
-                      <div className='text-white font-bold'>{getPaletDataPlain.ponumber}</div>
-                    </div>
+                    
                     <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
                       <div className="text-slate-400">Location:</div>
                       <div className='text-white font-bold'>{getPaletDataPlain.location ? (getPaletDataPlain.location) : ("Not set") }</div>
@@ -58,17 +52,13 @@ const page = async ({ params }: { params: { _id: string } }) => {
                       <div className="text-slate-400">Barcode:</div>
                       <div className='text-white font-bold'>{getPaletDataPlain.barcode}</div>
                     </div>
-                    <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
-                      <div className="text-slate-400">Price: </div>
-                      <div className="text-white font-bold">{getPaletDataPlain.price ? (<div className="text-lime-500 font-bold"><span className='text-sm font-normal'>USD</span> {getPaletDataPlain.price}</div>  ) : (<div className='text-red-400 text-xl font-bold'>Not set </div>  )  }</div>
-                    </div>
                     <div className="w-full  mb-2 py-2 flex justify-between">
                       {
                         getPaletDataPlain.printers.length === 0 ?
                           <div className="flex w-full justify-between items-center">
                             <div className="text-lg text-red-500 font-bold">Pallet is empty</div>
 
-                            <DeletePalet id={getPaletDataPlain._id} mongoUserId={mongoUser._id} />
+                            <DeletePalet id={getPaletDataPlain._id} />
 
                           </div> : 
                           // IF THERE ARE PRINTERS ON PALLET
@@ -120,9 +110,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
           {/* RIGHT SIDE */}
           <div className='flex flex-col w-1/2 gap-4'>
-              <AddPrinterToPalet id={_id}  mongoUserId="12345"/>
+              <AddPrinterToStoragePallet id={_id} />
               <ChangePaletLocation id={_id} mongoUserId="12345" />
-              <ChangePaletCost id={_id} mongoUserId="12345" />
+              {/* <ChangePaletCost id={_id} mongoUserId="12345" /> */}
 
             
           </div>

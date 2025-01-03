@@ -67,7 +67,7 @@ export default function ChangeUserSupervisorForm ({mongoUserId}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/users/${mongoUserId}`)
+      router.push(`/settings/users/${mongoUserId}`)
 
     } catch (error) {
       console.error(error); 

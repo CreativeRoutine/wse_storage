@@ -3,6 +3,7 @@
 import React from 'react'
 import {formatTime} from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 
 
 interface Props {
@@ -67,9 +68,12 @@ const DisplaySuppliers = async ({suppliers}:Props) => {
             }
           </td>
           {/* <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{formatTime(supplier.createdOn, "full")}</td> */}
-          <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-            <a href={`/supplier/${supplier._id}`} className="text-indigo-600 hover:text-indigo-900 z-0">
+          <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 group">
+            <a href={`/supplier/${supplier._id}`} className="w-auto px-3 py-2 text-indigo-600 group-hover:text-white z-0 group-hover:bg-indigo-600 rounded-lg">
               View
+              {/* <Image src="/assets/icons/arrow-right.svg" alt="arrow-right" width={20} height={20} 
+                className='ransition ease-in-out duration-300 hidden group-hover:inline-block group-hover:transition-opacity group-hover:opacity-100 group-hover:translate-y-8'
+              /> */}
             </a>
           </td>
         </tr>

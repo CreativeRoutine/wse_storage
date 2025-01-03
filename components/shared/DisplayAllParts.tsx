@@ -2,8 +2,9 @@
 
 // import React from 'react'
 import {formatTime} from "@/lib/utils";
-// import Link from "next/link";
+import Link from "next/link";
 import { getPrinters } from "@/lib/actions/printer.action";
+import { Progress } from "@/components/ui/progress"
 
 interface Props {
   parts: any;
@@ -12,7 +13,9 @@ interface Props {
 
 const DisplayParts = async ({parts}:Props) => {
 
-//   console.log("PARTS RECEIVED IN DP ===>",parts)
+  const calcPercent = (val1:any, val2:any) => {
+    return Math.round((val1 / val2) * 100);
+  }
     
   if(parts.length == 0){
     return(<tr><td className="pt-6 text-white text-left">"You didn't add any part yet!"</td></tr>)
@@ -47,9 +50,36 @@ const DisplayParts = async ({parts}:Props) => {
   // console.log(uniqueCombinations);
 
   return (
+    
     <>
+      {
+        parts.map((printer:any, i:any) => printer.parts.length > 0 ? (
+          <tr key={i} className="">
+            <td className="">{printer.printerName}</td>
+            <td className="">{printer.productNumber}</td>
+            <td className="">
+              <ul className="">
+                {
+                  printer.parts.map((part:any) => 
+                    <li key={part.partsName} className="py-2 w-full flex flex-row justify-between">
+                      <span className="w-[120px] p-2">{part.partsName}</span> 
+                      <span className="w-2/3 flex flex-col items-center">
+                        <span>{part.part.length} of {part.maxParts}</span>
+                        <Progress value={calcPercent(part.part.length, part.maxParts)} className="h-2"  />
+                      </span>
+                    </li>
+                  )
+                }
+              </ul>
+            </td>
+            <td className="text-center">
+              <Link href={`/parts/${printer._id}`} className="bg-primary-500 p-3 rounded-lg">View</Link>
+            </td>
+          </tr>
+        ) : (null)) 
+      }
       
-        {parts.map((printer:any, i:any) =>
+        {/* {parts.map((printer:any, i:any) =>
           printer.parts.length > 0 ? (
             printer.parts.map((part: any) =>
               part.part.length > 0 ? (
@@ -72,16 +102,14 @@ const DisplayParts = async ({parts}:Props) => {
             )
           ) 
           : (
-            // test
             <tr key={printer._id} className="h-14 font-bold">
               <td className="font-bold text-white">{printer.printerName}</td>
               <td className="">{printer.productNumber}</td>
               <td className="">No Parts Available</td>
               <td className="">{printer.location || "Location not set"}</td>
             </tr>
-
           )
-        )}
+        )} */}
       
 
 
