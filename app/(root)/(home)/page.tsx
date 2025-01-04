@@ -97,7 +97,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
             <div className="text-4xl text-white font-semibold mt-8 mb-4 flex justify-between">
               <div className="">{ printers && (printers.printers.length) } <span className="text-base font-normal">printers total</span></div>
               <div className="">245 <span className="text-base font-normal">pallets</span></div>
-              <div className="">{printers && (printers.refurbishedCount)}</div>
+              {/* <div className="">{printers && (printers.refurbishedCount)}</div> */}
             </div>
           </div>
 
