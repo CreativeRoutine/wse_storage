@@ -9,6 +9,7 @@ export interface IPrinter extends Document {
   pallet?: Schema.Types.ObjectId;
   supplier?: Schema.Types.ObjectId;
   price?: number | 0;
+  parts?: boolean;
   tasksPerformed: {
     date?: Date;
     user?: Schema.Types.ObjectId;
@@ -51,6 +52,7 @@ const PrinterSchema = new Schema({
   pallet: { type: Schema.Types.ObjectId, ref: "Pallet", required: false },
   supplier: { type: Schema.Types.ObjectId, ref: "Supplier", required: false },
   price: { type: Number, required: false },
+  parts: { type: Boolean, required: false },
   tasksPerformed: [
     {
       date: { type: Date, default: Date.now, required: false },

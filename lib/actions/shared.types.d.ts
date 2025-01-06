@@ -292,7 +292,8 @@ export interface AddPrinterToSupplierPalletParams {
   productNumber: string, 
   barcode: string, 
   palletId: string, 
-  path: string
+  path: string,
+  parts: boolean,
 }
 
 export interface UpdateSuppliersName{

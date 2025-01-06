@@ -3,7 +3,7 @@
 import React, {useState} from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { boolean, z } from "zod";
 
 import {
   Form,
@@ -23,6 +23,7 @@ import { addPrinterToPalletSchema } from '@/lib/validations';
 import {useRouter, usePathname} from 'next/navigation';
 import { useToast } from "@/components/ui/use-toast"
 import { addPrinterToSupplierPallet } from '@/lib/actions/supplier.action';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const type:any = 'create';
 
@@ -33,8 +34,10 @@ interface Props {
 
 export default  function AddPrinterToPalet ({id}:Props){
   const { toast } = useToast();
-
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isParts, setIsParts] = useState(false);
+
   const router = useRouter();
   const usepathname = usePathname();
 
@@ -46,6 +49,7 @@ export default  function AddPrinterToPalet ({id}:Props){
       sn: "",
       productNumber: "",
       barcode: "",
+      parts: false,
     },
   });
 
@@ -62,6 +66,7 @@ export default  function AddPrinterToPalet ({id}:Props){
         barcode: values.barcode,
         palletId: id,
         path: usepathname,
+        parts: isParts,
       })
 
       
@@ -72,6 +77,7 @@ export default  function AddPrinterToPalet ({id}:Props){
       
       if (response.success) {
         // Reset form fields
+        setIsParts(false);
         form.reset({}); 
       
         // Show success toast
@@ -80,6 +86,7 @@ export default  function AddPrinterToPalet ({id}:Props){
           variant: 'default',
         });
       } else {
+        setIsParts(false);
         // Show error toast
         toast({
           title: response.message,
@@ -172,6 +179,34 @@ export default  function AddPrinterToPalet ({id}:Props){
                           </div>
                         </FormControl>
 
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="parts"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-row items-center gap-2">
+                            <Checkbox
+                              id="parts"
+                              checked={isParts}
+                              onCheckedChange={(checked:any) => {
+                                field.onChange(checked);
+                                setIsParts(checked);
+                              }}
+                            />
+                            <label
+                              htmlFor="parts"
+                              className="text-white text-base font-normal"
+                            >
+                              Broken or for parts
+                            </label>
+                          </div>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

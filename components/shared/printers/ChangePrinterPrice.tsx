@@ -111,7 +111,7 @@ export default  function AddCostToPrinter ({id}:Props){
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="bg-primary-500 text-white" disabled={isSubmitting}>
+                  <Button type="submit" className="bg-slate-800 hover:bg-primary-500 text-white" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <>
                           {'Adding ...'}

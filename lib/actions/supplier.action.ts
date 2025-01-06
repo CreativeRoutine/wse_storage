@@ -8,6 +8,7 @@ import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import Makes from "@/database/makes.model";
 import { FilterQuery } from "mongoose";
+import Parts from "@/database/parts.model";
 
 
 export async function createSupplier(params: CreateSuppliersParams) {
@@ -109,7 +110,7 @@ export async function getSupplierPallet(_id: string) {
     const populatedPallet = await Supplier.populate(pallet, {
       path: "printers",
       model: "Printer",
-      select: "barcode sn productNumber createdOn price name",
+      select: "barcode sn productNumber createdOn price name parts",
     });
 
     return { 
@@ -128,7 +129,7 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
   try {
     connectToDatabase();
 
-    const { sn, productNumber, barcode, palletId, path } = params;
+    const { sn, productNumber, barcode, palletId, path, parts } = params;
 
     const existingPrinter = await Printer.findOne({ barcode });
     if (existingPrinter) {
@@ -166,8 +167,18 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
       createdOn: Date.now(),
       ponumber: supplier.ponumber,
       name: printerModel,
+      parts: parts,
     });  
 
+    // Проверяем, существует ли запись в Parts
+    const printerPart = await Parts.findOne({ productNumber });
+    if (!printerPart) {
+      await Parts.create({
+        productNumber,
+        printerName: printerModel,
+        parts: [],
+      });
+    }
     
 
     // Используем _id нового Добавляем _id принтера для добавления в массив Makes

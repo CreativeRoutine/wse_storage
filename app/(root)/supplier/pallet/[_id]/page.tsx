@@ -33,7 +33,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  // console.log(getPaletDataPlain)
+  console.log(getPaletDataPlain)
 
   return (
     <>
@@ -76,6 +76,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                           <th scope="col" className="text-left font-bold text-slate-100">Serial number</th>
                           <th scope="col" className="text-left font-bold text-slate-100">Product numb.</th>
                           <th scope="col" className="text-left font-bold text-slate-100">Name</th>
+                          <th scope="col" className="text-left font-bold text-slate-100">Quality</th>
                           <th scope="col" className="text-left font-bold text-slate-100">Price</th>
                         </tr>
                       </thead>
@@ -125,7 +126,14 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                       </td>
                                       <td className="whitespace-nowrap py-3 pl-4 text-sm sm:pl-0">
                                         <div className="flex justify-between items-center">
-                                          <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.price ? printer.price : "Not set"}</Link>
+                                          <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.parts ? 
+                                          <div className='bg-red-500 p-2 rounded-lg'><Image height={20} width={20} src="/assets/icons/like.svg" alt="Bad" /></div> : 
+                                          <div className='bg-green-500 p-2 rounded-lg'><Image height={20} width={20} src="/assets/icons/like.svg" alt="Good" /></div>}</Link>
+                                        </div>
+                                      </td>
+                                      <td className="whitespace-nowrap py-3 pl-4 text-sm sm:pl-0">
+                                        <div className="flex justify-between items-center">
+                                          <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.price ? printer.price.toFixed(2) : "Not set"}</Link>
                                           <ChangePrinterPrice id={printer._id} />
                                         </div>
                                       </td>

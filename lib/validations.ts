@@ -79,6 +79,7 @@ export const addPrinterToPalletSchema = z.object({
   sn: z.string().min(5).max(30), 
   productNumber: z.string().min(3).max(30),
   barcode: z.string().min(3).max(30),
+  parts: z.boolean().optional(),
 })
 
 export const addPrinterToStoragePalletSchema = z.object({
@@ -111,8 +112,15 @@ export const updatePrinterPONSchema = z.object({
 })
 
 export const addCostToPrinterSchema = z.object({
-  price: z.number().min(1).max(999999),
+  price: z.number()
+  .min(1, "Price must be at least 1")
+  .max(999999, "Price cannot exceed 999,999")
+  .refine((value) => /^\d+(\.\d{1,2})?$/.test(value.toString()), {
+    message: "Price must have up to two decimal places",
+  }),
 })
+
+
 
 export const addPrinterCommentSchema = z.object({
   comment: z.string().min(1).max(999),
