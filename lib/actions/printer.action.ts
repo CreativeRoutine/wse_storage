@@ -284,7 +284,7 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
   }
 }
 
-// receiving all printers with filters
+//receiving all printers with filters
 // export async function getPrinters(params: GetPrintersParams) {
 //   try {
 //     // Подключение к базе данных
@@ -358,18 +358,18 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 //     }
 
 //     // Запрос к базе данных
-//     const printers = await Printer.find(query)
-//       .skip(skipAmount)
-//       .limit(pageSize)
-//       .sort(sortOptions)
-//       .lean();
+    // const printers = await Printer.find(query)
+    //   .skip(skipAmount)
+    //   .limit(pageSize)
+    //   .sort(sortOptions)
+    //   .lean();
 
-//     const totalPrinters = await Printer.countDocuments(query);
-//     const isNext = totalPrinters > skipAmount + printers.length;
+    // const totalPrinters = await Printer.countDocuments(query);
+    // const isNext = totalPrinters > skipAmount + printers.length;
 
-//     let total = totalPrinters / pageSize;
+    // let total = totalPrinters / pageSize;
 
-//     return { printers, isNext, total, totalPrinters };
+    // return { printers, isNext, total, totalPrinters };
 //   } catch (error) {
 //     throw error;
 //   }
@@ -597,42 +597,39 @@ export async function getPrinters(params: GetPrintersParams) {
       ];
     }
 
-    // Установка опций сортировки
     let sortOptions = {};
-    switch (filter) {
-      case "newest":
-        sortOptions = { createdOn: -1 };
-        break;
-      case "oldest":
-        sortOptions = { createdOn: 1 };
-        break;
-      default:
-        sortOptions = { createdOn: -1 };
-        break;
-    }
+switch (filter) {
+  case "newest":
+    sortOptions = { createdOn: -1 };
+    break;
+  case "oldest":
+    sortOptions = { createdOn: 1 };
+    break;
+  default:
+    sortOptions = { createdOn: -1 };
+    break;
+}
 
     // Условие для фильтров Refurbished, Cleaned и наличия invoiceNumber
     const filterCondition = [];
     if (filter === "refurbished") {
       filterCondition.push({
-        $and: [
-          { "lastTask.status": "Refurbished" }, // Проверяем статус `Refurbished` в последнем `tasksPerformed`
-        ],
+        $and: [{ "lastTask.status": "Refurbished" }],
       });
     }
     if (filter === "cleaned") {
       filterCondition.push({
         $and: [
-          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } }, // Убедимся, что массив `performedCleaner` не пуст
-          { "lastCleaner.status": "Cleaned" }, // Проверяем статус `Cleaned` в последнем объекте `performedCleaner`
+          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } },
+          { "lastCleaner.status": "Cleaned" },
         ],
       });
     }
     if (filter === "invoice") {
       filterCondition.push({
         $and: [
-          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } }, // Убедимся, что массив `performedCleaner` не пуст
-          { "lastCleaner.invoiceNumber": { $exists: true, $ne: "" } }, // Проверяем, что invoiceNumber не пуст
+          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } },
+          { "lastCleaner.invoiceNumber": { $exists: true, $ne: "" } },
         ],
       });
     }
@@ -657,23 +654,27 @@ export async function getPrinters(params: GetPrintersParams) {
       },
     ];
 
-    // Выполняем агрегацию
-    const printers = await Printer.aggregate(aggregationPipeline)
-      .skip(skipAmount)
-      .limit(pageSize)
-      .sort(sortOptions)
-      .exec();
+    // Выполняем фильтрацию и подсчёт общего количества принтеров
+    const totalPrintersAggregation = await Printer.aggregate([...aggregationPipeline, { $count: "total" }]);
+    const totalPrinters = totalPrintersAggregation.length > 0 ? totalPrintersAggregation[0].total : 0;
 
-    // Подсчёт общего количества документов
-    const totalPrinters = await Printer.aggregate(aggregationPipeline).count("total");
+    // Выполняем агрегацию для получения принтеров с пагинацией и сортировкой
+    const printers = await Printer.aggregate([
+      ...aggregationPipeline, // Применяем ту же фильтрацию
+      { $sort: sortOptions }, // Сортировка по всему набору данных
+      { $skip: skipAmount },  // Пропускаем документы для пагинации
+      { $limit: pageSize },   // Лимит на страницу
+    ]);
 
-    const isNext = totalPrinters.length > skipAmount + printers.length;
+    // Вычисляем количество страниц и есть ли следующая страница
+    const total = Math.ceil(totalPrinters / pageSize);
+    const isNext = skipAmount + printers.length < totalPrinters;
 
     return {
       printers,
-      totalPrinters: totalPrinters.length,
+      totalPrinters,
+      total,
       isNext,
-      total: Math.ceil(totalPrinters.length / pageSize),
     };
   } catch (error) {
     console.error("Error fetching printers:", error);

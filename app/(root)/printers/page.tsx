@@ -24,6 +24,8 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })
 
+  console.log(result)
+
   
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -36,7 +38,7 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
   
   return (
     <>
-      <Title text={`Printers page - (${result.printers.length})`} />
+      <Title text={`Printers page - (${result.totalPrinters})`} />
   
       {/* LIST OF PRINTERS */}
       <div className="mt-4 bg-dark-600 rounded-xl border border-dark-350 p-4 text-white">
