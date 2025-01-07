@@ -17,7 +17,7 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
   // console.log(typeof response.parts)
   
   const parts = JSON.parse(JSON.stringify(response));
-  console.log(parts._id)
+  // console.log(parts._id)
 
   const partsListResponse = await getAllPartsList();
   // const partsList = JSON.parse(JSON.stringify(partsListResponse));

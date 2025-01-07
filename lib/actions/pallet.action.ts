@@ -100,6 +100,8 @@ export async function getPallets___OLD(params:GetPalletsParams) {
   }
 }
 
+
+
 export async function getPallets(params:GetPalletsParams) {
   try {
     // Connect to the database

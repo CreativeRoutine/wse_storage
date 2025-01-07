@@ -598,17 +598,17 @@ export async function getPrinters(params: GetPrintersParams) {
     }
 
     let sortOptions = {};
-switch (filter) {
-  case "newest":
-    sortOptions = { createdOn: -1 };
-    break;
-  case "oldest":
-    sortOptions = { createdOn: 1 };
-    break;
-  default:
-    sortOptions = { createdOn: -1 };
-    break;
-}
+      switch (filter) {
+        case "newest":
+          sortOptions = { createdOn: -1 };
+          break;
+        case "oldest":
+          sortOptions = { createdOn: 1 };
+          break;
+        default:
+          sortOptions = { createdOn: -1 };
+          break;
+      }
 
     // Условие для фильтров Refurbished, Cleaned и наличия invoiceNumber
     const filterCondition = [];

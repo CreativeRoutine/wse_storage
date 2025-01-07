@@ -34,7 +34,6 @@ const Printer = async () => {
   }));
 
   const userList = JSON.parse(JSON.stringify(users))
-  // console.log("User list",userList)
 
   const getMyParts = await getAllPartsModels({});
   const parts = JSON.parse(JSON.stringify(getMyParts))

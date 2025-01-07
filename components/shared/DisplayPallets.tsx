@@ -3,33 +3,28 @@
 import React from 'react'
 import {formatTime} from "@/lib/utils";
 import Link from "next/link";
-import { getPallets } from "@/lib/actions/pallet.action";
 import Image from 'next/image'
 import LocalSearchbar from './search/LocalSearchbar';
 import { SearchParamsProps } from "@/types";
 
-const DisplayPallets = async () => {
+interface Props {
+  pallets: any;
+  // printersCount: number;
+}
 
-  const resultPallets = await getPallets({
+const DisplayPallets = async ({pallets}:Props) => {
 
-  })
-  const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
+  
+  
+  if(pallets == 0){
+    return(<tr><td><div className="mt-6 text-white text-left">"You didn't add any pallet yet!"</div></td></tr>)
+  }
 
-  // console.log(pallets)
 
 
   return (
     <>
-      {/* SEARCHBAR */}
-      {/* <div className="sticky mt-2 flow-root  rounded-lg">
-            <LocalSearchbar 
-              route="/storage" 
-              iconPosition="left" 
-              imgSrc="/assets/icons/search.svg" 
-              placeholder="Filter items by make, product number, serial number, PO number or barcode" 
-              otherClasses="mb-4 bg-dark-600"
-            /> 
-          </div> */}
+
       <div className="py-4 px-8 mb-2 mt-6 bg-dark-600 text-white rounded-xl flex-col items-center justify-between border border-dark-350 shadow-lg">
         <div className="w-full text-lg font-bold mb-4">
           Empty pallets.

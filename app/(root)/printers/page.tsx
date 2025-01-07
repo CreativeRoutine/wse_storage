@@ -24,8 +24,6 @@ const Printers = async ({searchParams}: SearchParamsProps) => {
     pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })
 
-  console.log(result)
-
   
   const {userId} = auth();
   if(!userId) redirect('/sign-in')

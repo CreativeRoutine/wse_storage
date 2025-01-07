@@ -33,7 +33,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  console.log(getPaletDataPlain)
+  // console.log(getPaletDataPlain)
 
   return (
     <>

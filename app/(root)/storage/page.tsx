@@ -2,14 +2,18 @@
 import React from "react";
 import Title from "@/components/shared/Title";
 import DisplayPallets from "@/components/shared/DisplayPallets";
+import { getPallets } from "@/lib/actions/pallet.action";
 
 import {auth} from "@clerk/nextjs"
 import Image from 'next/image'
 import { getUserById } from '@/lib/actions/user.action'
 import { redirect } from "next/navigation";
 import VisitorNotification from "@/components/shared/VisitorNotification";
+import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
 
-const Storage = async () => {
+import { SearchParamsProps } from "@/types";
+
+const Storage = async ({searchParams}: SearchParamsProps) => {
 
   const {userId} = auth();
   if(!userId) redirect('/sign-in')
@@ -20,11 +24,24 @@ const Storage = async () => {
     return(<VisitorNotification />)
   }
 
+  const resultPallets = await getPallets({})
+  const pallets = JSON.parse(JSON.stringify(resultPallets.pallets))
+
     return (
       <>
         <Title text="Storage" />
+
+        {/* <LocalSearchbar 
+              route="/storage" 
+              iconPosition="left" 
+              imgSrc="/assets/icons/search.svg" 
+              placeholder="Filter items by make, product number, serial number, PO number or barcode" 
+              otherClasses="mb-4 bg-dark-600"
+            />  */}
   
-        <DisplayPallets />
+        <DisplayPallets 
+          pallets={pallets} 
+        />
         
       </>
     );

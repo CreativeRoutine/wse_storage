@@ -68,8 +68,6 @@ const Home = async ({searchParams}: SearchParamsProps) => {
     pageSize: searchParams.qtty ? +searchParams.qtty : 20
   })
 
-  console.log(printers)
-
   const timestamp = Date.now(); // Получаем текущую временную метку
   const humanReadableDate = new Date(timestamp).toLocaleString(); // Преобразуем в строку
 
@@ -77,7 +75,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
       <>
         <Title text="Dashboard" />
 
-        <div className="sticky flow-root text-white rounded-lg -mt-2">
+        {/* <div className="sticky flow-root text-white rounded-lg -mt-2">
           <LocalSearchbar 
             route="/" 
             iconPosition="left" 
@@ -88,7 +86,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
         </div>
         <div className="bg-dark-600 rounded-xl border border-dark-350 p-4 text-white mt-4 mb-4">
           <PrintersFilters />
-        </div>
+        </div> */}
 
         <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 ">
           {/* Storage */}
@@ -136,7 +134,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
           humanReadableDate
         }
         {/* STATISTIC TODAY */}
-        <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4">
+        {/* <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4"> */}
           
           {/* <Card className="w-1/3 border-none shadow-md bg-dark-600  py-4 px-3">
             <CardHeader>
@@ -245,7 +243,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
               <p className="text-purple-500 font-bold text-6xl">1463</p>
             </CardContent>
           </Card> */}
-        </div>
+        {/* </div> */}
       </>
     );
 

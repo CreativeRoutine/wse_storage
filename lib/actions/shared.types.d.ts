@@ -328,6 +328,16 @@ export interface GetPalletsParams {
   filter?: string;
 }
 
+export interface GetPalletsFilteringParams {
+  // page?: number;
+  // pageSize: number;
+  searchQuery?: string;
+  // filter?: string;
+  // from?: any;
+  // to?: any;
+  // status?: string;
+}
+
 export interface DeletePalletParams {
   id: string;
   path: string;
