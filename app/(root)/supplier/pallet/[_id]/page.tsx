@@ -127,7 +127,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                                       <td className="whitespace-nowrap py-3 pl-4 text-sm sm:pl-0">
                                         <div className="flex justify-between items-center">
                                           <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.parts ? 
-                                          <div className='bg-red-500 p-2 rounded-lg'><Image height={20} width={20} src="/assets/icons/like.svg" alt="Bad" /></div> : 
+                                          <div className='bg-red-500 p-2 rounded-lg rotate-180'><Image height={20} width={20} src="/assets/icons/like.svg" alt="Bad" /></div> : 
                                           <div className='bg-green-500 p-2 rounded-lg'><Image height={20} width={20} src="/assets/icons/like.svg" alt="Good" /></div>}</Link>
                                         </div>
                                       </td>
