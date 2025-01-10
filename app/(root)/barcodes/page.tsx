@@ -12,6 +12,18 @@ const page = () => {
         <div>
           <Barcode value="W3-L15-06" />
         </div>
+        <div>
+          <Barcode value="W3-L15-06" />
+        </div>
+        <div>
+          <Barcode value="W3-L15-06" />
+        </div>
+        <div>
+          <Barcode value="W3-L15-06" />
+        </div>
+        <div>
+          <Barcode value="W3-L15-06" />
+        </div>
       
     </>
   )
