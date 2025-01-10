@@ -9,20 +9,20 @@ const page = () => {
        <div className='-mt-12'>
           <Title text={"Barcodes"} />
         </div>
-        <div>
-          <Barcode value="W3-L15-06" />
+        <div className='mb-1'>
+          <Barcode value="W3-L15-01" />
         </div>
-        <div>
-          <Barcode value="W3-L15-06" />
+        <div className='mb-1'>
+          <Barcode value="W3-L15-02" />
         </div>
-        <div>
-          <Barcode value="W3-L15-06" />
+        <div className='mb-1'>
+          <Barcode value="W3-L15-03" />
         </div>
-        <div>
-          <Barcode value="W3-L15-06" />
+        <div className='mb-1'>
+          <Barcode value="W3-L15-04" />
         </div>
-        <div>
-          <Barcode value="W3-L15-06" />
+        <div className='mb-1'>
+          <Barcode value="W3-L15-05" />
         </div>
       
     </>
