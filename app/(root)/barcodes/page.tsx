@@ -10,7 +10,7 @@ const page = () => {
           <Title text={"Barcodes"} />
         </div>
         <div>
-          <Barcode value="W1-L12-04" />
+          <Barcode value="W3-L15-06" />
         </div>
       
     </>
