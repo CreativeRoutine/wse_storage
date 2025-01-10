@@ -61,6 +61,9 @@ export default function PartsChanged({
   const [selectedValue, setSelectedValue] = useState(false); // Выбранное значение
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
   
+
+  // console.log("printerId =>", printerId, "printerProductNumber =>", printerProductNumber, "label =>", label, "availableParts =>", availableParts, "onSelect =>", onSelect, "reset =>", reset, "onResetComplete =>", onResetComplete);
+
   
   // NEW LOGIC
   // =================
@@ -69,6 +72,8 @@ export default function PartsChanged({
   const [displayPartForm, setdisplayPartForm] = useState(false); // Display  change part form
   const [partsData, setPartsData] = useState<any[]>([]); // Список деталей
   const [currentPartName, setCurrentPartName] = useState<string>("");
+
+  console.log("partsData===>",partsData)
 
   useEffect(() => {
       if (printerProductNumber) {
@@ -177,7 +182,7 @@ export default function PartsChanged({
                             : "bg-dark-600 text-white hover:bg-dark-400"
                         }`}
                       >
-                        {part.partsName}
+                        {part.partsName} / {part.part.length}
                       </button>
                     ))}
                   </div>
