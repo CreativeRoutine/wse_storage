@@ -49,14 +49,16 @@ const Home = async ({searchParams}: SearchParamsProps) => {
   if(!userId) redirect('/sign-in')
   const mongoUserData = await getUserById({userId})
   const mongoUser = JSON.parse(JSON.stringify(mongoUserData))
+
+  console.log("THIS IS USERID =>",mongoUserData)
   
-  if(!mongoUser.department){
-    return(
-      <>
-        <VisitorNotification />
-      </>
-    )
-  }
+  // if(!mongoUser.department === "visitor"){
+  //   return(
+  //     <>
+  //       <VisitorNotification />
+  //     </>
+  //   )
+  // }
 
   const printers = await getPrinters({
     searchQuery: searchParams.q,
@@ -131,7 +133,7 @@ const Home = async ({searchParams}: SearchParamsProps) => {
         </div>
 
         {
-          humanReadableDate
+          // humanReadableDate
         }
         {/* STATISTIC TODAY */}
         {/* <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4"> */}

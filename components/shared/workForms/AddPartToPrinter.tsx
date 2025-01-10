@@ -92,8 +92,9 @@ export default function FindPrinter ({ printer, partName, reset }: Props){
 
   return (
     <>
+      <div className='text-white'>{printer ? printer : "No load"}, {partName ? partName : "No load"}</div>
       <Form {...form}>    
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto mt-4">
 
           <FormField
             control={form.control}

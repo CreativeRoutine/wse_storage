@@ -32,6 +32,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import CommentToPrinter from '@/components/shared/printers/CommentToPrinter'
+import ChangeUserName from '@/components/shared/user/ChangeUserName'
 
 
 const page = async ({ params }: { params: { _id: any } }) => {
@@ -51,7 +52,7 @@ const page = async ({ params }: { params: { _id: any } }) => {
   const user = await getEmployeesById({_id})
   const users = JSON.parse(JSON.stringify(user))
   
-  console.log(users)
+  // console.log(users)
   function formatTimeSpent(seconds: number): string {
     if (seconds >= 3600) {
       const hours = Math.floor(seconds / 3600);
@@ -70,16 +71,12 @@ const page = async ({ params }: { params: { _id: any } }) => {
   if(user){
     return (
       <>
-        {/* <Title text={`User - ${user.name ? user.name : _id}`} /> */}
-        <Title text={"User "} />
+        <Title text={`User - ${users.name ? users.name : _id}`} />
+        {/* <Title text={"User's page "} /> */}
   
   
         <div className="flex flex-col gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 lg:flex-row">
-  
-  
-        
-  
-        {/* // Tasks */}
+          {/* // Tasks */}
           <div className="flex flex-col w-full lg:w-1/2  bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
             <div className="!text-white !text-xl font-semibold mb-2 pb-4 border-b border-slate-400">{users.name}</div>
 
@@ -102,6 +99,19 @@ const page = async ({ params }: { params: { _id: any } }) => {
             </ul>
             
           </div>
+
+          
+          <div className="flex flex-col w-full lg:w-1/2  bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+              <div>
+                <h2 className='text-xl font-bold text-white'>User data:</h2>
+                <ul className=''>
+                  <li className='text-white mt-4'>{users.name}</li>
+                  <li className='text-white mt-2'>{users.lastName}</li>
+                </ul>
+              </div>
+            <ChangeUserName _id={_id} />
+          </div>
+          
           
         </div>
       </>

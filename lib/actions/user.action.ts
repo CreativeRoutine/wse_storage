@@ -160,6 +160,7 @@ export async function changeUserDepartment(params: any){
         await User.findOneAndUpdate(user._id, { $set: { department: department.slice(1, -1) } });
         
         revalidatePath(path);
+
     } catch(error){
         console.log(error);
         throw error;
@@ -238,6 +239,26 @@ export async function changeUserSupervisor(params: any){
         }
     
         await User.findOneAndUpdate(user._id, { $set: { supervisor: supervisor } });
+        
+        revalidatePath(path);
+    } catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function changeUserName(params: any){
+    try {
+        connectToDatabase();
+
+        const {_id, name, lastName, nickName,  path} = params;
+
+        const user = await Employee.findOne({ _id: _id });
+        if (!user) {
+          return "This printer already exists in the database";
+        }
+    
+        await Employee.findOneAndUpdate(user._id, { $set: { name: name, lastName: lastName, nickName: nickName  } });
         
         revalidatePath(path);
     } catch(error){

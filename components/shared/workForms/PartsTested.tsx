@@ -38,7 +38,7 @@ export default function ChangedPartsComponent({
     "Pressure roll",
     "Solenoid #1",
     "Solenoid #2",
-    "Top Smth",
+    "Fuser sleeve",
   ],
   onSelect,
   reset,
