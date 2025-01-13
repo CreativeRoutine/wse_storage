@@ -202,7 +202,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Storage:</div>
-                  <div className='flex justify-end'>{printers.pallet.location ? printers.pallet.location : <span className="text-red-500">Not in storage</span>}</div>
+                  <div className='flex justify-end'>{printers.pallet?.location ? printers.pallet.location : <span className="text-red-500">Not in storage</span>}</div>
                 </li>
               </ul>
 

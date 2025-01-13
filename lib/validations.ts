@@ -1,4 +1,5 @@
 import { get } from "http";
+import { start } from "repl";
 import * as z from "zod";
 
 // ===================  User  ===================
@@ -262,10 +263,10 @@ export const cleanerFormSchema = z.object({
 })
 
 
+// ===================  BARCODES  ===================
 
-
-
-
-
-
-
+export const generateBarcodeSchema = z.object({
+  type: z.string().min(2).max(30),
+  start: z.string().min(3).max(30),
+  finish: z.string().min(3).max(30),
+})

@@ -49,18 +49,18 @@ const Printer = async () => {
           
 
 
-        <div className='w-full lg:w-1/2'>
-          <TechsWorkForm  
-            users={userList} 
-            partsList={parts}
-          />
-        </div>
-        <div className='w-full lg:w-1/2'>
-          <TechsWorkForm  
-            users={userList} 
-            partsList={parts}
-          />
-        </div>
+          <div className='w-full lg:w-1/2'>
+            <TechsWorkForm  
+              users={userList} 
+              partsList={parts}
+            />
+          </div>
+          <div className='w-full lg:w-1/2'>
+            <TechsWorkForm  
+              users={userList} 
+              partsList={parts}
+            />
+          </div>
           
 
           </div>
