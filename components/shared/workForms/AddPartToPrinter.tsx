@@ -26,14 +26,14 @@ const type:any = 'create';
 interface Props {
   printer: any;
   partName: string;
+  allData: any;
   reset: boolean;
 }
 
-export default function FindPrinter ({ printer, partName, reset }: Props){
+export default function FindPrinter ({ printer, partName, allData, reset }: Props){
   const { toast } = useToast();
   const [isValidInput, setIsValidInput] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   // 1. Define your form.
   // findPrinterSchema took from lib/validations.ts to validate the form
@@ -92,43 +92,51 @@ export default function FindPrinter ({ printer, partName, reset }: Props){
 
   return (
     <>
-      <div className='text-white'>{printer ? printer : "No load"}, {partName ? partName : "No load"}</div>
-      <Form {...form}>    
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto mt-4">
+      <div className='text-white bg-dark-300 rounded-lg p-4 mt-2'>
+        <div className='flex flex-row gap-4'>
+          Location
+          <div>
+            {allData.part.length > 0 ? allData.part[0].location : <div className='text-red-500'>Storage is empty</div>}
+          </div>
+        </div>
+        <Form {...form}>    
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto mt-4">
 
-          <FormField
-            control={form.control}
-            name="barcode"
-            render={({ field }) => (
-              // First Input
-              <FormItem>
-                <FormLabel className={`text-slate-300 text-md font-semibold transition-all ${
-                  isValidInput ? "text-green-500" : "text-slate-300"
-                }`}>Barcode</FormLabel>
+            <FormField
+              control={form.control}
+              name="barcode"
+              render={({ field }) => (
+                // First Input
+                <FormItem>
+                  <FormLabel className={`text-slate-300 text-md font-semibold transition-all ${
+                    isValidInput ? "text-green-500" : "text-slate-300"
+                  }`}>Barcode</FormLabel>
 
-                <FormControl>
-                  <div className="w-full flex flex-row gap-2">
-                    <Input
-                      {...field}
-                      className="w-2/4 outline-none bg-dark-600 text-slate-400 border-0 rounded-lg no-focus"
-                      placeholder="Barcode"
-                    />
-                    <Button
-                      type="submit"
-                      className="bg-primary-500 opacity-70 hover:opacity-100 text-white text-md w-2/4 p-4"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? "Adding..." : "Add part"}
-                    </Button>
-                  </div>
-                </FormControl>
+                  <FormControl>
+                    <div className="w-full flex flex-row gap-2">
+                      <Input
+                        {...field}
+                        className="w-2/4 outline-none bg-dark-600 text-slate-400 border-0 rounded-lg no-focus"
+                        placeholder="Barcode"
+                      />
+                      <Button
+                        type="submit"
+                        className="bg-primary-500 opacity-70 hover:opacity-100 text-white text-md w-2/4 p-4"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Adding..." : "Add part"}
+                      </Button>
+                    </div>
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+        </div>
+
     </>
   )
 }

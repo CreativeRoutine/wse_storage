@@ -30,6 +30,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   const supplierData = await getSupplier(_id)
   const supplier = JSON.parse(JSON.stringify(supplierData))
+  
+  // console.log(supplier)
+  // console.log("CREATED")
 
   return (
     <>
@@ -42,6 +45,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
       <div className="flex flex-col bg-dark-600 rounded-xl border border-dark-350 p-4">
         {/* Top Side */}
         <div className="flex flex-row gap-4">
+
+          {/* Feneral Info */}
+
           <div className='flex flex-col w-full lg:w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <Subheading className="!text-white !text-lg">General info</Subheading>
             <DescriptionList className='mt-4'>
@@ -61,6 +67,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <DescriptionDetails className='!text-white'>{supplier.printers ? supplier.printers.length : 0 }</DescriptionDetails>
             </DescriptionList>
           </div>
+
+          {/* Actions */}
+
           <div className='flex flex-col justify-start items-start w-full lg:w-1/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg'>
             <div className='flex flex-col gap-2 w-full'>
               <div className='bg-dark-600 rounded-xl border border-dark-350 p-4 '>
@@ -68,7 +77,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                 <UpdateSuppliersName id={_id} />
               </div>
               <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
-              <h3 className='text-white font-semibold mb-2'>Add pallet.</h3>
+              <h3 className='text-white font-semibold mb-2'>Add pallet / Shipment.</h3>
                 <AddPalletToSupplier id={_id} />
               </div>
               <div className='bg-dark-600 rounded-xl border border-dark-350 p-4'>
@@ -85,9 +94,9 @@ const page = async ({ params }: { params: { _id: string } }) => {
         <div className='flex flex-row gap-2'>
           {/* PALLETS */}
           <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
-            <Subheading className="!text-white !text-lg relative">Pallets{supplier.pallets && supplier.pallets.length > 0 ? (<span className="text-sm text-slate-400 absolute right-2"> ({supplier.pallets.length})</span> ) : null }:</Subheading>
+            <Subheading className="!text-white !text-lg relative">Pallets / Shipments{supplier.pallets && supplier.pallets.length > 0 ? (<span className="text-sm text-slate-400 absolute right-2"> ({supplier.pallets.length})</span> ) : null }:</Subheading>
             
-            {supplier.pallets && supplier.pallets.length > 0  ? (
+            {supplier.shipments && supplier.shipments.length > 0  ? (
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead>
                     <tr>
@@ -101,7 +110,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                         scope="col" 
                         className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                       >
-                        Barcode
+                        Barcode / Shipment
                       </th>
                       
                       <th 
@@ -120,10 +129,10 @@ const page = async ({ params }: { params: { _id: string } }) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-transparent">
-                    {supplier.pallets.map( 
+                    {supplier.shipments.map( 
                         (item:any, i:number) => (
 
-                          <tr key={item._id}>
+                          <tr key={item._id} className='hover:bg-dark-300 rounded-lg hover:cursor-pointer'>
                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                               <div className="flex items-center">
                                 <div className="text-white">{i+ 1 }</div>
@@ -146,8 +155,8 @@ const page = async ({ params }: { params: { _id: string } }) => {
                 )}
           </div>
 
-          {/* PRINTERS */}
-          <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
+          {/* PRINTERS  RIGHT SIDE*/}
+          {/* <div className="flex flex-col w-1/2 max-w-1/2 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
             <Subheading className="!text-white !text-lg relative">
               Printers
               {supplier.printers && supplier.printers.length >= 1 && (
@@ -218,10 +227,11 @@ const page = async ({ params }: { params: { _id: string } }) => {
                 ) : (
                   <div className='text-red-400'>"Printers have not been added yet"</div>
                 )}
-              </div>
-            </div>
-          </div>
-        </>
+          </div> */}
+
+        </div>
+      </div>
+    </>
   )
 }
 

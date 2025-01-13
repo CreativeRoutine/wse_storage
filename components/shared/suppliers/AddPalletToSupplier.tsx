@@ -112,14 +112,14 @@ export default function AddPalletToSupplier ({id}:Props){
                         </FormItem>
                     )}
                     />
-                    <Button type="submit" className="w-1/3 bg-primary-500 text-white font-bold" disabled={isSubmitting}>
+                    <Button type="submit" className="w-auto bg-primary-500 text-white font-bold" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
                             {'Adding ...'}
                             </>
                         ) : (
                             <>
-                            {'Add pallet'}
+                            {'Add pallet / Shipment'}
                             </>
                         )}
                     </Button>

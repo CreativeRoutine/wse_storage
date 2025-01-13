@@ -5,14 +5,14 @@ export interface ISupplier extends Document {
     name?: string;
     createdOn: Date;
     // pallets: Schema.Types.ObjectId[];
-    pallets: {
+    shipments: {
         barcode: string;
         createdOn: Date;
         price?: number;
         printers?: Schema.Types.ObjectId[];  
         completedOn: Date;
     }[];
-    printers: Schema.Types.ObjectId[];
+    // printers: Schema.Types.ObjectId[];
 
 }
 
@@ -20,16 +20,17 @@ const SupplierSchema = new Schema({
     ponumber: { type: String, required: true },
     name: { type: String, required: false },
     createdOn: { type: Date, default: Date.now, required: true },
-    pallets: [
+    shipments: [
         {
             barcode: { type: String, required: true },
             createdOn: { type: Date, default: Date.now, required: true },
             price: { type: Number, required: false },
             printers: [{ type: Schema.Types.ObjectId, ref: 'Printer', required: false }],
+            completedOn: { type: Date, required: false },
 
         }
     ],
-    printers: [{ type: Schema.Types.ObjectId, ref: 'Printer'}],
+    // printers: [{ type: Schema.Types.ObjectId, ref: 'Printer'}],
 });
 
 const Supplier = models.Supplier || model('Supplier', SupplierSchema);

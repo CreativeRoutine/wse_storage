@@ -110,7 +110,7 @@ export default function UpdateSuppliersName ({id}:Props){
                         </FormItem>
                     )}
                     />
-                    <Button type="submit" className="w-1/3 bg-primary-500 text-white font-bold" disabled={isSubmitting}>
+                    <Button type="submit" className="w-auto min-w-1/3 bg-primary-500 text-white font-bold" disabled={isSubmitting}>
                         {isSubmitting ? (
                             <>
                             {'Updating ...'}

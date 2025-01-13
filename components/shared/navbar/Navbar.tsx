@@ -19,7 +19,7 @@ const Navbar = () => {
   
 
   return (
-    <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500 bg-dark-100 lg:gap-4">
+    <nav className="flex mx-auto pb-4 pt-8 w-full items-center justify-between border-b-2 border-dark-500 bg-dark-100 lg:gap-4 print:hidden'">
 
 
       <GlobalSearch />

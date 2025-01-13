@@ -87,7 +87,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
   })
   const printers = JSON.parse(JSON.stringify(printer))
 
-  // console.log("THIS IS PRINTER: ",printers)
+  console.log("PRINTERS",printers)
 
   function formatTimeSpent(seconds: number): string {
     if (seconds >= 3600) {
@@ -107,8 +107,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
   return (
     <>
       <Title text={`Printer - ${printers.name ? printers.name : _id}`} />
-
-
+      
       <div className="flex flex-col gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 lg:flex-row">
 
         {/* // Preview */}
@@ -179,42 +178,32 @@ const page = async ({ params }: { params: { _id: string } }) => {
               <ul>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>S/N:</div>
-                  <div className='flex justify-end '>{printer.sn}</div>
+                  <div className='flex justify-end '>{printers.sn}</div>
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>PO number:</div>
-                  <div className='flex justify-end'>{printer.ponumber ? printer.ponumber : <span className="text-red-500">No PO number</span>}</div>
+                  <div className='flex justify-end'>{printers.ponumber ? printers.ponumber : <span className="text-red-500">No PO number</span>}</div>
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>   
                   <div className='text-slate-400'>Product number:</div>
-                  <div className='flex justify-end'>{printer.productNumber ? printer.productNumber : <span className="text-red-500">No product number</span>}</div>
+                  <div className='flex justify-end'>{printers.productNumber ? printers.productNumber : <span className="text-red-500">No product number</span>}</div>
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Barcode:</div>
-                  <div className='flex justify-end'>{printer.barcode ? printer.barcode : <span className="text-red-500">No barcode</span>}</div>
+                  <div className='flex justify-end'>{printers.barcode ? printers.barcode : <span className="text-red-500">No barcode</span>}</div>
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Created on:</div>
-                  <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "date") : <span className="text-red-500">No date</span>}</div>
+                  <div className='flex justify-end'>{printers.createdOn ? formatTime(printers.createdOn, "date") : <span className="text-red-500">No date</span>}</div>
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Time:</div>
-                  <div className='flex justify-end'>{printer.createdOn ? formatTime(printer.createdOn, "time") : <span className="text-red-500">No date</span>}</div>  
+                  <div className='flex justify-end'>{printers.createdOn ? formatTime(printers.createdOn, "time") : <span className="text-red-500">No date</span>}</div>  
                 </li>
                 <li className='border-b border-dark-500 flex justify-between py-1 text-white'>
                   <div className='text-slate-400'>Storage:</div>
-                  <div className='flex justify-end'>{printer.location ? printer.location : <span className="text-red-500">Not in storage</span>}</div>
+                  <div className='flex justify-end'>{printers.pallet.location ? printers.pallet.location : <span className="text-red-500">Not in storage</span>}</div>
                 </li>
-                  {
-                    printer.pallet ? (
-                      <li className='border-b border-dark-500 flex justify-between py-3 text-white'>
-                        <>
-                          <div className=''>Pallet / Location:</div>
-                          <div className=' flex justify-end'><Link href={`/storage/${JSON.parse(JSON.stringify(printer.pallet._id))}`}>{printer.pallet.barcode} {printer.pallet.location ? (`/ ${printer.pallet.location}`) : null } </Link></div>
-                        </>
-                      </li>
-                    ) : (null)
-                    }
               </ul>
 
 
@@ -223,7 +212,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
           {/* Performs */}
           <div className="flex flex-col w-full bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
             <div className="!text-white !text-xl font-semibold mb-2 pb-2 ">Add Comment (reason of return)</div>
-            {printer.tasksPerformed && printer.tasksPerformed.length >= 1 ?
+            {printers.tasksPerformed && printers.tasksPerformed.length >= 1 ?
             (
               <>
                 <CommentToPrinter  id={_id}/>
@@ -244,12 +233,12 @@ const page = async ({ params }: { params: { _id: string } }) => {
         <div className="flex flex-col w-full lg:w-2/3 bg-secondary-200 px-6 mb-2 pt-8 pb-6 rounded-xl border border-dark-350 shadow-lg">
           <div className="!text-white !text-xl font-semibold mb-2 pb-4 border-b border-slate-400">Tasks</div>
 
-          {printer.tasksPerformed && printer.tasksPerformed.length >= 1 ?
+          {printers.tasksPerformed && printers.tasksPerformed.length >= 1 ?
           (
             <>
               <Accordion type="multiple" className='w-full py-2 mb-2' >
               {
-                printer.tasksPerformed.slice().reverse().map((task: ITaskPerformed) => (
+                printers.tasksPerformed.slice().reverse().map((task: ITaskPerformed) => (
                   <AccordionItem key={task.date.toString()} value={task.date.toString()} className='w-full bg-dark-300 border-0 mb-3 rounded-lg shadow-lg'  >
 
                     <AccordionTrigger className='text-white min-w-[320px] px-4'>

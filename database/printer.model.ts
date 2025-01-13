@@ -8,6 +8,7 @@ export interface IPrinter extends Document {
   barcode: string;
   pallet?: Schema.Types.ObjectId;
   supplier?: Schema.Types.ObjectId;
+  shipment?: Schema.Types.ObjectId;
   price?: number | 0;
   parts?: boolean;
   tasksPerformed: {
@@ -51,6 +52,7 @@ const PrinterSchema = new Schema({
   barcode: { type: String, required: true, unique: true },
   pallet: { type: Schema.Types.ObjectId, ref: "Pallet", required: false },
   supplier: { type: Schema.Types.ObjectId, ref: "Supplier", required: false },
+  shipment: { type: Schema.Types.ObjectId, ref: "Supplier", required: false },
   price: { type: Number, required: false },
   parts: { type: Boolean, required: false },
   tasksPerformed: [

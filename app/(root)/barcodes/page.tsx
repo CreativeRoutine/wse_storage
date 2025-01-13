@@ -6,9 +6,11 @@ import Barcode from 'react-barcode';
 const page = () => {
   return (
     <>
-       <div className='-mt-12'>
+       <div className='-mt-12 print:hidden'>
           <Title text={"Barcodes"} />
         </div>
+
+      <div className='print:block'>
         <div className='mb-1'>
           <Barcode value="W3-L15-01" />
         </div>
@@ -24,6 +26,8 @@ const page = () => {
         <div className='mb-1'>
           <Barcode value="W3-L15-05" />
         </div>
+
+      </div>
       
     </>
   )

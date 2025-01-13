@@ -78,10 +78,10 @@ export default function AddPart({ parts }: any) {
 
       setIsSubmitting(false);
 
-      // router.refresh();
       // router.push(`/addpart`)
       router.push(`/parts`)
       form.reset();
+      router.refresh();
       
       // setSelectedProductNumber(""); // Сбрасываем выбор принтера
       // setPartsNames([]); // Сбрасываем список частей

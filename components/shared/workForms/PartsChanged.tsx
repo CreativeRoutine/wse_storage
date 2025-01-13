@@ -72,8 +72,9 @@ export default function PartsChanged({
   const [displayPartForm, setdisplayPartForm] = useState(false); // Display  change part form
   const [partsData, setPartsData] = useState<any[]>([]); // Список деталей
   const [currentPartName, setCurrentPartName] = useState<string>("");
+  const [allData, setAllData] = useState<any>([]);
 
-  console.log("partsData===>",partsData)
+  // console.log("partsData===>",partsData)
 
   useEffect(() => {
       if (printerProductNumber) {
@@ -90,6 +91,7 @@ export default function PartsChanged({
 
       const parts = JSON.parse(JSON.stringify(response));
       setPartsData(parts.parts || []); // Сохраняем детали
+
 
     } catch (error) {
       console.error("Error fetching printer data:", error);
@@ -110,12 +112,15 @@ export default function PartsChanged({
     },
   });
 
-  const handlePartSelect = (part: string) => {
+  const handlePartSelect = (part: string, all:any) => {
+
+    console.log("ON CLIC", all)
 
     // NEW CODE 
     // 
     setdisplayPartForm(true);
     setCurrentPartName(part);
+    setAllData(all);
   
     // 
     // END OF NEW CODE
@@ -175,7 +180,7 @@ export default function PartsChanged({
                         key={i}
                         type="button" // Указываем явный тип кнопки
                         {...field}
-                        onClick={() => handlePartSelect(part.partsName)}
+                        onClick={() => handlePartSelect(part.partsName, part)}
                         className={`py-2 px-4 rounded-lg ${
                           selectedParts.includes(part.partsName)
                             ? "bg-primary-500 text-white"
@@ -197,7 +202,7 @@ export default function PartsChanged({
 
       {
         displayPartForm && (
-          <AddPartToPrinter printer={printerProductNumber} partName={currentPartName} reset={reset} />
+          <AddPartToPrinter printer={printerProductNumber} partName={currentPartName} allData={allData} reset={reset} />
         )
       }
     </>

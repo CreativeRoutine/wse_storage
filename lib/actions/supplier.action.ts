@@ -73,9 +73,7 @@ export async function getSupplier(_id: string) {
     await connectToDatabase();
 
     const supplier = await Supplier.findOne({_id: _id})
-    .populate({ path: "printers", model: Printer, select: "barcode sn productNumber createdOn" })
-    .populate({ path: "pallets", model: Pallet, select: "barcode location printers createdOn" })
-    // .populate({path: "pallets", model: Pallet})
+    .populate({ path: "shipments", model: Pallet, select: "barcode location printers createdOn" })
     
     .lean();
 
@@ -92,7 +90,7 @@ export async function getSupplierPallet(_id: string) {
 
     // Используем $elemMatch для поиска Supplier, содержащего паллет с указанным _id
     const supplier = await Supplier.findOne({
-      pallets: { $elemMatch: { _id: _id } },
+      shipments: { $elemMatch: { _id: _id } },
     });
 
     if (!supplier) {
@@ -100,7 +98,7 @@ export async function getSupplierPallet(_id: string) {
     }
 
     // Ищем конкретный объект паллета в массиве pallets
-    const pallet = supplier.pallets.find((pallet: any) => pallet._id.toString() === _id);
+    const pallet = supplier.shipments.find((shipments: any) => shipments._id.toString() === _id);
 
     if (!pallet) {
       return { success: false, message: "Pallet not found in supplier!" };
@@ -124,10 +122,13 @@ export async function getSupplierPallet(_id: string) {
   }
 }
 
+// WORKABLE
 export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPalletParams) {
   
   try {
     connectToDatabase();
+
+    // palletId = is Shipment or Suppliers pallet
 
     const { sn, productNumber, barcode, palletId, path, parts } = params;
 
@@ -138,13 +139,12 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 
     // 
     const supplier = await Supplier.findOne({
-      pallets: { $elemMatch: { _id: palletId } },
+      shipments: { $elemMatch: { _id: palletId } },
     });
     // 
     if (!supplier) {
-      return { success: false, message: "Supplier not found!"}; 
+      return { success: false, message: "Supplier lr shipment ID not found!"}; 
     }
-
 
 
     let printerModel;
@@ -163,7 +163,8 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
       sn, 
       productNumber, 
       barcode,
-      pallet: palletId, // Используем _id найденного паллета
+      supplier: supplier._id, // Используем _id найденного паллета
+      shipment: palletId,
       createdOn: Date.now(),
       ponumber: supplier.ponumber,
       name: printerModel,
@@ -191,10 +192,10 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
     // Обновляем supplier, добавляя новый принтер в соответствующий pallet
     const updatedSupplier = await Supplier.findOneAndUpdate(
       {
-        pallets: { $elemMatch: { _id: palletId } },
+        shipments: { $elemMatch: { _id: palletId } },
       },
       {
-        $push: { "pallets.$.printers": newPrinter._id },
+        $push: { "shipments.$.printers": newPrinter._id },
       },
       { new: true }
     );
@@ -218,6 +219,7 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
   }
 }
 
+// MAY BE EXTRA
 export async function addSuppliersPrinterToPallet(params: AddPrinterToSupplierPalletParams) {
   
   try {
@@ -383,7 +385,7 @@ export async function deleteEmptySuppliersPallet(params: DeleteEmptySuppliersPal
 
     // Найти Supplier, содержащий паллет с указанным _id
     const supplier = await Supplier.findOne({
-      pallets: { $elemMatch: { _id: id } },
+      shipments: { $elemMatch: { _id: id } },
     });
 
     if (!supplier) {
@@ -395,8 +397,8 @@ export async function deleteEmptySuppliersPallet(params: DeleteEmptySuppliersPal
     }
 
     // Удалить паллет с указанным _id из массива pallets
-    supplier.pallets = supplier.pallets.filter(
-      (pallet: any) => pallet._id.toString() !== id
+    supplier.shipments = supplier.shipments.filter(
+      (shipment: any) => shipment._id.toString() !== id
     );
 
     // Сохранить изменения
@@ -456,14 +458,14 @@ export async function addPalletToSupplier(params: AddPalletToSupplierParams) {
     }
 
     // Проверяем, существует ли уже паллет с таким же barcode
-    const palletExists = supplier.pallets.some((pallet:any) => pallet.barcode === barcode);
+    const palletExists = supplier.shipments.some((shipment:any) => shipment.barcode === barcode);
 
     if (palletExists) {
-      return { success: false, message: "Pallet with this barcode already exists!" };
+      return { success: false, message: "Pallet with this barcode / Shipment ID already exists!" };
     }
 
     // Добавляем новый паллет
-    supplier.pallets.push({ barcode: barcode, createdOn: createdOn });
+    supplier.shipments.push({ barcode: barcode, createdOn: createdOn });
 
     // Сохраняем изменения
     await supplier.save();

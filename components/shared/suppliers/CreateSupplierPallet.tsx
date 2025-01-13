@@ -49,7 +49,7 @@ export default function CreateSupplierPallet ({ mongoUserId }: Props){
   async function onSubmit(values: z.infer<typeof addSuppliersPallet>) {
     setIsSubmitting(true);
 
-    console.log("Clicked")
+    // console.log("Clicked")
 
     const createdOn = new Date();
 
@@ -63,7 +63,13 @@ export default function CreateSupplierPallet ({ mongoUserId }: Props){
         createdOn: createdOn
       });
 
-      console.log(response.id)
+      if(!response.success){
+        return toast({
+          title: response.message,
+          description: response.info,
+          variant: 'custom',
+        })
+      }
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook

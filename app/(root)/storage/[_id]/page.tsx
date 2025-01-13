@@ -30,6 +30,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
   const getPaletData = await getPalet({ _id});
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
 
+  // console.log(getPaletDataPlain)
   
   return (
     <>
@@ -67,6 +68,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
                               <ul>
                                 {
                                   getPaletDataPlain.printers.map((printer:any, index:number) => {
+
                                     return(
                                       <li key={printer._id} className='mt-2 py-2 w-full text-base text-slate-400 flex flex-row items-center justify-between border-b border-slate-400 '>
                                         <div className='flex gap-2'>
@@ -74,7 +76,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
                                           <div className='ml-1 mr-6  text-white text-md flex flex-row w-auto'>
                                             <div className='tex-sm text-slate-500 mr-2'>Barcode:</div>
-                                            <Link href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.barcode}</Link>
+                                            <a href={`/printers/${printer._id}`} className='hover:text-sky-600'>{printer.barcode}</a>
                                           </div>
 
                                           <div className='ml-1 mr-6  text-white text-md flex flex-row w-auto'>

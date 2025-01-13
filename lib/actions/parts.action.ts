@@ -381,6 +381,8 @@ export async function getPartsByProductNumberPlain(params: any) {
 
     const partsResponse = await Parts.findOne({ productNumber }).lean();
 
+    console.log("DISPL PARTS DATA?? ",partsResponse)
+
     if (!partsResponse) {
       return { success: false, message: "No parts found" };
     }

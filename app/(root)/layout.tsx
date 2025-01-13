@@ -8,11 +8,11 @@ import { Toaster } from "@/components/ui/toaster"
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <main className="bg-dark-100 min-h-full pb-16 pl-[16px] sm:pl-28   xl:pl-96">
+      <main className="bg-dark-100 min-h-full pb-16 pl-[16px] sm:pl-28   xl:pl-96 print:hidden'">
         <LeftSidebar />
 
         <div className="flex flex-col px-4 lg:px-16">
-          <section className="sticky z-20 top-0 left-0 right-0 bg-dark-100 flex flex-col flex-1" >
+          <section className="sticky z-20 top-0 left-0 right-0 bg-dark-100 flex flex-col flex-1 print:hidden" >
             <Navbar />
           </section>
 

@@ -116,7 +116,7 @@ const DisplayPallets = async ({pallets}:Props) => {
                   </div>
 
                   <div className="rounded-full text-white flex flex-row items-center bg-dark-600">
-                    <div className="p-4 bg-dark-400 rounded-full h-12 w-12"><Image alt="BC" src="/images/icons/barcode.svg" className='invert' width={20} height={20} /></div>
+                    <div className="p-4 bg-dark-400 rounded-full h-12 w-12"><Image alt="BC" src="/images/icons/barcode.svg" width={20} height={20} /></div>
                     <div className="font-normal text-xs text-white mx-4">{pallet.barcode}</div>
                   </div>
 

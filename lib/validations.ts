@@ -183,7 +183,7 @@ export const addPartSchema = z.object({
 export const addGenericPartSchema = z.object({
   barcode: z.string().min(0).max(30),
   location: z.string().min(0).max(30),
-  partName: z.string().min(5).max(30),
+  partName: z.string().min(3).max(30),
   productNumber: z.string().min(3).max(30), 
 })
 

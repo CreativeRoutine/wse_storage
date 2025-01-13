@@ -21,6 +21,11 @@ export const sidebarLinks: SidebarLink[] = [
     route: "/parts",
     label: "Parts",
   },
+  {
+    imgURL: "/images/icons/barcode.svg",
+    route: "/barcodes",
+    label: "Barcodes",
+  },
   // {
   //   imgURL: "/images/icons/users.svg",
   //   route: "/users",

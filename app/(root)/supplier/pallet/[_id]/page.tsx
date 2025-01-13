@@ -33,7 +33,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
 
   
   const getPaletDataPlain = JSON.parse(JSON.stringify(getPaletData));
-  // console.log(getPaletDataPlain)
+  console.log(getPaletDataPlain)
 
   return (
     <>
@@ -48,12 +48,16 @@ const page = async ({ params }: { params: { _id: string } }) => {
                 getPaletDataPlain ? (
                   <div className="w-full text-white text-lg" key={getPaletDataPlain._id as Key}>
                     <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
+                      <div className="text-slate-400">Name:</div>
+                      <div className='text-white font-bold'>{getPaletDataPlain.supplier?.name ? getPaletDataPlain.supplier.name || "Not available" : null}</div>
+                    </div>
+                    <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
                       <div className="text-slate-400">PO number:</div>
                       <div className='text-white font-bold'>{getPaletDataPlain.supplier?.ponumber ? getPaletDataPlain.supplier.ponumber || "Not available" : null}</div>
                     </div>
 
                     <div className="w-full flex justify-between border-b border-slate-600 mb-2 py-2">
-                      <div className="text-slate-400">Barcode:</div>
+                      <div className="text-slate-400">Barcode / Shipment ID:</div>
                       <div className='text-white font-bold'>{getPaletDataPlain.pallet?.barcode}</div>
                     </div>
 

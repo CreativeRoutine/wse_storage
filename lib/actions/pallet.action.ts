@@ -187,34 +187,58 @@ export async function updatePaletPlace(params:UpdatePaletLocation){
 }
 
 // Messaging ready
-export async function addPrinterToStoragePallet(params:AddPrinterToStoragePalet){
+export async function addPrinterToStoragePallet(params: AddPrinterToStoragePalet) {
   try {
-    connectToDatabase();
-    const { barcode, palletId, path} = params;
+    await connectToDatabase();
 
+    const { barcode, palletId, path } = params;
+
+    // Находим принтер по его штрих-коду
     const printer = await Printer.findOne({ barcode: barcode });
     if (!printer) {
-      // console.log("PRINTER FOUND: ",printer)
-      return { success: false, message: "Printer not found!", info: "Something gone wrong!"}; 
+      return { success: false, message: "Printer not found!", info: "Something went wrong!" };
     }
 
+    // Находим паллет по его ID
     const pallet = await Pallet.findOne({ _id: palletId });
     if (!pallet) {
-      // console.log("PALLET FOUND: ",pallet)
-      return { success: false, message: "Pallet not found!", info: "Something gone wrong!"}; 
+      return { success: false, message: "Pallet not found!", info: "Something went wrong!" };
     }
 
-    await pallet.printers.push(printer._id);
-    pallet.save();
+    // Проверяем, что printers существует и является массивом
+    if (!Array.isArray(pallet.printers)) {
+      pallet.printers = [];
+    }
 
-    revalidatePath(path);
-    return { success: true, message: "Printer addet to pallet!", info: "Congratulations!"}; 
+    // Добавляем ID принтера в массив printers паллета
+    if (!pallet.printers.includes(printer._id)) {
+      pallet.printers.push(printer._id);
+      await pallet.save(); // Сохраняем изменения в паллете
+    }
 
+    // Проверяем, что поле pallet в принтере существует и является массивом
+    if (!printer.pallet) {
+      printer.pallet = pallet._id;
+      await printer.save(); // Сохраняем изменения в принтере
+    } else if (printer.pallet.toString() !== pallet._id.toString()) {
+      // Если принтер уже привязан к другому паллету, возвращаем ошибку
+      return {
+        success: false,
+        message: "Printer is already assigned to another pallet.",
+        info: "Remove it from the current pallet first.",
+      };
+    }
+
+    // Обновляем путь (если требуется)
+    if (path) {
+      revalidatePath(path);
+    }
+
+    return { success: true, message: "Printer added to pallet!", info: "Congratulations!" };
   } catch (error) {
-    console.log("Error:", error);
-    return false;
+    console.error("Error:", error);
+    return { success: false, message: "An error occurred.", info: error };
   }
-
 }
 
 

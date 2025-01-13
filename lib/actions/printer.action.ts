@@ -685,32 +685,63 @@ export async function getPrinters(params: GetPrintersParams) {
 
 
 // Used on Printer's page
-export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
-  try {
-    // Connect to the database
-    await connectToDatabase();
+// export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
+//   try {
+//     // Connect to the database
+//     await connectToDatabase();
 
-    const {_id, path} = params;
+//     const {_id, path} = params;
 
-    // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printer = await Printer.find({_id: _id})
-    .populate({path: 'pallet', model: Pallet, select: "barcode location"})
-    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
-    .populate({
-      path: 'tasksPerformed.performedCleaner.user',
-      model: 'Employee',
-      select: '_id name',
-    })
-      .lean();
+//     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
+//     const printer = await Printer.find({_id: _id})
+//     .populate({path: 'pallet.printers', model: 'Pallet', select: "barcode location"})
+//     .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
+//     .populate({
+//       path: 'tasksPerformed.performedCleaner.user',
+//       model: 'Employee',
+//       select: '_id name',
+//     })
+//       .lean();
       
 
-    return printer[0]
+//     return printer[0]
+
+//   } catch (error) {
+    
+//     throw error;
+//   }
+// }
+
+export async function getPrinterPopulated(params: GetPrinterPopulatedParams) {
+  try {
+    // Подключение к базе данных
+    await connectToDatabase();
+
+    const { _id, path } = params;
+
+    // Находим принтер и пополняем нужные данные
+    const printer = await Printer.findOne({ _id: _id })
+      .populate({ path: 'pallet', model: 'Pallet', select: 'barcode location' }) // Пополняем pallet, выбирая barcode и location
+      .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
+      .populate({
+        path: 'tasksPerformed.performedCleaner.user',
+        model: 'Employee',
+        select: '_id name',
+      })
+      .lean();
+
+    if (!printer) {
+      throw new Error("Printer not found");
+    }
+
+    return printer;
 
   } catch (error) {
-    
+    console.error("Error fetching populated printer:", error);
     throw error;
   }
 }
+
 
 
 // Messaging ready
@@ -1079,6 +1110,23 @@ export async function deletePrinter(params:DeletePrinterParams) {
 
     // Find Supplier by printer id
     await Supplier.findOneAndUpdate({ponumber: printer[0].ponumber}, { $pull: { printers: printer[0]._id } })
+
+    // Ищем и удаляем принтер из pallets в Supplier
+    const result = await Supplier.findOneAndUpdate(
+      { "pallets.printers": printer[0]._id }, // Условие для поиска нужного pallets, содержащего принтер
+      { $pull: { "pallets.$.printers": printer[0]._id } }, // Удаляем printerId из массива printers
+      { new: true } // Возвращаем обновленный документ
+    );
+
+    if (!result) {
+      return {
+        success: false,
+        message: "Printer not found in any pallet!",
+      };
+    }
+
+
+
 
     // Find Makes by printer id and delete printer from Makes
     await Makes.findOneAndUpdate({productNumber: printer[0].productNumber}, { $pull: { printers: printer[0]._id } })
