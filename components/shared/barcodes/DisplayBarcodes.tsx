@@ -5,37 +5,15 @@ import Barcode from "react-barcode";
 interface Props {
   type: string;
   start: string;
-  finish: number;
+  finish: string;
 }
 
 const DisplayBarcodes = ({ type, start, finish }: Props) => {
-  let barcodes: string[] = [];
-
-  if (type === "WSE-W") {
-    // Генерация для WSE-W
-    const [warehouse, location] = start.split("-"); // Теперь это строка
-    const warehouseNum = parseInt(warehouse); // Пример: W1 -> 1
-    const row = location[0]; // Пример: A
-    const number = parseInt(location.slice(1)); // Пример: 1
-
-    barcodes = Array.from(
-      { length: finish },
-      (_, index) => `W${warehouseNum}-${row}${number + index}`
-    );
-  } else {
-    // Генерация стандартных числовых баркодов
-    barcodes = Array.from(
-      { length: finish - parseInt(start) + 1 },
-      (_, index) => `${type}-${parseInt(start) + index}`
-    );
-  }
-
+  const barcodes = Array.from({ length: Number(finish) - Number(start) + 1 }, (_, index) => `${type}-${Number(start) + index}`);
   return (
-    <div className="print:block">
+    <div>
       {barcodes.map((barcode, index) => (
-        <div key={index} className="mb-4 print:block print:w-[160px]">
-          <Barcode value={barcode} />
-        </div>
+        <Barcode key={index} value={barcode} />
       ))}
     </div>
   );

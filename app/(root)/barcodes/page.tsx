@@ -11,7 +11,7 @@ const Barcodes = async () => {
 
   const results = await getBarcodes();
 
-  console.log(results)
+  
   
   return (
     <>
