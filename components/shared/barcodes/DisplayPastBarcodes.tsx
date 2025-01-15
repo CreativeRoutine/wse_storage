@@ -6,7 +6,8 @@ interface Props {
 
 export default function DisplayPastBarcodes ({barcodes}:Props) {
 
-    const results = barcodes;
+    const result = barcodes;
+    const results = JSON.parse(JSON.stringify(result));
     // console.log("RESULTS",results)
 
   return (
