@@ -4,8 +4,8 @@ import Barcode from "react-barcode";
 
 interface Props {
   type: string;
-  start: string;
-  finish: string;
+  start: string | number;
+  finish: string | number;
 }
 
 const DisplayBarcodes = ({ type, start, finish }: Props) => {
