@@ -64,7 +64,6 @@ export default function CreatePrinter ({barcodes, setTempBarcodes}:Props){
   // generateBarcodeSchema took from lib/validations.ts to validate the form
   async function onSubmit(values: z.infer<typeof generateBarcodeSchema>) {
     setIsSubmitting(true);
-    console.log("TYPE" ,barcodeType, "START =>", values.start ,"FINISH =>", values.finish )
   
     const createdOn = moment().tz("America/Chicago").toDate();
     createdOn.setHours(createdOn.getHours() - 5);
