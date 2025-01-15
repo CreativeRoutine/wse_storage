@@ -6,6 +6,7 @@ import { z } from "zod";
 import { generateBarcodeSchema } from "@/lib/validations";
 import {useRouter, usePathname} from 'next/navigation';
 import { createPrinter } from '@/lib/actions/printer.action';
+import {generateBarcode} from '@/lib/actions/barcodes.action';
 import {
   Form,
   FormControl,
@@ -28,28 +29,33 @@ import { Button } from "@/components/ui/button";
 import moment from 'moment-timezone';
 import { useToast } from "@/components/ui/use-toast"
 
-const type:any = 'create';
+const SubmitType:any = 'create';
 
-// interface Props {
-//   mongoUserId: string;
-// }
+interface Props {
+  barcodes: any;
+  setTempBarcodes: any;
+}
 
-export default function CreatePrinter (){
+export default function CreatePrinter ({barcodes, setTempBarcodes}:Props){
   const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [type, setType] = useState('');
+  const [barcodeType, setBarcodeType] = useState('WSE-P');
   const router = useRouter();
   const usepathname = usePathname();
+
+  function handleUserSelect(type: string) {
+      setBarcodeType(type);
+  }
 
   // 1. Define your form.
   // generateBarcodeSchema took from lib/validations.ts to validate the form
   const form = useForm<z.infer<typeof generateBarcodeSchema>>({
     resolver: zodResolver(generateBarcodeSchema),
     defaultValues: {
-      type: "",
-      start: "",
-      finish:"",
+      type: barcodeType,
+      start: 0,
+      finish: 0,
       
     },
   });
@@ -58,39 +64,42 @@ export default function CreatePrinter (){
   // generateBarcodeSchema took from lib/validations.ts to validate the form
   async function onSubmit(values: z.infer<typeof generateBarcodeSchema>) {
     setIsSubmitting(true);
+    console.log("TYPE" ,barcodeType, "START =>", values.start ,"FINISH =>", values.finish )
   
     const createdOn = moment().tz("America/Chicago").toDate();
     createdOn.setHours(createdOn.getHours() - 5);
   
     try {
-      console.log("TYPE" ,values.type, "START =>", values.start ,"FINISH =>", values.finish )
-      // const response = await createPrinter({
-      //   // ponumber: JSON.parse(JSON.stringify(values.ponumber)),
-      //   sn: JSON.parse(JSON.stringify(values.sn)),
-      //   productNumber: JSON.parse(JSON.stringify(values.productNumber)),
-      //   barcode: JSON.parse(JSON.stringify(values.barcode)),
-      //   path: usepathname,
-      //   createdOn: createdOn,
-      // });
+      const response = await generateBarcode({
+        // ponumber: JSON.parse(JSON.stringify(values.ponumber)),
+        type: JSON.parse(JSON.stringify(barcodeType)),
+        start: values.start,
+        finish: values.finish,
+        path: usepathname,
+      });
   
       setIsSubmitting(false); // Reset isSubmitting state
   
-      // if (response.success) {
-      //   // Если принтер успешно создан, показываем успешное уведомление
-      //   toast({
-      //     title: "Printer created successfully!",
-      //     variant: "default",
-      //   });
-      //   form.reset({}); // Reset form fields
-      //   router.push("/printers");
-      // } else {
-      //   // Если ошибка, показываем сообщение об ошибке
-      //   toast({
-      //     title: "Error creating printer!",
-      //     description: response.message,
-      //     variant: "destructive",
-      //   });
-      // }
+      if (response.success) {
+
+        setTempBarcodes({type: barcodeType, start: values.start, finish: values.finish});
+
+        form.reset({}); 
+      
+        // Show success toast
+        toast({
+          title: response.message,
+          variant: 'default',
+        });
+      } else {
+        // Show error toast
+        toast({
+          title: response.message,
+          // description: response.info,
+          variant: 'custom',
+        });
+      }
+
     } catch (error) {
       console.error("THIS IS AN ERROR", error);
       setIsSubmitting(false); // Сбрасываем состояние при ошибке
@@ -102,13 +111,61 @@ export default function CreatePrinter (){
     }
   }
 
-  function handleUserSelect(type: string) {
-    console.log("TYPE ====>", typeof type)
-      setType(type);
+  async function onSubmit__NEW(values: z.infer<typeof generateBarcodeSchema>) {
+    setIsSubmitting(true);
+  
+    try {
+      if (barcodeType === "WSE-W") {
+        // Validate input format for WSE-W
+        const isValidFormat = /^[0-9]+-[A-Z][0-9]+$/.test(values.start);
+        if (!isValidFormat) {
+          toast({
+            title: "Invalid format",
+            description: "Please use the format '1-A1' for warehouse barcodes.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+  
+      const response = await generateBarcode({
+        type: barcodeType,
+        start: values.start,
+        finish: values.finish,
+        path: usepathname,
+      });
+  
+      setIsSubmitting(false);
+  
+      if (response.success) {
+        setTempBarcodes({ type: barcodeType, start: values.start, finish: values.finish });
+  
+        toast({
+          title: response.message,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: response.message,
+          variant: "custom",
+        });
+      }
+    } catch (error) {
+      console.error("THIS IS AN ERROR", error);
+      setIsSubmitting(false);
+      toast({
+        title: "Unexpected Error",
+        description: "An error occurred while creating the barcode. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
 
+ 
+
   return (
-    <div className="bg-secondary-200 px-8 mb-6 py-6 w-full rounded-xl border border-dark-350 shadow-lg">
+    <div className="bg-secondary-200  w-full ">
 
       <div className="mb-4">
         {/* ======================================================================= */}
@@ -125,10 +182,10 @@ export default function CreatePrinter (){
                     name="type"
                     render={({ field }) => (
                       <FormItem className="mt-2 w-1/3">
-                        <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Barcode type (department):</FormLabel>
+                        <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Barcode type:</FormLabel>
                         <div className="flex">
                           <Select
-                            // onValueChange={handleUserSelect}
+                            onValueChange={handleUserSelect}
                             defaultValue={field.value}
                           >
                             
@@ -141,28 +198,26 @@ export default function CreatePrinter (){
                               <SelectGroup className="py-4">
                                 
                                   <SelectItem
-                                    
                                     value="WSE-P"
                                     className="py-2 text-white hover:bg-dark-200"
                                   >WSE-P</SelectItem>
 
                                   <SelectItem
-                                    
                                     value="WSE-PP"
                                     className="py-2 text-white hover:bg-dark-200"
                                   >WSE-PP</SelectItem>
 
                                   <SelectItem
-                                    
                                     value="WSE-PL"
                                     className="py-2 text-white hover:bg-dark-200"
                                   >WSE-PL</SelectItem>
 
-                                  <SelectItem
-                                    
-                                    value="WSE-ST"
+                                  {/* <SelectItem
+                                    value="WSE-W"
                                     className="py-2 text-white hover:bg-dark-200"
-                                  >WSE-ST</SelectItem>
+                                  >
+                                    WSE-W
+                                  </SelectItem> */}
                                 
                               </SelectGroup>
                             </SelectContent>
@@ -182,11 +237,12 @@ export default function CreatePrinter (){
                         <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Start barcode number:</FormLabel>
                         <FormControl>
                           <div className="flex">
-                            <Input
-                              className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                              placeholder="start barcode number"
-                              {...field}
-                            />
+                          <Input
+                            type="text"
+                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
+                            placeholder="Start barcode (e.g., 1-A1)"
+                            {...field}
+                          />
                           </div>
                         </FormControl>
 
@@ -205,9 +261,15 @@ export default function CreatePrinter (){
                         <FormControl>
                           <div className="flex">
                             <Input
+                            type="number"
                               className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
                               placeholder="Last barcode number"
                               {...field}
+                              onChange={(e) => {
+                                const value = Number(e.target.value); // Преобразование в число
+                                field.onChange(e); // Обновление формы
+                                
+                              }}
                             />
                           </div>
                         </FormControl>
@@ -229,11 +291,11 @@ export default function CreatePrinter (){
               <Button type="submit" className="bg-primary-500 text-white text-lg mt-6 w-full p-6" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    {type === 'edit' ? 'Editing ...' : 'Generating ...'}
+                    {SubmitType === 'edit' ? 'Editing ...' : 'Generating ...'}
                   </>
                 ) : (
                   <>
-                  {type === 'edit' ? 'Edit pallet' : 'Generate barcodes'}
+                  {SubmitType === 'edit' ? 'Edit pallet' : 'Generate barcodes'}
                   </>
                 )}
               </Button>

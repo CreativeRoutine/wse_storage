@@ -1,44 +1,82 @@
 "use server"
 import Barcodes from "@/database/barcodes.model";
 import { connectToDatabase } from "../mongoose"
-import { CreatePalet, } from "./shared.types";
+import { CreateBarcodes, } from "./shared.types";
 import { revalidatePath } from "next/cache";
 // import { any } from "zod";
 
 
+interface CreateBarcode {
+  type: string;
+  start: number;
+  finish: number;
+  path: string;
+}
 
-export async function createBarcodes(params: CreatePalet) {
+export async function generateBarcode(params: CreateBarcode) {
   try {
-    connectToDatabase();
+    // Подключаемся к базе данных
+    await connectToDatabase();
 
-    const {  barcode, location, path } = params;
+    const { type, start, finish, path } = params;
 
-    const existingPallet = await Barcodes.findOne({ barcode: barcode });
+    // Определяем поле для проверки и обновления на основе type
+    const fieldMap: Record<string, string> = {
+      "WSE-P": "printers",
+      "WSE-PP": "parts",
+      "WSE-PL": "pallets",
+    };
 
-    if (existingPallet) {
-      
-      return { success: false, message: "An error occurred while creating the pallet", info: "This pallet already exists in the database"};
-      
-    } else {
+    const field = fieldMap[type];
+    if (!field) {
+      return { success: false, message: "Invalid type", info: "Unsupported barcode type" };
     }
-    
-    // Создание нового палета
-    const newPalet = await Barcodes.create({
-      barcode,
-      location: "",
-      createdOn: new Date(),
-      printers: []
-    });
 
-    newPalet.save();
+    // Получаем текущую запись из базы данных
+    const existingBarcodes = await Barcodes.findOne();
 
-    const paletId = JSON.parse(JSON.stringify(newPalet._id));
+    if (existingBarcodes && start <= existingBarcodes[field]) {
+      return {
+        success: false,
+        message: "Invalid barcode range",
+        info: `The start value (${start}) must be greater than the current ${field} value (${existingBarcodes[field]})`,
+      };
+    }
+
+    // Обновляем или создаем запись в базе данных
+    const update = { [field]: finish }; // Обновляем значение до `finish`
+    await Barcodes.updateOne({}, { $set: update }, { upsert: true });
     
+
+    // Инвалидация кэша пути
     revalidatePath(path);
-    return { success: true, message: "Pallet created successfully!", paletId };
+
+    return { success: true, message: "Barcodes list created successfully!" };
+  } catch (error) {
+    console.error("Error:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating barcodes",
+      info: error,
+    };
+  }
+}
+export async function getBarcodes() {
+  try {
+    await connectToDatabase();
+
+    const response = await Barcodes.findOne().lean();
+
+    const barcodes = JSON.parse(JSON.stringify(response));
+
+    return { success: true, barcodes };
 
   } catch (error) {
-    return "An error occurred while creating the pallet";
-    console.log("Error:", error);
+    console.error("Error:", error);
+    return {
+      success: false,
+      message: "An error occurred while fetching barcodes",
+      info: error,
+    };
   }
 }

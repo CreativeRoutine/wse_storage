@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <main className="bg-dark-100 min-h-full pb-16 pl-[16px] sm:pl-28   xl:pl-96 print:hidden'">
+      <main className="bg-dark-100 min-h-full pb-16 pl-[16px] sm:pl-28 xl:pl-96 ">
         <LeftSidebar />
 
         <div className="flex flex-col px-4 lg:px-16">

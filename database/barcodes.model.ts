@@ -1,17 +1,18 @@
 import { Schema, model, models, Document } from "mongoose";
+import { string } from "zod";
 
 export interface IBarcodes extends Document {
-  parts: string;
-  printers: string;
-  pallets: string;
+  parts: number;
+  printers: number;
+  pallets: number;
   storage: string;
   
 }
 
 const BarcodesSchema = new Schema({
-    parts: { type: String, required: true },
-    printers: { type: String, required: true },
-    pallets: { type: String, required: true },
+    parts: { type: Number, required: true },
+    printers: { type: Number, required: true },
+    pallets: { type: Number, required: true },
     storage: { type: String, required: true },
 });
 

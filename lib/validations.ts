@@ -267,6 +267,6 @@ export const cleanerFormSchema = z.object({
 
 export const generateBarcodeSchema = z.object({
   type: z.string().min(2).max(30),
-  start: z.string().min(3).max(30),
-  finish: z.string().min(3).max(30),
+  start: z.any(),
+  finish: z.any(),
 })

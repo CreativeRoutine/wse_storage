@@ -1,3 +1,4 @@
+import { start } from 'repl';
 import { Schema } from "mongoose";
 import { IUser } from "@/database/user.model";
 import { ISupplier } from "@/database/supplier.model";
@@ -202,7 +203,15 @@ export interface DeletePartsParams {
   path: string;
 }
 
-
+// /////////////////////
+// BARCODES TYPES
+// /////////////////////
+export interface CreateBarcodes{
+  type: string; 
+  start: number;
+  finish: number;
+  path: string;
+}
 
 
 // /////////////////////

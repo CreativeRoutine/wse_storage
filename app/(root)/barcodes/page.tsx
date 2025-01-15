@@ -1,13 +1,32 @@
-"use client";
-
 import React from 'react'
 import Title from "@/components/shared/Title";
-import Barcode from 'react-barcode';
-import CreateBarcodes from '@/components/shared/barcodes/CreateBarcodes';
 
-const Barcodes = () => {
 
-  
+import { getBarcodes } from '@/lib/actions/barcodes.action';
+import DisplayPastBarcodes from '@/components/shared/barcodes/DisplayPastBarcodes';
+import DisplayBarcodesWrapper from '@/components/shared/barcodes/DisplayBarcodesWrapper';
+
+
+const Barcodes = async () => {
+
+  const results = await getBarcodes();
+
+  // console.log("THIS IS RESULTS",results.barcodes)
+
+
+  // const [startPrinters, setStartPrinters] = useState(null);
+  // const [finishPrinters, setFinishPrinters] = useState(null);
+
+  // const [startParts, setStartParts] = useState(null);
+  // const [finishParts, setFinishParts] = useState(null);
+
+  // const [startPallets, setStartPallets] = useState(null);
+  // const [finishPallets, setFinishPallets] = useState(null);
+
+  // const [startStorage, setStartStorage] = useState(null);
+  // const [finishStorage, setFinishStorage] = useState(null);
+
+
 
 
   return (
@@ -16,20 +35,18 @@ const Barcodes = () => {
         <Title text={"Barcodes"} />
       </div>
 
-      <div className='-mt-4 bg-dark-600 rounded-xl  p-4 text-white flex flex-row gap-4'>
-        
-        {/* LEFT COLUMN */}
-        <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl border border-dark-350 shadow-lg">
-          <CreateBarcodes />
+      <div className='mt-4 bg-dark-600 rounded-xl p-4 text-white flex flex-col w-full'>
+        <div className='print:hidden'>
+          <DisplayPastBarcodes barcodes={results.barcodes}/>
+
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className='print:block bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl border border-dark-350 shadow-lg'>
-          <div className='mb-1'>
-            <Barcode value="W3-L15-01" />
-          </div>
+        <div className='flex flex-row w-full print:block'>
+          <DisplayBarcodesWrapper barcodes={results.barcodes} />
         </div>
+
       </div>
+        
 
 
 
