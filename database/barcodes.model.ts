@@ -5,8 +5,7 @@ export interface IBarcodes extends Document {
   parts?: number;
   printers?: number;
   pallets?: number;
-  storage?: string;
-  
+  storage?: string; 
 }
 
 const BarcodesSchema = new Schema({

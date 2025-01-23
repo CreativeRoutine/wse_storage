@@ -15,7 +15,11 @@ import MobileNav from "./MobileNav";
 import GlobalSearch from "../search/GlobalSearch";
 // import NavbarDark from "@/components/dark_with_search";
 
-const Navbar = () => {
+interface Props {
+  role: string;
+}
+
+const Navbar = ({role}:Props) => {
   
 
   return (
@@ -26,11 +30,76 @@ const Navbar = () => {
 
       <div className=" text-white flex gap-3 justify-between items-center w-full lg:justify-end">
         <div className="flex gap-4">
-          <Link href="/cleaner" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Cleaner's Printer</Link>
+          
+        {(() => {
+    switch (role) {
+      case "cleaner":
+        return (
+          <>
+            <Link href="/cleaner" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Cleaners
+            </Link>
+          </>
+        );
+
+      case "tech":
+        return (
+          <>
+            <Link href="/printer" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Techs
+            </Link>
+          </>
+        );
+      case "warehouse":
+          return (
+            <>
+              <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Pallet
+            </Link>
+            <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Printer
+            </Link>
+            <Link href="/addpart" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Part
+            </Link>
+            </>
+          );
+
+      case "admin":
+        return (
+          <>
+            <Link href="/cleaner" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Cleaners
+            </Link>
+            <Link href="/printer" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Techs
+            </Link>
+            <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Pallet
+            </Link>
+            <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Printer
+            </Link>
+            <Link href="/addpart" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">
+              Add Part
+            </Link>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  })()}
+
+
+
+
+
+          {/* <Link href="/cleaner" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Cleaner's Printer</Link>
           <Link href="/printer" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Tech's Printer</Link>
           <Link href="/addpallet" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Pallet</Link>
           <Link href="/addprinter" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Printer</Link>
-          <Link href="/addpart" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Part</Link>
+          <Link href="/addpart" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-4">Add Part</Link> */}
         </div>
         {/* Theme Switch */}
         {/* <Theme /> */}

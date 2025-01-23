@@ -1,7 +1,5 @@
 import React from 'react'
 import Title from "@/components/shared/Title";
-
-
 import { getBarcodes } from '@/lib/actions/barcodes.action';
 import DisplayPastBarcodes from '@/components/shared/barcodes/DisplayPastBarcodes';
 import DisplayBarcodesWrapper from '@/components/shared/barcodes/DisplayBarcodesWrapper';
@@ -10,8 +8,6 @@ import DisplayBarcodesWrapper from '@/components/shared/barcodes/DisplayBarcodes
 const Barcodes = async () => {
 
   const results = await getBarcodes();
-
-  
   
   return (
     <>
@@ -24,26 +20,15 @@ const Barcodes = async () => {
           {
           results.success ? <DisplayPastBarcodes barcodes={results.barcodes}/> : "No data"
           }
-
         </div>
 
         <div className='flex flex-row w-full print:block'>
-          
           <DisplayBarcodesWrapper barcodes={results.barcodes} />
         </div>
 
       </div>
-        
-
-
-
-      
     </>
   )
-
-
-
-
 }
 
 export default Barcodes

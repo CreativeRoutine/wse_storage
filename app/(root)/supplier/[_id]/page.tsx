@@ -33,11 +33,12 @@ const page = async ({ params }: { params: { _id: string } }) => {
   
   // console.log(supplier)
   // console.log("CREATED")
+  
 
   return (
     <>
       {
-        supplier.name ? ( <Title text={`Supplier - ${supplier.name}`} link="/settings/suppliers" linkText="Back" /> ) :
+        supplier?.name ? ( <Title text={`Supplier - ${supplier.name}`} link="/settings/suppliers" linkText="Back" /> ) :
         (<Title text={`Supplier - ${supplier.ponumber}`} link="/settings/suppliers" linkText="Back" />)
       }
       

@@ -51,8 +51,9 @@ const page = async ({ params }: { params: { _id: any } }) => {
 
   const user = await getEmployeesById({_id})
   const users = JSON.parse(JSON.stringify(user))
+
   
-  // console.log(users)
+  console.log(users)
   function formatTimeSpent(seconds: number): string {
     if (seconds >= 3600) {
       const hours = Math.floor(seconds / 3600);

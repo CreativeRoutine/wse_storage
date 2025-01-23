@@ -73,6 +73,7 @@ const CleanerForm = ({ users}: Props) => {
     // setTestedFunctions([])
     setAfterRefurbish(null)
     setAdditionalInfo(null)
+    setPrinterFound(false); // Останавливаем таймер
   }
 
   const { timeElapsed, startTimer, stopTimer, resetTimer } = useTimer(); 
@@ -146,10 +147,12 @@ const CleanerForm = ({ users}: Props) => {
   }, [resetForms]);
 
   useEffect(() => {
-    if (printerData) {
-      setPrinterFound(true)
-    }
-  }, [printerData]); // Вызывается при изменении resetForms
+      if (printerData) {
+        setPrinterFound(true); // Таймер должен запуститься при новом найденном принтере
+      } else {
+        setPrinterFound(false); // Остановить таймер, если принтер сброшен
+      }
+    }, [printerData]); // Вызывается при изменении resetForms // Вызывается при изменении resetForms
   
   return (
     <div className="bg-secondary-200 px-6 mb-1 py-6 w-full rounded-xl border border-dark-350 shadow-lg flex flex-col items-end">

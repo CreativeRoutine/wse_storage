@@ -7,45 +7,6 @@ import { revalidatePath } from "next/cache";
 import Supplier from "@/database/supplier.model";
 // import { any } from "zod";
 
-// Messaging ready
-// export async function createPalet_OLD(params: CreatePalet) {
-//   try {
-//     connectToDatabase();
-
-//     const { ponumber, barcode, user, path, createdOn } = params;
-
-//     const existingPallet = await Pallet.findOne({ barcode: barcode });
-
-//     if (!existingPallet) {
-//       // Создание нового палета
-//       const newPalet = await Pallet.create({
-//         ponumber,
-//         barcode,
-//         user,
-//         createdOn
-//       });
-
-//       // Используем _id нового палета для добавления в массив pallets поставщика
-//       const supplier = await Supplier.findOneAndUpdate(
-//         { ponumber: ponumber },
-//         { $push: { pallets: newPalet._id } }, // Добавляем _id палета
-//         { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-//       );
-
-//       // how to return a message to the user if existingPallet is true?
-//       revalidatePath(path);
-//       return { success: true, message: "Pallet created successfully!" };
-
-//     } else {
-//       return { success: false, message: "An error occurred while creating the pallet", info: "This pallet already exists in the database"};
-//     }
-
-//   } catch (error) {
-//     return "An error occurred while creating the pallet";
-//     console.log("Error:", error);
-//   }
-// }
-
 export async function createPalet(params: CreatePalet) {
   try {
     connectToDatabase();
@@ -102,7 +63,7 @@ export async function getPallets___OLD(params:GetPalletsParams) {
 
 
 
-export async function getPallets(params:GetPalletsParams) {
+export async function getPallets_WORKABLE_LAST(params:GetPalletsParams) {
   try {
     // Connect to the database
     await connectToDatabase();
@@ -110,8 +71,7 @@ export async function getPallets(params:GetPalletsParams) {
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
     const pallets = await Pallet.find({}).lean();
 
-    // //.populate({path: "tags", model: Tag})
-    // //.populate({path: 'author', model: User}) 
+
     return{pallets}
 
   } catch (error) {
@@ -119,6 +79,46 @@ export async function getPallets(params:GetPalletsParams) {
     throw error;
   }
 }
+
+export async function getPallets(params: GetPalletsParams) {
+  try {
+    // Подключаемся к базе данных
+    await connectToDatabase();
+
+    const { searchQuery } = params; // Убедимся, что передаем searchQuery из параметров
+    const query: any = {};
+
+    // Если есть поисковый запрос, добавляем фильтрацию
+    if (searchQuery) {
+      query.$or = [
+        { "printers.name": { $regex: new RegExp(searchQuery, "i") } }, // Поиск по имени принтера
+        { barcode: { $regex: new RegExp(searchQuery, "i") } }, // Поиск по баркоду паллеты
+      ];
+    }
+
+    // Используем агрегацию для поиска
+    const pallets = await Pallet.aggregate([
+      {
+        $lookup: {
+          from: "printers", // Соединяем с коллекцией принтеров
+          localField: "printers",
+          foreignField: "_id",
+          as: "printers",
+        },
+      },
+      {
+        $match: query, // Применяем фильтр по запросу
+      },
+    ]);
+
+    return { pallets };
+  } catch (error) {
+    console.error("Error fetching pallets:", error);
+    throw new Error("Error fetching pallets");
+  }
+}
+
+
 
 export async function getPalet(params: GetPalet) {
   try {

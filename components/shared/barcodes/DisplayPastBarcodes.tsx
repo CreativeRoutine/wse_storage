@@ -17,8 +17,6 @@ export default function DisplayPastBarcodes ({barcodes}:Props) {
                 <div className='text-normal mb-2 text-slate-200'>Printers (WSE-P): <span className='ml-3 text-white font-semibold'>{results || results?.printers ? results.printers : <span className='text-red-500'>0</span> }</span></div>
                 <div className='text-normal mb-2 text-slate-200'>Parts (WSE-PP): <span className='ml-3 text-white font-semibold'>{results || results?.parts ? results.parts : <span className='text-red-500'>0</span> }</span></div>
                 <div className='text-normal mb-2 text-slate-200'>Pallets (WSE-P): <span className='ml-3 text-white font-semibold'>{results || results?.pallets ? results.pallets : <span className='text-red-500'>0</span> }</span></div>
-                <div className='text-normal mb-2 text-slate-200'>Storage (WSE-ST): <span className='ml-3 text-white font-semibold'>{results || results?.storage ? results.storage : <span className='text-red-500'>Not set</span> }</span></div>
-
             </div>
         </div>
 

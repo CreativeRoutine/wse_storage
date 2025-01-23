@@ -14,6 +14,7 @@ import mongoose from 'mongoose';
 import User from '@/database/user.model';
 import Employee from "@/database/employee.model";
 import Parts from "@/database/parts.model";
+import dayjs from "dayjs";
 
 // AFTER PARTS IMPLEMENTATION
 // CONFIRMED AS WORKABLE
@@ -682,6 +683,57 @@ export async function getPrinters(params: GetPrintersParams) {
   }
 }
 
+export async function getData() {
+  try {
+    await connectToDatabase();
+
+    // Начало и конец текущего дня
+    const todayStart = dayjs().startOf("day").toDate();
+    const todayEnd = dayjs().endOf("day").toDate();
+
+    // Начало и конец текущей недели
+    const weekStart = dayjs().startOf("week").toDate();
+    const weekEnd = dayjs().endOf("week").toDate();
+
+    const totalPrinters = await Printer.countDocuments();
+    const totalPallets = await Pallet.countDocuments();
+
+    // Принтеры refurbished (состояние "Refurbished") за день
+    const refurbishedToday = await Printer.countDocuments({
+      "tasksPerformed.date": { $gte: todayStart, $lte: todayEnd },
+      "tasksPerformed.status": "Refurbished",
+    });
+
+    // Принтеры refurbished за неделю
+    const refurbishedThisWeek = await Printer.countDocuments({
+      "tasksPerformed.date": { $gte: weekStart, $lte: weekEnd },
+      "tasksPerformed.status": "Refurbished",
+    });
+
+    // Принтеры cleaned за день
+    const cleanedToday = await Printer.countDocuments({
+      "tasksPerformed.performedCleaner.date": { $gte: todayStart, $lte: todayEnd },
+    });
+
+    // Принтеры cleaned за неделю
+    const cleanedThisWeek = await Printer.countDocuments({
+      "tasksPerformed.performedCleaner.date": { $gte: weekStart, $lte: weekEnd },
+    });
+
+    return {
+      totalPrinters,
+      totalPallets,
+      refurbishedToday,
+      refurbishedThisWeek,
+      cleanedToday,
+      cleanedThisWeek,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw new Error("Error fetching data");
+  }
+}
+
 
 
 // Used on Printer's page
@@ -890,7 +942,6 @@ export async function updatePrinterWithCheckCleaner(params: any) {
     });
 
     // Сохраняем изменения в пользователе
-    console.log("User printers before save:", user.printers);
     await user.save();
 
     // Получаем последний объект в массиве tasksPerformed
@@ -919,8 +970,6 @@ export async function updatePrinterWithCheckCleaner(params: any) {
     // Сохраняем изменения в принтере
     printer.markModified(`tasksPerformed.${lastTaskIndex}.performedCleaner`);
     const savedPrinter = await printer.save();
-
-    console.log("Saved printer:", savedPrinter);
 
     // Обновляем кеш страницы
     revalidatePath(path);

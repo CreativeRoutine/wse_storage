@@ -60,8 +60,8 @@ const DisplayParts = async ({parts}:Props) => {
             <td className="">
               <ul className="">
                 {
-                  printer.parts.map((part:any) => 
-                    <li key={part.partsName} className="py-2 w-full flex flex-row justify-between">
+                  printer.parts.map((part:any, i:number) => 
+                    <li key={part.partsName+i} className="py-2 w-full flex flex-row justify-between">
                       <span className="w-[120px] p-2">{part.partsName}</span> 
                       <span className="w-2/3 flex flex-col items-center">
                         <span>{part.part.length} of {part.maxParts}</span>

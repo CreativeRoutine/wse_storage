@@ -66,7 +66,7 @@ export async function getUserById(params: any){
         const {userId} = params;
 
         const user = await User.findOne({clerkId: userId})
-        .populate({path: 'employees', model: Employee, select: "name lastName nickName"}).lean();
+        .populate({path: 'employees', model: Employee, select: "name lastName nickName department"}).lean();
 
         return user;
     } catch(error){

@@ -188,9 +188,9 @@ export default function CreatePrinter ({barcodes, setTempBarcodes}:Props){
                             defaultValue={field.value}
                           >
                             
-                              <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
-                                <SelectValue placeholder="Type" />
-                              </SelectTrigger>
+                            <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
                             
     
                             <SelectContent className="bg-dark-400 p-0 text-white border-0">
@@ -215,7 +215,7 @@ export default function CreatePrinter ({barcodes, setTempBarcodes}:Props){
                                     value="WSE-W"
                                     className="py-2 text-white hover:bg-dark-200"
                                   >
-                                    WSE-W
+                                    WSE-W1-A1
                                   </SelectItem> */}
                                 
                               </SelectGroup>

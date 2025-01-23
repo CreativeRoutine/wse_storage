@@ -49,7 +49,7 @@ export default function DeleteSupplier({ id }: Props) {
         _id: "",
     },
   });
-
+ 
   async function onSubmit() {
     setIsSubmitting(true);
   

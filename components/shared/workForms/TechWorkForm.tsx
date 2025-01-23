@@ -73,6 +73,7 @@ const TechWorkForm = ({ users, partsList }: Props) => {
     setPagesNumber(null)
     setAfterRefurbish(null)
     setAdditionalInfo(null)
+    setPrinterFound(false); // Останавливаем таймер
   }
 
   const { timeElapsed, startTimer, stopTimer, resetTimer } = useTimer(); 
@@ -149,7 +150,9 @@ const TechWorkForm = ({ users, partsList }: Props) => {
 
   useEffect(() => {
     if (printerData) {
-      setPrinterFound(true)
+      setPrinterFound(true); // Таймер должен запуститься при новом найденном принтере
+    } else {
+      setPrinterFound(false); // Остановить таймер, если принтер сброшен
     }
   }, [printerData]); // Вызывается при изменении resetForms
   
