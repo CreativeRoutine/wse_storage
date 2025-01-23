@@ -33,14 +33,12 @@ const DisplayStorageBarcodes = ({ type, start, finish }: Props) => {
     (_, index) => `${type}-${startRow}${startShelf + index}`
   );
 
-  console.log("BARCODES FROM DISPLAY", barcodes);
-
-  // Рендерим баркоды
+  // Render Barcodes
   return (
     <div>
       {barcodes.map((barcode, index) => (
         <div key={index} className="mb-4">
-          <Barcode value={barcode} />
+          <Barcode value={barcode} width={3}/>
         </div>
       ))}
     </div>

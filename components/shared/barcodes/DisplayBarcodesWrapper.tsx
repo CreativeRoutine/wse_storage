@@ -67,13 +67,13 @@ const DisplayBarcodesWrapper = ({ barcodes }: Props) => {
               <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl print:hidden">
                 <CreateWarhouseBarcode setTempBarcodes={setStorageBarcodes} />
               </div>
-              {/* <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl print:block">
+              <div className="bg-secondary-200 px-6 mb-1 py-6 w-1/2 rounded-xl print:block">
                 <DisplayStorageBarcodes
                   type={storageBarcodes.type}
                   start={storageBarcodes.start}
                   finish={storageBarcodes.finish}
                 />
-              </div> */}
+              </div>
             </div>
           )}
         </div>
