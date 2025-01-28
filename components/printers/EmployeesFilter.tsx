@@ -50,7 +50,6 @@ export const EmployeesFilters = ({
       // Сбрасываем выбранную дату
       setSelectedDate(undefined);
     };
-  
 
   return (
     <div className="mt-2 flex flex-row justify-between">
