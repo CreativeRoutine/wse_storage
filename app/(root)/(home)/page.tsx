@@ -50,11 +50,10 @@ const Home = async ({searchParams}: SearchParamsProps) => {
   
     const mongoUserData = await getUserById({ userId });
     const mongoUser = JSON.parse(JSON.stringify(mongoUserData));
+
     if(mongoUser.department === "visitor"){
       return(<VisitorNotification />)
     }
-
-    // console.log(mongoUser)
 
     const printers = await getData();
   

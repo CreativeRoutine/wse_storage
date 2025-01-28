@@ -34,9 +34,6 @@ import { SearchParamsProps } from "@/types";
     const user:any = await getEmployeesById({ _id, date: selectedDate });
     const users = JSON.parse(JSON.stringify(user));
   
-    // console.log("users==>", user.printers);
-    // console.log("SEARCHPARAMS==>", searchParams);
-  
     // Функция форматирования времени
     function formatTimeSpent(seconds: number): string {
       if (seconds >= 3600) {
@@ -75,7 +72,6 @@ import { SearchParamsProps } from "@/types";
       }
     })
 
-    // console.log("filteredPrinters =======>", filteredPrinters)
     // END OF NEW LOGIC
   
     if (user) {

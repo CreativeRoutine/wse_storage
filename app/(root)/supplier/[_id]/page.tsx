@@ -31,9 +31,6 @@ const page = async ({ params }: { params: { _id: string } }) => {
   const supplierData = await getSupplier(_id)
   const supplier = JSON.parse(JSON.stringify(supplierData))
   
-  // console.log(supplier)
-  // console.log("CREATED")
-  
 
   return (
     <>
