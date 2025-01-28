@@ -1158,19 +1158,30 @@ export async function deletePrinter(params:DeletePrinterParams) {
     }
 
     // Find Supplier by printer id
-    await Supplier.findOneAndUpdate({ponumber: printer[0].ponumber}, { $pull: { printers: printer[0]._id } })
-
+    // await Supplier.findOneAndUpdate({ponumber: printer[0].ponumber}, { $pull: { printers: printer[0]._id } })
+    
     // Ищем и удаляем принтер из pallets в Supplier
     const result = await Supplier.findOneAndUpdate(
-      { "pallets.printers": printer[0]._id }, // Условие для поиска нужного pallets, содержащего принтер
-      { $pull: { "pallets.$.printers": printer[0]._id } }, // Удаляем printerId из массива printers
-      { new: true } // Возвращаем обновленный документ
+      { 
+        "shipments.printers": printer[0]._id // Условие для поиска принтера в shipments
+      },
+      { 
+        $pull: { 
+          "shipments.$[shipment].printers": printer[0]._id // Удаляем принтер из массива printers внутри конкретного shipment
+        }
+      },
+      { 
+        arrayFilters: [{ "shipment.printers": printer[0]._id }], // Фильтруем shipment, содержащий этот принтер
+        new: true // Возвращаем обновленный документ
+      }
     );
-
+    
+    console.log("Updated Supplier:", result);
+    
     if (!result) {
       return {
         success: false,
-        message: "Printer not found in any pallet!",
+        message: "Printer not found in any shipment of the supplier!",
       };
     }
 

@@ -99,8 +99,11 @@ const TechWorkForm = ({ users, partsList }: Props) => {
       return;
     }
     const createFormData = () => {
-      const createdOn = moment().tz("America/Chicago").toDate();
-      createdOn.setHours(createdOn.getHours());
+      // const createdOn = moment().tz("America/Chicago").toDate();
+      // createdOn.setHours(createdOn.getHours());
+
+      const createdOn = new Date();
+      
     
       return {
         date: createdOn,

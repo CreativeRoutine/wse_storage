@@ -67,10 +67,11 @@ export default  function DeletePrinter ({id}:Props){
         path: usepathname,
       })
 
+      router.replace('/printers')
       form.reset(); // Reset form fields
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
-      router.push(`/printers`)
+      // router.push(`/printers`)
 
       return (
         response.success ? toast({
@@ -116,30 +117,6 @@ export default  function DeletePrinter ({id}:Props){
         </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-
-          {/* Old form  */}
-          {/* {
-            <>
-              <Form {...form}>  
-                <form onSubmit={form.handleSubmit(onSubmit)} className="ml-auto">
-
-                  
-                  <Button type="submit" onClick={onSubmit}  className="w-full bg-red-500 text-white mt-3" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <>
-                          {'Deleting ...'}
-                        </>
-                      ) : (
-                        <>
-                        {'Delete printer'}
-                        </>
-                      )}
-                  </Button>
-                </form>
-              </Form>
-            </>
-          } */}
 
     </>
 

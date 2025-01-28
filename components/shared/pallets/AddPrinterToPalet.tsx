@@ -72,13 +72,13 @@ export default  function AddPrinterToPalet ({id}:Props){
       
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
+      form.reset({}); 
       router.refresh();
       
       
       if (response.success) {
         // Reset form fields
         setIsParts(false);
-        form.reset({}); 
       
         // Show success toast
         toast({
@@ -128,6 +128,7 @@ export default  function AddPrinterToPalet ({id}:Props){
                             <Input
                               className="w-full ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
                               placeholder="Serial number"
+                              autoFocus={true}
                               {...field}
                             />
                           </div>
