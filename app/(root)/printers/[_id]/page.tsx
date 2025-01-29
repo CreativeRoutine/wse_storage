@@ -87,7 +87,7 @@ const page = async ({ params }: { params: { _id: string } }) => {
   })
   const printers = JSON.parse(JSON.stringify(printer))
 
-  console.log("PRINTERS",printers)
+  // console.log("PRINTERS",printers)
 
   function formatTimeSpent(seconds: number): string {
     if (seconds >= 3600) {

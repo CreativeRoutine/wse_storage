@@ -107,7 +107,7 @@ import { SearchParamsProps } from "@/types";
                     {ref} <span className='text-sm'>refurbished</span>
                     </div>
                     <div>
-                    {dis} <span className="text-base font-normal">{dis}disassembled</span>
+                    {dis} <span className="text-base font-normal">disassembled</span>
                     </div>
                   </div>
 
