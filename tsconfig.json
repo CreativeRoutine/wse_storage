@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(root)/settings/page._tsx", "database/part.model._ts", "components/shared/forms/AddPalletForm._tsx", "components/shared/forms/AddPartForm._tsx", "components/shared/forms/AddUserForm._tsx", "components/shared/forms/AddWorkForm._tsx", "components/shared/forms/ChechSN._tsx", "components/shared/forms/CleanerForm._tsx", "components/shared/forms/FindPrinterBySn._tsx", "components/shared/forms/TechForm._tsx", "components/shared/forms/TechWorkPrinterForm._tsx"],
+  "exclude": ["node_modules"]
+}
