@@ -156,7 +156,7 @@ export default function CreateStorageBarcodes({ setTempBarcodes }: Props) {
             )}
           />
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="bg-primary-500 text-white text-lg mt-6 w-full p-6">
             Generate Barcodes
           </Button>
         </form>
