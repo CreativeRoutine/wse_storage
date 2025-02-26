@@ -345,34 +345,26 @@ export async function getPartsByProductNumber(params: any) {
 
 export async function getPartsByName(params: any) {
   try {
-    const { printerName } = params;
+    
+    const { currentPrinter } = params;
 
-    if (!printerName) {
+    if (!currentPrinter) {
       return { success: false, message: "Product number not found" };
     } 
+
+    // console.log("CURRENT PRINTER NAME: ", currentPrinter);
     
     await connectToDatabase();
 
     // Находим принтер
-    const partsResponse = await Parts.findOne({ printerName: printerName }).lean();
-
+    const partsResponse = await Parts.findOne({ printerName: currentPrinter }).lean();
     if(!partsResponse){
       return { success: false, message: "An error occurred while getting the parts" };
-
     }
-    // if (!partsResponse || typeof partsResponse !== "object") {
-    //   return []; // Если не объект, вернуть пустой массив
-    // }
+    const parts = JSON.parse(JSON.stringify(partsResponse));
 
-    // if (!("parts" in partsResponse) || !Array.isArray(partsResponse.parts)) {
-    //   return []; // Если нет parts или это не массив
-    // }
+    return parts.parts; // Возвращаем массив названий частей
 
-    // Извлекаем названия всех частей
-    // const partsNames = partsResponse.parts.map((part: any) => part.partsName);
-
-    // console.log("THIS IS CURRENT PRINTER SERVER",partsNames)
-    return partsResponse; // Возвращаем массив названий частей
   } catch (error) {
     console.error("An error occurred while getting the part:", error);
     return { success: false, message: "An error occurred while getting the part" };
@@ -550,25 +542,26 @@ export async function changePartLocation(params: any) {
   }
 }
 
+// снимаем запчасть с принтера
 export async function addPartFromPrinter(data: { 
   createdOn: Date;
-  partName: string;
-  productNumber: string;
+  printer: string;
+  part: string;
   printerId?: string; // Опциональный ID принтера
   used?: boolean; // Поле used
 }) {
   try {
     await connectToDatabase();
 
-    const { createdOn, productNumber, printerId, used = false } = data;
+    const { createdOn, printer, part, printerId, used = false } = data;
 
-    const part = await Parts.findOne({ productNumber });
-    if (!part) {
+    const parts = await Parts.findOne({ printerName: printer });
+    if (!parts) {
       return { success: false, message: "Part not found!" };
     }
 
     // Проверяем, существует ли часть с таким именем
-    const existingPart = part.parts.find((part: any) => part.partsName === data.partName);
+    const existingPart = parts.parts.find((part: any) => part.partsName === data.part);
     if (!existingPart) {
       return { success: false, message: "Part not found in list" };
     }
@@ -577,7 +570,7 @@ export async function addPartFromPrinter(data: {
     if (existingPart.part.length >= existingPart.maxParts) {
       return {
         success: false,
-        message: `Cannot add part: limit of ${existingPart.maxParts} reached for ${data.partName}`,
+        message: `Cannot add part: limit of ${existingPart.maxParts} reached for ${data.part}`,
       };
     }
 
@@ -589,7 +582,7 @@ export async function addPartFromPrinter(data: {
     });
 
     // Сохраняем изменения
-    await part.save();
+    await parts.save();
 
     return { success: true, message: "Part added successfully" };
   } catch (error) {
@@ -653,7 +646,9 @@ export async function getAllPartsModels(params: any){
     connectToDatabase(); // Connect to the database
 
 
-    const parts = await Parts.find({}).lean()
+    const parts = await Parts.find({})
+    .sort({ printerName: 1 })
+    .lean()
 
     if(!parts){
       
@@ -769,6 +764,106 @@ export async function deletePrinterPart(params: any){
   } catch(error){
     console.error("An error occurred while assigning the name to the part:", error);
     return {success: false, message: "An error occurred while assigning the name to the part"};
+  }
+}
+
+export async function deletePrinterPartFromStorage__OLD(params: any) {
+  try {
+    await connectToDatabase(); // Подключаемся к базе данных
+
+    console.log("DELETE PRINTER's PART STARTED");
+
+    const { name, parts, barcode } = params;
+
+    // Находим документ с таким принтером
+    const partDoc = await Parts.findOne({ printerName: name });
+
+    if (!partDoc) {
+      return { success: false, message: `Part for ${name} not found!` };
+    }
+
+    console.log("FOUND PART DOC:", partDoc);
+
+    // Проверяем, есть ли нужная часть в массиве parts
+    const partIndex = partDoc.parts.findIndex((p: any) => p.partsName === parts);
+    
+    if (partIndex === -1) {
+      return { success: false, message: `Part ${parts} not found in ${name}` };
+    }
+
+    
+
+    // Удаляем объект с указанным barcode из массива part
+    partDoc.parts[partIndex].part = partDoc.parts[partIndex].part.filter(
+      (p: any) => p.barcode !== barcode
+    );
+
+    console.log("AFTER FILTERING ",partDoc.parts[partIndex].part.length)
+
+    // Сохраняем обновленный документ в базе
+    await partDoc.save();
+
+    console.log(`Successfully removed part with barcode ${barcode} from ${parts}`);
+
+    return { success: true, message: `Part with barcode ${barcode} removed successfully` };
+  } catch (error) {
+    console.error("An error occurred while deleting the part:", error);
+    return { success: false, message: "An error occurred while deleting the part" };
+  }
+}
+
+export async function deletePrinterPartFromStorage(params: any) {
+  try {
+    await connectToDatabase(); // Подключаемся к базе данных
+
+    console.log("DELETE PRINTER's PART STARTED");
+
+    const { name, parts, barcode } = params;
+
+    // Находим документ с таким принтером
+    const partDoc = await Parts.findOne({ printerName: name });
+
+    if (!partDoc) {
+      return { success: false, message: `Printer ${name} not found!` };
+    }
+
+    console.log("FOUND PART DOC:", partDoc);
+
+    // Проверяем, есть ли нужная часть в массиве parts
+    const partIndex = partDoc.parts.findIndex((p: any) => p.partsName === parts);
+    
+    if (partIndex === -1) {
+      return { success: false, message: `Part ${parts} not found in ${name}` };
+    }
+
+    // Проверяем, есть ли объекты в массиве part
+    if (partDoc.parts[partIndex].part.length === 0) {
+      return { success: false, message: `Part ${parts} is empty in ${name}` };
+    }
+
+    // Находим индекс объекта с указанным barcode
+    const barcodeIndex = partDoc.parts[partIndex].part.findIndex(
+      (p: any) => p.barcode === barcode
+    );
+
+    if (barcodeIndex === -1) {
+      return { success: false, message: `Part with barcode ${barcode} not found in ${parts}` };
+    }
+
+    // Удаляем объект с указанным barcode
+    partDoc.parts[partIndex].part.splice(barcodeIndex, 1);
+
+    console.log("AFTER DELETION:", partDoc.parts[partIndex].part.length);
+
+    // Сохраняем обновленный документ в базе
+    await partDoc.save();
+
+    console.log(`Successfully removed part with barcode ${barcode} from ${parts}`);
+
+    return { success: true, message: `Part with barcode ${barcode} removed successfully` };
+  } catch (error) {
+    console.error("An error occurred while deleting the part:", error);
+    return { success: false, message: "An error occurred while deleting the part" };
   }
 }
 

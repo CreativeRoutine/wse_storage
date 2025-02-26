@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import moment from "moment-timezone";
 import { useToast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import {
   Form,
@@ -24,7 +26,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-import { addPartFromPrinter, getPartsByProductNumberPlain } from "@/lib/actions/parts.action";
+import { addPartFromPrinter, getListOfAllPrinters, getPartsByName, getPartsByProductNumberPlain } from "@/lib/actions/parts.action";
+import { addPartFromPrinterSchema } from "@/lib/validations";
 
 interface Props {
   printerId: string;
@@ -32,8 +35,8 @@ interface Props {
 }
 
 interface FormData {
-  partName: string;
-  productNumber: string;
+  printers: string;
+  part: string;
 }
 
 export default function AddPart({ printerId, printerProductNumber }: Props) {
@@ -42,33 +45,75 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const form = useForm<FormData>({
+  const form = useForm<z.infer<typeof addPartFromPrinterSchema>>({
+    resolver: zodResolver(addPartFromPrinterSchema),
     defaultValues: {
-      partName: "",
-      productNumber: printerProductNumber || "",
+      printers: "",
+      part: "",
     },
   });
 
-  useEffect(() => {
-    if (printerProductNumber) {
-      getPrinterData();
-    }
-  }, [printerProductNumber]);
 
+  // MY NEW LOGIC STARTS HERE
+
+  const [initialPrintersList, setInitialPrintersList] = useState<string[]>([]);
+  const [printerName, setPrinterName] = useState<string>("");
+  const [initialPartsList, setInitialPartsList] = useState<string[]>([]);
+  const [partName, setPartName] = useState<string>("");
+
+  // 1. Запускаем поиск всех принтеров
+  useEffect(() => {
+      getPrinterData(); // This function receive all parts names to display them and to choose from
+  }, []);
+  
+  //2. Получаем список всех принтеров
   async function getPrinterData() {
     try {
-      const response: any = await getPartsByProductNumberPlain({
-        productNumber: printerProductNumber,
-      });
-
-      const parts = JSON.parse(JSON.stringify(response));
-      setPartsData(parts.parts || []); // Сохраняем детали
+      const response: any = await getListOfAllPrinters();
+      const printers = JSON.parse(JSON.stringify(response));
+      setInitialPrintersList(printers)
+  
     } catch (error) {
       console.error("Error fetching printer data:", error);
     }
   }
 
-  async function onSubmit(values: FormData) {
+  //3. Когда выбираем конкретный принтер - стейт  printerName меняется
+  const handlePrinterChange = (value: string) => {
+    setPrinterName(value); // Устанавливаем выбранное значение
+    form.setValue("printers", value); // Устанавливаем значение в форму
+  };
+
+  // 4. Когда 1е поле изменяется и есть конкретный принтер - получаем список всех деталей этого принтера
+  useEffect(() => {
+    getPartsData(); // This function receive all parts names to display them and to choose from
+}, [printerName]);
+
+  // 5. Получаем список всех деталей конкретного принтер
+  async function getPartsData(){
+    try{
+      const response:any = await getPartsByName({currentPrinter: printerName });
+
+      const parts = JSON.parse(JSON.stringify(response));
+
+      console.log("PARTS", response);
+      
+      setInitialPartsList(parts);
+
+    } catch (error) {
+      console.error("Error fetching parts data:", error);
+    }
+  }
+
+  const handlePartChange = (value: string) => {
+    setPartName(value); // Устанавливаем выбранное значение
+    form.setValue("part", value); // Устанавливаем значение в форму
+    console.log("VALUE", value);
+
+  }
+
+   async function onSubmit(values: z.infer<typeof addPartFromPrinterSchema>) {
+    console.log("STARTED SUBMITTING");
     setIsSubmitting(true);
 
     const createdOn = moment().tz("America/Chicago").toDate();
@@ -77,8 +122,8 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
     try {
       const response: any = await addPartFromPrinter({
         createdOn,
-        partName: values.partName,
-        productNumber: printerProductNumber,
+        printer: values.printers,
+        part: values.part,
         printerId, // Опционально
         used: false,
       });
@@ -91,9 +136,9 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
         });
 
         // Удаляем добавленную деталь из списка partsData
-        setPartsData((prevParts) => prevParts.filter((part) => part.partsName !== values.partName));
+        // setPartsData((prevParts) => prevParts.filter((part) => part.partsName !== values.partName));
 
-        form.reset({ partName: "" });
+        form.reset({});
       } else {
         toast({
           title: "Error",
@@ -114,34 +159,40 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
   }
 
   return (
-    <div className="border-b border-slate-400 my-4">
-      <div className="bg-secondary-200 mb-1 py-6 w-full lg:w-1/2 rounded-xl border border-dark-350">
+    // <div className="border-b border-slate-400 my-4">
+      <div className="border-b border-slate-400 my-4 pb-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full mx-auto">
+            
             {/* Select Part Name */}
-            {partsData.length > 0 && (
+            {initialPrintersList.length > 0 && (
               <FormField
                 control={form.control}
-                name="partName"
+                name="printers"
                 render={({ field }) => (
                   <FormItem>
+                    
                     <FormLabel className="text-base text-slate-300 text-md font-semibold mb-2">
-                      Part to be disassembled:
+                      Part to be disassembled / Снять часть:
                     </FormLabel>
+                    
                     <FormControl>
-                      <Select onValueChange={(value) => field.onChange(value)}>
-                        <SelectTrigger className="w-full focus:outline-none bg-dark-600 border-0 text-white">
+                      <Select 
+                        onValueChange={handlePrinterChange}
+                        // onValueChange={(value) => field.onChange(value)}
+                      >
+                        <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
                           <SelectValue placeholder="Select Part Name" />
                         </SelectTrigger>
                         <SelectContent className="bg-dark-400 p-0 text-white border-0">
                           <SelectGroup className="py-4">
-                            {partsData.map((part: any, index: number) => (
+                            {initialPrintersList.map((part: any, index: number) => (
                               <SelectItem
                                 key={index}
-                                value={part.partsName}
+                                value={part}
                                 className="py-2 text-white hover:bg-dark-200"
                               >
-                                {part.partsName}
+                                {part}
                               </SelectItem>
                             ))}
                           </SelectGroup>
@@ -154,6 +205,58 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
               />
             )}
 
+
+            {
+            initialPartsList.length > 0 && (
+
+              <FormField
+                control={form.control}
+                name="part"
+                render={({ field }) => (
+                  // First Input
+                  <FormItem>
+                    <FormLabel className="block font-semibold w-2/3 mb-4text-slate-300">Parts</FormLabel>
+                    <FormControl>
+                      <div className="flex justify-between gap-2 items-center ">
+                      <Select
+                          onValueChange={handlePartChange}
+                          // value={partName || ""}
+                          // defaultValue={field.value}
+
+                        >
+                          <SelectTrigger className="w-full border-0 bg-dark-600 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0">
+                            <SelectValue  placeholder="Parts" className="hello w-ful"/>
+                          </SelectTrigger>
+                          <SelectContent className="bg-dark-400 p-0 text-white border-0 w-full">
+                            <SelectGroup className="py-4 w-full">
+                              {
+                              //  listOfParts ? "Loading..." : "Select printer first"
+                              initialPartsList.map((option:any) => (
+                                <SelectItem
+                                  key={option.partsName}
+                                  value={option.partsName}
+                                  className="py-2 text-white hover:bg-dark-200"
+                                >
+                                  <div className="flex flex-row justify-around gap-4">
+                                  <div>{option.partsName}</div> / <div>{option.part.length} / {option.maxParts}</div> / <div>{option.part[0]?.location || "No location"}</div>
+
+                                  </div>
+                                </SelectItem>
+                              ))
+                              }
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </FormControl>
+    
+                    <FormMessage />
+                  </FormItem>
+                )}
+                />
+            )
+            }
+
             <Button
               type="submit"
               className="bg-primary-500 text-white text-lg w-full p-6"
@@ -164,6 +267,6 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
           </form>
         </Form>
       </div>
-    </div>
+    // </div>
   );
 }

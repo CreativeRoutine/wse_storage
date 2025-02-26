@@ -25,6 +25,7 @@ import TotalPageCount from "./TotalPageCount";
 import AdditionalInfoText from "./AdditionalInfoText";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import PartsChangedTest from "../printers/PartsChangedTest";
 
 interface Props {
   users: any;
@@ -302,8 +303,15 @@ const TechWorkForm = ({ users, partsList }: Props) => {
                 <PartsChangedNew
                   label={switchState ? "Замененные запчасти:" : "Parts changed:" }
                   onSelect={setChangedParts}
+                  selected={changedParts}
                   reset={resetForms}
                 />
+                {/* <PartsChangedTest
+                  label={switchState ? "Замененные запчасти:" : "Parts changed:" }
+                  onSelect={setChangedParts}
+                  reset={resetForms}
+                /> */}
+                
                 {/* <PartsChanged 
                   printerId={printerData._id} 
                   printerProductNumber={printerData.productNumber}

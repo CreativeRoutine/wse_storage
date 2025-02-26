@@ -183,8 +183,23 @@ export const addPartSchema = z.object({
 
 export const searchForPartSchema = z.object({
   name: z.string().min(3).max(30),
-  parts: z.string().min(3).max(30),
+  parts: z.string().min(2).max(30),
+  barcode: z.string().min(0).max(30),
 })
+
+export const addPartFromPrinterSchema = z.object({
+  printers: z.string().min(3).max(30),
+  part: z.string().min(2).max(30),
+  
+})
+
+// export const addPartFromPrinterSchema = z.object({
+//   createdOn: z.date(),
+//   partName: z.string().min(2).max(30),
+//   productNumber: z.string().min(3).max(30), 
+//   printerId: z.string().min(5).max(30),
+//   used: z.boolean(),
+// })
 
 export const addGenericPartSchema = z.object({
   barcode: z.string().min(0).max(30),
@@ -200,13 +215,7 @@ export const changePartLocationSchema = z.object({
   barcode: z.string().min(0).max(30),
 })
 
-export const addPartFromPrinterSchema = z.object({
-  createdOn: z.date(),
-  partName: z.string().min(2).max(30),
-  productNumber: z.string().min(3).max(30), 
-  printerId: z.string().min(5).max(30),
-  used: z.boolean(),
-})
+
 
 export const addPartNameSchema = z.object({
   // barcode: z.string().min(0).max(30),
