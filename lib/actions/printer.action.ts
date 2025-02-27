@@ -47,14 +47,14 @@ export async function createPrinter(params: CreatePrinterParams) {
     }
 
     // Проверяем, существует ли запись в Parts
-    const printerPart = await Parts.findOne({ productNumber });
-    if (!printerPart) {
-      await Parts.create({
-        productNumber,
-        printerName: printerModel,
-        parts: [],
-      });
-    }
+    // const printerPart = await Parts.findOne({ productNumber });
+    // if (!printerPart) {
+    //   await Parts.create({
+    //     productNumber,
+    //     printerName: printerModel,
+    //     parts: [],
+    //   });
+    // }
 
     // Создаем новый принтер
     const newPrinter = await Printer.create({

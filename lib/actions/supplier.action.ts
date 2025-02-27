@@ -172,14 +172,14 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
     });  
 
     // Проверяем, существует ли запись в Parts
-    const printerPart = await Parts.findOne({ productNumber });
-    if (!printerPart) {
-      await Parts.create({
-        productNumber,
-        printerName: printerModel,
-        parts: [],
-      });
-    }
+    // const printerPart = await Parts.findOne({ productNumber });
+    // if (!printerPart) {
+    //   await Parts.create({
+    //     productNumber,
+    //     printerName: printerModel,
+    //     parts: [],
+    //   });
+    // }
     
 
     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
