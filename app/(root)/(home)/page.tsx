@@ -69,7 +69,9 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
     <>
       <Title text="Dashboard" />
       <div className="w-full">
-        <div className="text-2xl font-bold">TESTING MODE!!!</div>
+        <div className="text-4xl mb-4 font-bold text-white">
+          TESTING MODE!!!
+        </div>
       </div>
       <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 ">
         {/* Storage */}
