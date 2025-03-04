@@ -1,17 +1,33 @@
-"use server"
+"use server";
 
 import { connectToDatabase } from "../mongoose";
-import {  CreatePrinterParams,GetPrinterByBarcodeParams, updatePrinterPreviewParams, FindPrinterParams, FindPrinterCleanerParams, AddPrinterToPalletParams, addPrinterCommentParams, updatePrinterPONParams, GetPrintersParams, GetPrinterParams, GetPrinterPopulatedParams, UnPinPrinterParams, DeletePrinterParams, PinToPalletParams, addPrinterInvoiceNumberParams } from "./shared.types";
+import {
+  CreatePrinterParams,
+  GetPrinterByBarcodeParams,
+  updatePrinterPreviewParams,
+  FindPrinterParams,
+  FindPrinterCleanerParams,
+  AddPrinterToPalletParams,
+  addPrinterCommentParams,
+  updatePrinterPONParams,
+  GetPrintersParams,
+  GetPrinterParams,
+  GetPrinterPopulatedParams,
+  UnPinPrinterParams,
+  DeletePrinterParams,
+  PinToPalletParams,
+  addPrinterInvoiceNumberParams,
+} from "./shared.types";
 import Printer from "@/database/printer.model";
 import { revalidatePath } from "next/cache";
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
 import Pallet from "@/database/pallet.model";
 import Supplier from "@/database/supplier.model";
 import Makes from "@/database/makes.model";
 
 import { FilterQuery } from "mongoose";
-import mongoose from 'mongoose';
-import User from '@/database/user.model';
+import mongoose from "mongoose";
+import User from "@/database/user.model";
 import Employee from "@/database/employee.model";
 import Parts from "@/database/parts.model";
 import dayjs from "dayjs";
@@ -22,18 +38,22 @@ export async function createPrinter(params: CreatePrinterParams) {
   try {
     await connectToDatabase(); // Подключение к базе данных
 
-    const { 
-      // ponumber, 
-      sn, 
-      productNumber, 
-      barcode, 
-      path, 
-      createdOn } = params;
+    const {
+      // ponumber,
+      sn,
+      productNumber,
+      barcode,
+      path,
+      createdOn,
+    } = params;
 
     // Проверяем, существует ли принтер с таким же barcode
     const existingBarcode = await Printer.findOne({ barcode });
     if (existingBarcode) {
-      return { success: false, message: `Printer with barcode ${barcode} already exists!` };
+      return {
+        success: false,
+        message: `Printer with barcode ${barcode} already exists!`,
+      };
     }
 
     let printerModel = "";
@@ -83,11 +103,16 @@ export async function createPrinter(params: CreatePrinterParams) {
 
     revalidatePath(path);
 
-    return { success: true, message: "Printer and parts record created successfully!" };
-
+    return {
+      success: true,
+      message: "Printer and parts record created successfully!",
+    };
   } catch (error) {
     console.error("An error occurred while creating the printer:", error);
-    return { success: false, message: "An error occurred while creating the printer" };
+    return {
+      success: false,
+      message: "An error occurred while creating the printer",
+    };
   }
 }
 
@@ -100,13 +125,17 @@ export async function findPrinter(params: FindPrinterParams) {
     const { barcode } = params;
 
     if (!barcode) {
-      return { success: false, message: "Barcode is required!" }; 
+      return { success: false, message: "Barcode is required!" };
     }
 
     // Find the printer by barcode
     const result = await Printer.findOne({ barcode })
-    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' })
-    .lean();
+      .populate({
+        path: "tasksPerformed.user",
+        model: "Employee",
+        select: "_id name lastName",
+      })
+      .lean();
 
     if (!result) {
       return { success: false, message: "Printer not found!" };
@@ -115,8 +144,7 @@ export async function findPrinter(params: FindPrinterParams) {
     // Convert the result to a plain object if necessary
     const printer = JSON.parse(JSON.stringify(result));
 
-    return { success: true, message: "Printer was found", printer }; 
-
+    return { success: true, message: "Printer was found", printer };
   } catch (error) {
     throw error;
   }
@@ -130,13 +158,17 @@ export async function findPrinterCleaner(params: FindPrinterCleanerParams) {
     const { barcode } = params;
 
     if (!barcode) {
-      return { success: false, message: "Barcode is required!" }; 
+      return { success: false, message: "Barcode is required!" };
     }
 
     // Find the printer by barcode
     const result = await Printer.findOne({ barcode })
-    .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' })
-    .lean();
+      .populate({
+        path: "tasksPerformed.user",
+        model: "Employee",
+        select: "_id name lastName",
+      })
+      .lean();
 
     if (!result) {
       return { success: false, message: "Printer not found!" };
@@ -145,128 +177,124 @@ export async function findPrinterCleaner(params: FindPrinterCleanerParams) {
     // Convert the result to a plain object if necessary
     const printer = JSON.parse(JSON.stringify(result));
 
-    return { success: true, message: "Printer was found", printer }; 
-
+    return { success: true, message: "Printer was found", printer };
   } catch (error) {
     throw error;
   }
 }
 
 // function - to delete
-export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams){
+export async function getPrinterByBarcode(params: GetPrinterByBarcodeParams) {
   try {
     // Connect to the database
     await connectToDatabase();
 
-    const {barcode, path} = params;
+    const { barcode, path } = params;
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printer = await Printer.find({barcode}).lean()
+    const printer = await Printer.find({ barcode }).lean();
 
     // .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
     // .populate({path: "supplier", model: Supplier})
-    // //.populate({path: 'author', model: User}) 
-    const toPass = JSON.stringify(printer)
+    // //.populate({path: 'author', model: User})
+    const toPass = JSON.stringify(printer);
 
-    return {toPass}
-
+    return { toPass };
   } catch (error) {
-    
     throw error;
   }
 }
 
-export async function getPrinterById(params: any){
+export async function getPrinterById(params: any) {
   try {
     // Connect to the database
     await connectToDatabase();
 
-    const {id} = params;
+    const { id } = params;
 
     // Here we find all printers. .lean is used to convert the Mongoose document to a plain JavaScript object
-    const printer = await Printer.findOne({_id: id}).lean()
-    
-    if(!printer){
-      return console.log("PRINTER NOT FOUND")
+    const printer = await Printer.findOne({ _id: id }).lean();
+
+    if (!printer) {
+      return console.log("PRINTER NOT FOUND");
     }
 
     // .populate({path: 'pallet', model: Pallet, select: "barcode location"}).lean()
     // .populate({path: "supplier", model: Supplier})
-    // //.populate({path: 'author', model: User}) 
-    const printerPlain = JSON.parse(JSON.stringify(printer))
+    // //.populate({path: 'author', model: User})
+    const printerPlain = JSON.parse(JSON.stringify(printer));
 
-    return printerPlain
-
+    return printerPlain;
   } catch (error) {
-    
     throw error;
   }
 }
 
 // Messaging ready
 export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
-  
   try {
     connectToDatabase();
 
     const { sn, productNumber, barcode, palletId, path } = params;
 
     const createdOn = moment().tz("America/Chicago").toDate();
-    createdOn.setHours(createdOn.getHours() - 5); 
+    createdOn.setHours(createdOn.getHours() - 5);
 
     // Search for an existing printer by serial number, product number, and barcode
     // const existingPrinter = await Printer.findOne({ sn, productNumber, barcode });
     const existingPrinter = await Printer.findOne({ sn, barcode });
     if (existingPrinter) {
-      return { success: false, message: "Printer already exests!"}; 
-
+      return { success: false, message: "Printer already exests!" };
     }
 
     // Searching for a pallet by barcode
     const pallet = await Pallet.findOne({ _id: palletId });
     if (!pallet) {
-      return { success: false, message: "Pallet not found"}; 
+      return { success: false, message: "Pallet not found" };
     }
 
     let printerModel;
 
-    const printerMake = await Makes.findOne({ productNumber: productNumber });  
+    const printerMake = await Makes.findOne({ productNumber: productNumber });
 
-      if(printerMake){
-        printerModel = printerMake.name;
-
-      } else {
-        printerModel = "";
-      }
-      // Creating a new printer with the _id of the pallet
-      const newPrinter = await Printer.create({
-        sn, 
-        productNumber, 
-        barcode,
-        pallet: pallet._id, // Используем _id найденного паллета
-        createdOn,
-        ponumber: pallet.ponumber,
-        name: printerModel,
-      });
-
+    if (printerMake) {
+      printerModel = printerMake.name;
+    } else {
+      printerModel = "";
+    }
+    // Creating a new printer with the _id of the pallet
+    const newPrinter = await Printer.create({
+      sn,
+      productNumber,
+      barcode,
+      pallet: pallet._id, // Используем _id найденного паллета
+      createdOn,
+      ponumber: pallet.ponumber,
+      name: printerModel,
+    });
 
     // Afer creating a new printer, we add it to the pallet
-    await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: newPrinter._id } });
+    await Pallet.findByIdAndUpdate(pallet._id, {
+      $push: { printers: newPrinter._id },
+    });
 
     // Используем _id нового палета для добавления в массив pallets поставщика
     const supplier = await Supplier.findOneAndUpdate(
       { ponumber: pallet.ponumber },
-      { 
-        // $set: { ponumber: pallet.ponumber }, 
+      {
+        // $set: { ponumber: pallet.ponumber },
         // Add pallet _id
-        $push: { printers: newPrinter._id } 
-      }, 
+        $push: { printers: newPrinter._id },
+      },
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
     const makes = await Makes.findOneAndUpdate(
       { productNumber: productNumber },
-      { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
+      {
+        $set: { productNumber: productNumber },
+        $push: { printers: newPrinter._id },
+      }, // Adding printer's produc number
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
 
@@ -274,10 +302,9 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 
     // Преобразование нового принтера в простой JavaScript объект
     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
+
     // return newPrinterPlain;
-    return { success: true, message: "Printer addet to pallet successfully!"}; 
-    
+    return { success: true, message: "Printer addet to pallet successfully!" };
   } catch (error) {
     // Return an error message
     console.error("An error occurred while creating the printer:", error);
@@ -359,18 +386,18 @@ export async function addPrinterToPallet(params: AddPrinterToPalletParams) {
 //     }
 
 //     // Запрос к базе данных
-    // const printers = await Printer.find(query)
-    //   .skip(skipAmount)
-    //   .limit(pageSize)
-    //   .sort(sortOptions)
-    //   .lean();
+// const printers = await Printer.find(query)
+//   .skip(skipAmount)
+//   .limit(pageSize)
+//   .sort(sortOptions)
+//   .lean();
 
-    // const totalPrinters = await Printer.countDocuments(query);
-    // const isNext = totalPrinters > skipAmount + printers.length;
+// const totalPrinters = await Printer.countDocuments(query);
+// const isNext = totalPrinters > skipAmount + printers.length;
 
-    // let total = totalPrinters / pageSize;
+// let total = totalPrinters / pageSize;
 
-    // return { printers, isNext, total, totalPrinters };
+// return { printers, isNext, total, totalPrinters };
 //   } catch (error) {
 //     throw error;
 //   }
@@ -487,7 +514,15 @@ export async function getPrinters_СТАРЫЙ_РАБОЧИЙ(params: GetPrinter
     // Подключение к базе данных
     await connectToDatabase();
 
-    const { searchQuery, filter, from, to, page = 1, pageSize, status } = params;
+    const {
+      searchQuery,
+      filter,
+      from,
+      to,
+      page = 1,
+      pageSize,
+      status,
+    } = params;
 
     const skipAmount = (page - 1) * pageSize;
 
@@ -521,7 +556,6 @@ export async function getPrinters_СТАРЫЙ_РАБОЧИЙ(params: GetPrinter
       case "oldest":
         sortOptions = { createdOn: 1 };
         break;
-        
 
       default:
         sortOptions = { createdOn: -1 };
@@ -599,17 +633,17 @@ export async function getPrinters(params: GetPrintersParams) {
     }
 
     let sortOptions = {};
-      switch (filter) {
-        case "newest":
-          sortOptions = { createdOn: -1 };
-          break;
-        case "oldest":
-          sortOptions = { createdOn: 1 };
-          break;
-        default:
-          sortOptions = { createdOn: -1 };
-          break;
-      }
+    switch (filter) {
+      case "newest":
+        sortOptions = { createdOn: -1 };
+        break;
+      case "oldest":
+        sortOptions = { createdOn: 1 };
+        break;
+      default:
+        sortOptions = { createdOn: -1 };
+        break;
+    }
 
     // Условие для фильтров Refurbished, Cleaned и наличия invoiceNumber
     const filterCondition = [];
@@ -621,7 +655,9 @@ export async function getPrinters(params: GetPrintersParams) {
     if (filter === "cleaned") {
       filterCondition.push({
         $and: [
-          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } },
+          {
+            "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } },
+          },
           { "lastCleaner.status": "Cleaned" },
         ],
       });
@@ -629,7 +665,9 @@ export async function getPrinters(params: GetPrintersParams) {
     if (filter === "invoice") {
       filterCondition.push({
         $and: [
-          { "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } } },
+          {
+            "lastTask.performedCleaner": { $exists: true, $not: { $size: 0 } },
+          },
           { "lastCleaner.invoiceNumber": { $exists: true, $ne: "" } },
         ],
       });
@@ -656,15 +694,21 @@ export async function getPrinters(params: GetPrintersParams) {
     ];
 
     // Выполняем фильтрацию и подсчёт общего количества принтеров
-    const totalPrintersAggregation = await Printer.aggregate([...aggregationPipeline, { $count: "total" }]);
-    const totalPrinters = totalPrintersAggregation.length > 0 ? totalPrintersAggregation[0].total : 0;
+    const totalPrintersAggregation = await Printer.aggregate([
+      ...aggregationPipeline,
+      { $count: "total" },
+    ]);
+    const totalPrinters =
+      totalPrintersAggregation.length > 0
+        ? totalPrintersAggregation[0].total
+        : 0;
 
     // Выполняем агрегацию для получения принтеров с пагинацией и сортировкой
     const printers = await Printer.aggregate([
       ...aggregationPipeline, // Применяем ту же фильтрацию
       { $sort: sortOptions }, // Сортировка по всему набору данных
-      { $skip: skipAmount },  // Пропускаем документы для пагинации
-      { $limit: pageSize },   // Лимит на страницу
+      { $skip: skipAmount }, // Пропускаем документы для пагинации
+      { $limit: pageSize }, // Лимит на страницу
     ]);
 
     // Вычисляем количество страниц и есть ли следующая страница
@@ -712,12 +756,18 @@ export async function getData() {
 
     // Принтеры cleaned за день
     const cleanedToday = await Printer.countDocuments({
-      "tasksPerformed.performedCleaner.date": { $gte: todayStart, $lte: todayEnd },
+      "tasksPerformed.performedCleaner.date": {
+        $gte: todayStart,
+        $lte: todayEnd,
+      },
     });
 
     // Принтеры cleaned за неделю
     const cleanedThisWeek = await Printer.countDocuments({
-      "tasksPerformed.performedCleaner.date": { $gte: weekStart, $lte: weekEnd },
+      "tasksPerformed.performedCleaner.date": {
+        $gte: weekStart,
+        $lte: weekEnd,
+      },
     });
 
     return {
@@ -733,8 +783,6 @@ export async function getData() {
     throw new Error("Error fetching data");
   }
 }
-
-
 
 // Used on Printer's page
 // export async function getPrinterPopulated(params: GetPrinterPopulatedParams){
@@ -754,12 +802,11 @@ export async function getData() {
 //       select: '_id name',
 //     })
 //       .lean();
-      
 
 //     return printer[0]
 
 //   } catch (error) {
-    
+
 //     throw error;
 //   }
 // }
@@ -773,12 +820,16 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams) {
 
     // Находим принтер и пополняем нужные данные
     const printer = await Printer.findOne({ _id: _id })
-      .populate({ path: 'pallet', model: 'Pallet', select: 'barcode location' }) // Пополняем pallet, выбирая barcode и location
-      .populate({ path: 'tasksPerformed.user', model: 'Employee', select: '_id name lastName' }) // Пополняем tasksPerformed.user
+      .populate({ path: "pallet", model: "Pallet", select: "barcode location" }) // Пополняем pallet, выбирая barcode и location
       .populate({
-        path: 'tasksPerformed.performedCleaner.user',
-        model: 'Employee',
-        select: '_id name',
+        path: "tasksPerformed.user",
+        model: "Employee",
+        select: "_id name lastName",
+      }) // Пополняем tasksPerformed.user
+      .populate({
+        path: "tasksPerformed.performedCleaner.user",
+        model: "Employee",
+        select: "_id name",
       })
       .lean();
 
@@ -787,14 +838,11 @@ export async function getPrinterPopulated(params: GetPrinterPopulatedParams) {
     }
 
     return printer;
-
   } catch (error) {
     console.error("Error fetching populated printer:", error);
     throw error;
   }
 }
-
-
 
 // Messaging ready
 // FORM FOR TECHNICIAN
@@ -817,7 +865,7 @@ export async function updatePrinterWithCheck(params: any) {
       timeSpent,
       additionalInfo,
       status,
-      path
+      path,
     } = params;
 
     // Находим принтер по ID
@@ -846,7 +894,6 @@ export async function updatePrinterWithCheck(params: any) {
 
     // Сохраняем изменения в пользователе
     await user.save();
-
 
     // Инициализируем массив tasksPerformed, если он отсутствует
     if (!printer.tasksPerformed) {
@@ -884,7 +931,6 @@ export async function updatePrinterWithCheck(params: any) {
     revalidatePath(path);
 
     return { success: true, message: "Printer updated successfully!" };
-
   } catch (error) {
     console.log(error);
     throw error;
@@ -964,7 +1010,7 @@ export async function updatePrinterWithCheckCleaner(params: any) {
       status: status || "Pending",
       additionalInfo: additionalInfo || "No additional info",
       invoiceNumber: invoiceNumber || "No invoice number",
-      tested: testedAfterCleaning
+      tested: testedAfterCleaning,
     });
 
     // Сохраняем изменения в принтере
@@ -977,34 +1023,39 @@ export async function updatePrinterWithCheckCleaner(params: any) {
     return { success: true, message: "PerformedCleaner updated successfully!" };
   } catch (error) {
     console.error("Error during update:", error);
-    return { success: false, message: "An error occurred while updating the printer." };
+    return {
+      success: false,
+      message: "An error occurred while updating the printer.",
+    };
   }
 }
 
-
-
 // Messaging ready
-export async function updatePrinterPON(params:updatePrinterPONParams){
+export async function updatePrinterPON(params: updatePrinterPONParams) {
   try {
     connectToDatabase();
-    const { _id, ponumber, path} = params;
+    const { _id, ponumber, path } = params;
 
     const printer = await Printer.findOne({ _id: _id });
     if (!printer) {
-      return { success: false, message: "Printer not found!"}; 
+      return { success: false, message: "Printer not found!" };
     }
 
     // 3. Find the supplier by the old ponumber and remove the printer from the supplier's printers array
 
     const oldPOnumber = printer.ponumber;
 
-    const oldSupplier = await Supplier.findOne({ponumber: oldPOnumber});
+    const oldSupplier = await Supplier.findOne({ ponumber: oldPOnumber });
     if (oldSupplier) {
-      await Supplier.findOneAndUpdate({ponumber: oldPOnumber}, { $pull: { printers: printer._id } });
+      await Supplier.findOneAndUpdate(
+        { ponumber: oldPOnumber },
+        { $pull: { printers: printer._id } }
+      );
     }
 
-
-    await Printer.findOneAndUpdate(printer._id, { $set: { ponumber: ponumber } });
+    await Printer.findOneAndUpdate(printer._id, {
+      $set: { ponumber: ponumber },
+    });
 
     // Используем _id нового палета для добавления в массив pallets поставщика
     const supplier = await Supplier.findOneAndUpdate(
@@ -1013,14 +1064,12 @@ export async function updatePrinterPON(params:updatePrinterPONParams){
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
 
-
     revalidatePath(path);
-    return true
+    return true;
   } catch (error) {
-      console.log("Error:", error);
-      return false
+    console.log("Error:", error);
+    return false;
   }
-
 }
 
 export async function addPrinterComment(params: addPrinterCommentParams) {
@@ -1048,15 +1097,16 @@ export async function addPrinterComment(params: addPrinterCommentParams) {
 
     revalidatePath(path);
 
-    return { success: true};
-
+    return { success: true };
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
-export async function addPrinterInvoiceNumber(params: addPrinterInvoiceNumberParams) {
+export async function addPrinterInvoiceNumber(
+  params: addPrinterInvoiceNumberParams
+) {
   try {
     connectToDatabase();
     const { _id, invoiceNumber, path } = params;
@@ -1076,7 +1126,10 @@ export async function addPrinterInvoiceNumber(params: addPrinterInvoiceNumberPar
     // Проверяем, есть ли performedCleaner, и получаем последний объект
     const lastPerformedCleaner = lastTask.performedCleaner?.at(-1);
     if (!lastPerformedCleaner) {
-      return { success: false, message: "No performedCleaner found in the last task!" };
+      return {
+        success: false,
+        message: "No performedCleaner found in the last task!",
+      };
     }
 
     // Добавляем invoiceNumber к последнему объекту performedCleaner
@@ -1085,38 +1138,28 @@ export async function addPrinterInvoiceNumber(params: addPrinterInvoiceNumberPar
     // Сохраняем изменения в базе данных
     await printer.save();
 
-
     // Обновляем страницу
     revalidatePath(path);
 
     return { success: true, message: "Invoice number added successfully!" };
-
   } catch (error) {
     console.error("Error adding invoice number:", error);
-    return { success: false, message: "An error occurred while adding the invoice number." };
+    return {
+      success: false,
+      message: "An error occurred while adding the invoice number.",
+    };
   }
 }
 
-export async function addPrinterCost(
-  price: number,
-  id: string,
-  path: string
-) {
+export async function addPrinterCost(price: number, id: string, path: string) {
   try {
     await connectToDatabase();
 
-    
-
-    
-
     const printer = await Printer.findOneAndUpdate(
       { _id: id },
-      { $set: {price: price } }, // Adding printer's produc number
+      { $set: { price: price } }, // Adding printer's produc number
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
-
-
-
 
     // Обновить страницу, если требуется
     revalidatePath(path);
@@ -1135,49 +1178,49 @@ export async function addPrinterCost(
 }
 
 // Messaging ready / Dialog Alert implemented
-export async function deletePrinter(params:DeletePrinterParams) {
+export async function deletePrinter(params: DeletePrinterParams) {
   try {
     // Connect to the database
     await connectToDatabase();
     const { id, path } = params;
-    
-    const printerRaw = await Printer.find({_id: id});
 
-    const printer = JSON.parse(JSON.stringify(printerRaw))
+    const printerRaw = await Printer.find({ _id: id });
+
+    const printer = JSON.parse(JSON.stringify(printerRaw));
 
     let printerPallet;
 
-    if(printer[0].pallet){
+    if (printer[0].pallet) {
       printerPallet = JSON.parse(JSON.stringify(printer[0].pallet));
 
       await Pallet.findByIdAndUpdate(
-        printerPallet, 
+        printerPallet,
         { $pull: { printers: printer[0]._id } },
         { new: true }
-      )
+      );
     }
 
     // Find Supplier by printer id
     // await Supplier.findOneAndUpdate({ponumber: printer[0].ponumber}, { $pull: { printers: printer[0]._id } })
-    
+
     // Ищем и удаляем принтер из pallets в Supplier
     const result = await Supplier.findOneAndUpdate(
-      { 
-        "shipments.printers": printer[0]._id // Условие для поиска принтера в shipments
+      {
+        "shipments.printers": printer[0]._id, // Условие для поиска принтера в shipments
       },
-      { 
-        $pull: { 
-          "shipments.$[shipment].printers": printer[0]._id // Удаляем принтер из массива printers внутри конкретного shipment
-        }
+      {
+        $pull: {
+          "shipments.$[shipment].printers": printer[0]._id, // Удаляем принтер из массива printers внутри конкретного shipment
+        },
       },
-      { 
+      {
         arrayFilters: [{ "shipment.printers": printer[0]._id }], // Фильтруем shipment, содержащий этот принтер
-        new: true // Возвращаем обновленный документ
+        new: true, // Возвращаем обновленный документ
       }
     );
-    
+
     console.log("Updated Supplier:", result);
-    
+
     if (!result) {
       return {
         success: false,
@@ -1185,98 +1228,109 @@ export async function deletePrinter(params:DeletePrinterParams) {
       };
     }
 
-
-
-
     // Find Makes by printer id and delete printer from Makes
-    await Makes.findOneAndUpdate({productNumber: printer[0].productNumber}, { $pull: { printers: printer[0]._id } })
-
+    await Makes.findOneAndUpdate(
+      { productNumber: printer[0].productNumber },
+      { $pull: { printers: printer[0]._id } }
+    );
 
     // // Find the pallet by its ID and delete it
-    await Printer.findOneAndDelete({_id: id});
+    await Printer.findOneAndDelete({ _id: id });
 
     // Revalidate the path
     revalidatePath(path);
 
-    return { success: true, message: "Printer deleted successfully!"}; 
-
+    return { success: true, message: "Printer deleted successfully!" };
   } catch (error) {
     // Log any errors
     console.log("Error:", error);
     // Return an error message
-    return { success: false, message: "Something gone wrong!", info: "Ask for help!"}; 
+    return {
+      success: false,
+      message: "Something gone wrong!",
+      info: "Ask for help!",
+    };
   }
 }
 
 // Messaging ready
-export async function unPinPrinter(params:UnPinPrinterParams) {
+export async function unPinPrinter(params: UnPinPrinterParams) {
   try {
     // Connect to the database
     await connectToDatabase();
     const { id, printerId, path } = params;
 
     // clean pallet from printer
-    const pallet = await Pallet.findOne({_id: id})
-    
+    const pallet = await Pallet.findOne({ _id: id });
+
     await Pallet.findByIdAndUpdate(
-      id, 
+      id,
       { $pull: { printers: printerId } },
       { new: true }
-    )
+    );
 
     // clean printer from pallet
     // const printer = await Printer.find({_id: printerId})
     // await Printer.findByIdAndUpdate(
-    //   printerId, 
+    //   printerId,
     //   { $unset: { pallet: "", ponumber:"" } },
     //   { new: true }
     // )
-
 
     // const supplier = await Supplier.findOneAndUpdate(
     //   { ponumber: pallet.ponumber },
     //   { $pull: { printers: printerId } }, // Добавляем _id палета
     //   //{ new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     // );
-    
+
     // Revalidate the path
     revalidatePath(path);
 
-    return { success: true, message: "Printer unpinned successfully!"}; 
-
+    return { success: true, message: "Printer unpinned successfully!" };
   } catch (error) {
     // Log any errors
     console.log("Error:", error);
     // Return an error message
-    return { success: false, message: "Printer can't be unpinned!"}; 
+    return { success: false, message: "Printer can't be unpinned!" };
   }
 }
 
 // Messaging ready
-export async function PinPrinterToPallet(params:PinToPalletParams) {
+export async function PinPrinterToPallet(params: PinToPalletParams) {
   try {
     // Connect to the database
     await connectToDatabase();
     const { id, palletBarcode, path } = params;
 
-    const pallet = await Pallet.findOne({barcode: palletBarcode});
+    const pallet = await Pallet.findOne({ barcode: palletBarcode });
     if (!pallet) {
-      return { success: false, message: "Pallet not exist!", info:"This pallet not exist in our database."}; 
+      return {
+        success: false,
+        message: "Pallet not exist!",
+        info: "This pallet not exist in our database.",
+      };
     }
-    const printer = await Printer.findOne({_id: id});
-    
-    await Printer.findByIdAndUpdate(printer._id, { $set: { pallet: pallet._id } });
-    await Pallet.findByIdAndUpdate(pallet._id, { $push: { printers: printer._id } });
+    const printer = await Printer.findOne({ _id: id });
 
+    await Printer.findByIdAndUpdate(printer._id, {
+      $set: { pallet: pallet._id },
+    });
+    await Pallet.findByIdAndUpdate(pallet._id, {
+      $push: { printers: printer._id },
+    });
 
     // Revalidate the path
     revalidatePath(path);
 
-    return { success: true, message: "Printer pinned to pallet successfully!"}; 
+    return { success: true, message: "Printer pinned to pallet successfully!" };
   } catch (error) {
     // Log any errors
     console.log("Error:", error);
     // Return an error message
-    return { success: false, message: "Pallet not exist!", info:"advanced help needed!"}; 
+    return {
+      success: false,
+      message: "Pallet not exist!",
+      info: "advanced help needed!",
+    };
   }
 }

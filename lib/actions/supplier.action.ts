@@ -2,14 +2,21 @@
 "use server";
 import Supplier from "@/database/supplier.model";
 import { connectToDatabase } from "../mongoose";
-import { GetSuppliersParams, UpdateSuppliersName, DeleteSupplierParams, CreateSuppliersParams, AddPalletToSupplierParams, AddPrinterToSupplierPalletParams, DeleteEmptySuppliersPalletParams } from "./shared.types";
+import {
+  GetSuppliersParams,
+  UpdateSuppliersName,
+  DeleteSupplierParams,
+  CreateSuppliersParams,
+  AddPalletToSupplierParams,
+  AddPrinterToSupplierPalletParams,
+  DeleteEmptySuppliersPalletParams,
+} from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Pallet from "@/database/pallet.model";
 import Printer from "@/database/printer.model";
 import Makes from "@/database/makes.model";
 import { FilterQuery } from "mongoose";
 import Parts from "@/database/parts.model";
-
 
 export async function createSupplier(params: CreateSuppliersParams) {
   try {
@@ -20,11 +27,13 @@ export async function createSupplier(params: CreateSuppliersParams) {
     const existingSupplier = await Supplier.findOne({ ponumber: ponumber });
 
     if (existingSupplier) {
-
       const id = JSON.parse(JSON.stringify(existingSupplier._id));
-      return { success: true, message: "Supplier already exists.",id, info: "You may add pallet."};
-
-      
+      return {
+        success: true,
+        message: "Supplier already exists.",
+        id,
+        info: "You may add pallet.",
+      };
     } else {
       const newSupplier = await Supplier.create({
         ponumber,
@@ -32,37 +41,39 @@ export async function createSupplier(params: CreateSuppliersParams) {
       });
 
       await newSupplier.save();
-      const id = JSON.parse(JSON.stringify(newSupplier._id))
+      const id = JSON.parse(JSON.stringify(newSupplier._id));
 
-      return { success: true, message: "Supplier created. Now you can add pallet!", id, info: "Don't forget to give an name to Suplier." };  
-      
+      return {
+        success: true,
+        message: "Supplier created. Now you can add pallet!",
+        id,
+        info: "Don't forget to give an name to Suplier.",
+      };
     }
-
   } catch (error) {
     return "An error occurred while creating the pallet from Supplier";
     console.log("Error:", error);
   }
 }
 
-export async function getAllSuppliers(params: GetSuppliersParams){
+export async function getAllSuppliers(params: GetSuppliersParams) {
   try {
     await connectToDatabase();
 
-    const {searchQuery} = params;
+    const { searchQuery } = params;
 
     const query: FilterQuery<typeof Supplier> = {};
 
-    if(searchQuery){
+    if (searchQuery) {
       query.$or = [
-        {ponumber: {$regex: new RegExp(searchQuery, "i")}},
-        {name: {$regex: new RegExp(searchQuery, "i")}},
+        { ponumber: { $regex: new RegExp(searchQuery, "i") } },
+        { name: { $regex: new RegExp(searchQuery, "i") } },
       ];
     }
 
     const suppliers = await Supplier.find(query).sort({ field: -1 });
 
     return { suppliers };
-    
   } catch (error) {
     throw error;
   }
@@ -72,10 +83,14 @@ export async function getSupplier(_id: string) {
   try {
     await connectToDatabase();
 
-    const supplier = await Supplier.findOne({_id: _id})
-    .populate({ path: "shipments", model: Pallet, select: "barcode location printers createdOn" })
-    
-    .lean();
+    const supplier = await Supplier.findOne({ _id: _id })
+      .populate({
+        path: "shipments",
+        model: Pallet,
+        select: "barcode location printers createdOn",
+      })
+
+      .lean();
 
     return supplier;
   } catch (error) {
@@ -98,7 +113,9 @@ export async function getSupplierPallet(_id: string) {
     }
 
     // Ищем конкретный объект паллета в массиве shipments
-    const pallet = supplier.shipments.find((shipments: any) => shipments._id.toString() === _id);
+    const pallet = supplier.shipments.find(
+      (shipments: any) => shipments._id.toString() === _id
+    );
 
     if (!pallet) {
       return { success: false, message: "Pallet not found in supplier!" };
@@ -111,10 +128,10 @@ export async function getSupplierPallet(_id: string) {
       select: "barcode sn productNumber createdOn price name parts",
     });
 
-    return { 
-      success: true, 
-      pallet: populatedPallet, 
-      supplier 
+    return {
+      success: true,
+      pallet: populatedPallet,
+      supplier,
     };
   } catch (error) {
     console.error("Error fetching pallet:", error);
@@ -123,8 +140,9 @@ export async function getSupplierPallet(_id: string) {
 }
 
 // WORKABLE
-export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPalletParams) {
-  
+export async function addPrinterToSupplierPallet(
+  params: AddPrinterToSupplierPalletParams
+) {
   try {
     connectToDatabase();
 
@@ -134,34 +152,32 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 
     const existingPrinter = await Printer.findOne({ barcode });
     if (existingPrinter) {
-      return { success: false, message: "Printer already exests!"}; 
+      return { success: false, message: "Printer already exests!" };
     }
 
-    // 
+    //
     const supplier = await Supplier.findOne({
       shipments: { $elemMatch: { _id: palletId } },
     });
-    // 
+    //
     if (!supplier) {
-      return { success: false, message: "Supplier lr shipment ID not found!"}; 
+      return { success: false, message: "Supplier lr shipment ID not found!" };
     }
-
 
     let printerModel;
 
-    const printerMake = await Makes.findOne({ productNumber: productNumber });  
+    const printerMake = await Makes.findOne({ productNumber: productNumber });
 
-      if(printerMake){
-        printerModel = printerMake.name;
+    if (printerMake) {
+      printerModel = printerMake.name;
+    } else {
+      printerModel = "";
+    }
 
-      } else {
-        printerModel = "";
-      }
-    
-      // Creating a new printer with the _id of the pallet
+    // Creating a new printer with the _id of the pallet
     const newPrinter = await Printer.create({
-      sn, 
-      productNumber, 
+      sn,
+      productNumber,
       barcode,
       supplier: supplier._id, // Используем _id найденного паллета
       shipment: palletId,
@@ -169,7 +185,7 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
       ponumber: supplier.ponumber,
       name: printerModel,
       parts: parts,
-    });  
+    });
 
     // Проверяем, существует ли запись в Parts
     // const printerPart = await Parts.findOne({ productNumber });
@@ -180,12 +196,14 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
     //     parts: [],
     //   });
     // }
-    
 
     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
     const makes = await Makes.findOneAndUpdate(
       { productNumber: productNumber },
-      { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
+      {
+        $set: { productNumber: productNumber },
+        $push: { printers: newPrinter._id },
+      }, // Adding printer's produc number
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
 
@@ -201,17 +219,19 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
     );
 
     if (!updatedSupplier) {
-      return { success: false, message: "Failed to update supplier with new printer!" };
+      return {
+        success: false,
+        message: "Failed to update supplier with new printer!",
+      };
     }
 
     revalidatePath(path);
 
     // Преобразование нового принтера в простой JavaScript объект
     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
+
     // return newPrinterPlain;
-    return { success: true, message: "Printer addet to pallet successfully!"}; 
-    
+    return { success: true, message: "Printer addet to pallet successfully!" };
   } catch (error) {
     // Return an error message
     console.error("An error occurred while creating the printer:", error);
@@ -221,7 +241,7 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 
 // MAY BE EXTRA
 // export async function addSuppliersPrinterToPallet(params: AddPrinterToSupplierPalletParams) {
-  
+
 //   try {
 //     connectToDatabase();
 
@@ -229,23 +249,21 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 
 //     const existingPrinter = await Printer.findOne({ barcode });
 //     if (existingPrinter) {
-//       return { success: false, message: "Printer already exests!"}; 
+//       return { success: false, message: "Printer already exests!"};
 //     }
 
-//     // 
+//     //
 //     const supplier = await Supplier.findOne({
 //       shipments: { $elemMatch: { _id: palletId } },
 //     });
-//     // 
+//     //
 //     if (!supplier) {
-//       return { success: false, message: "Supplier not found!"}; 
+//       return { success: false, message: "Supplier not found!"};
 //     }
-
-
 
 //     let printerModel;
 
-//     const printerMake = await Makes.findOne({ productNumber: productNumber });  
+//     const printerMake = await Makes.findOne({ productNumber: productNumber });
 
 //       if(printerMake){
 //         printerModel = printerMake.name;
@@ -253,19 +271,17 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 //       } else {
 //         printerModel = "";
 //       }
-    
+
 //       // Creating a new printer with the _id of the pallet
 //     const newPrinter = await Printer.create({
-//       sn, 
-//       productNumber, 
+//       sn,
+//       productNumber,
 //       barcode,
 //       pallet: palletId, // Используем _id найденного паллета
 //       createdOn: Date.now(),
 //       ponumber: supplier.ponumber,
 //       name: printerModel,
-//     });  
-
-    
+//     });
 
 //     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
 //     const makes = await Makes.findOneAndUpdate(
@@ -293,10 +309,10 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
 
 //     // Преобразование нового принтера в простой JavaScript объект
 //     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
+
 //     // return newPrinterPlain;
-//     return { success: true, message: "Printer addet to pallet successfully!"}; 
-    
+//     return { success: true, message: "Printer addet to pallet successfully!"};
+
 //   } catch (error) {
 //     // Return an error message
 //     console.error("An error occurred while creating the printer:", error);
@@ -375,8 +391,9 @@ export async function updateSupplierPalletCostAndPrinters(
 }
 
 // Messaging ready
-export async function deleteEmptySuppliersPallet(params: DeleteEmptySuppliersPalletParams) {
-  
+export async function deleteEmptySuppliersPallet(
+  params: DeleteEmptySuppliersPalletParams
+) {
   try {
     // Connect to the database
     await connectToDatabase();
@@ -408,7 +425,11 @@ export async function deleteEmptySuppliersPallet(params: DeleteEmptySuppliersPal
     // Revalidate the path
     revalidatePath(path);
 
-    return { success: true, message: "Pallet deleted successfully!", supplierID };
+    return {
+      success: true,
+      message: "Pallet deleted successfully!",
+      supplierID,
+    };
   } catch (error) {
     // Log any errors
     console.error("Error:", error);
@@ -422,7 +443,6 @@ export async function deleteEmptySuppliersPallet(params: DeleteEmptySuppliersPal
   }
 }
 
-
 // Messaging ready
 export async function updateSupplier(params: UpdateSuppliersName) {
   try {
@@ -430,14 +450,16 @@ export async function updateSupplier(params: UpdateSuppliersName) {
     const { _id, name, path } = params;
     const supplier = await Supplier.findOne({ _id });
     if (!supplier) {
-      return { success: false, message: "Supplier can't be deleted!", info: "Check if the supplier not exists in the database" }; 
+      return {
+        success: false,
+        message: "Supplier can't be deleted!",
+        info: "Check if the supplier not exists in the database",
+      };
     }
     await Supplier.findOneAndUpdate(supplier._id, { $set: { name: name } });
     revalidatePath(path);
-    
-    return { success: true, message: "Supplier's name updated successfully!"};
 
-
+    return { success: true, message: "Supplier's name updated successfully!" };
   } catch (error) {
     console.error("Error updating supplier:", error);
     throw new Error("Error updating supplier");
@@ -454,14 +476,23 @@ export async function addPalletToSupplier(params: AddPalletToSupplierParams) {
     const supplier = await Supplier.findOne({ _id });
 
     if (!supplier) {
-      return { success: false, message: "Supplier not found!", info: "How is it possible???" };
+      return {
+        success: false,
+        message: "Supplier not found!",
+        info: "How is it possible???",
+      };
     }
 
     // Проверяем, существует ли уже паллет с таким же barcode
-    const palletExists = supplier.shipments.some((shipment:any) => shipment.barcode === barcode);
+    const palletExists = supplier.shipments.some(
+      (shipment: any) => shipment.barcode === barcode
+    );
 
     if (palletExists) {
-      return { success: false, message: "Pallet with this barcode / Shipment ID already exists!" };
+      return {
+        success: false,
+        message: "Pallet with this barcode / Shipment ID already exists!",
+      };
     }
 
     // Добавляем новый паллет
@@ -473,8 +504,10 @@ export async function addPalletToSupplier(params: AddPalletToSupplierParams) {
     // Обновляем кеш страницы
     revalidatePath(path);
 
-    return { success: true, message: "Pallet from Supplier added successfully!" };
-
+    return {
+      success: true,
+      message: "Pallet from Supplier added successfully!",
+    };
   } catch (error) {
     console.error("Error updating supplier:", error);
     throw new Error("Error updating supplier");
@@ -489,16 +522,24 @@ export async function deleteSupplier(params: DeleteSupplierParams) {
     const supplier = await Supplier.findOne({ _id: _id });
 
     if (!supplier) {
-      return { success: false, message: "Supplier can't be deleted!", info: "Check if the supplier not exists in the database" }; 
+      return {
+        success: false,
+        message: "Supplier can't be deleted!",
+        info: "Check if the supplier not exists in the database",
+      };
     }
-    if (supplier.shipments.length > 0 ) {
-      return { success: false, message: "Supplier can't be deleted!", info: "Check if the supplier is not linked to any printer or pallet"}; 
+    if (supplier.shipments.length > 0) {
+      return {
+        success: false,
+        message: "Supplier can't be deleted!",
+        info: "Check if the supplier is not linked to any printer or pallet",
+      };
     }
     await Supplier.deleteOne({ _id: supplier._id });
 
     revalidatePath(path);
-    
-    return { success: true, message: "Supplier deleted successfully!"};
+
+    return { success: true, message: "Supplier deleted successfully!" };
 
     // return { success: "Supplier deleted successfully" };
   } catch (error) {
