@@ -13,9 +13,9 @@ export const connectToDatabase = async () => {
 
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
-      // dbName: "WSE",
+      dbName: "WSE",
 
-      dbName: "WSETest",
+      // dbName: "WSETest",
     });
     isConnected = true;
     console.log("MongoDB connected");
