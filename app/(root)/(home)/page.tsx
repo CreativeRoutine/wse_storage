@@ -55,6 +55,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
   }
 
   const printers = await getData();
+  console.log(printers);
 
   const {
     totalPrinters,
@@ -68,13 +69,16 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
   return (
     <>
       <Title text="Dashboard" />
+
       <div className="w-full">
         <div className="text-4xl mb-4 font-bold text-white">
-          TESTING MODE!!!
+          MAINTENANCE MODE!!!
         </div>
       </div>
+
       <div className="flex gap-4 bg-dark-600 rounded-xl border border-dark-350 p-4 ">
         {/* Storage */}
+
         <div className="card w-1/3 bg-dark-300 rounded-xl border border-dark-350 px-6 py-4">
           <div className="w-full text-white font-semibold text-lg mt-2">
             Storage
@@ -92,6 +96,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
         </div>
 
         {/* Refurbished */}
+
         <div className="card w-1/3 bg-dark-400 rounded-xl border border-dark-350 px-6 py-4">
           <div className="w-full text-white font-semibold text-lg mt-2">
             Printers refurbished
@@ -115,6 +120,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
         </div>
 
         {/* Cleaned */}
+
         <div className="card w-1/3 bg-dark-300 rounded-xl border border-dark-350 px-6 py-4">
           <div className="w-full text-white font-semibold text-lg mt-2">
             Printers cleaned
