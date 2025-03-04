@@ -171,15 +171,18 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
       parts: parts,
     });  
 
+    // 
+    // DELETED BECAUSE SECOND OPTIONS APPLIED
+    // 
     // Проверяем, существует ли запись в Parts
-    const printerPart = await Parts.findOne({ productNumber });
-    if (!printerPart) {
-      await Parts.create({
-        productNumber,
-        printerName: printerModel,
-        parts: [],
-      });
-    }
+    // const printerPart = await Parts.findOne({ productNumber });
+    // if (!printerPart) {
+    //   await Parts.create({
+    //     productNumber,
+    //     printerName: printerModel,
+    //     parts: [],
+    //   });
+    // }
     
 
     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
@@ -218,91 +221,6 @@ export async function addPrinterToSupplierPallet(params: AddPrinterToSupplierPal
     return false;
   }
 }
-
-// MAY BE EXTRA
-// export async function addSuppliersPrinterToPallet(params: AddPrinterToSupplierPalletParams) {
-  
-//   try {
-//     connectToDatabase();
-
-//     const { sn, productNumber, barcode, palletId, path } = params;
-
-//     const existingPrinter = await Printer.findOne({ barcode });
-//     if (existingPrinter) {
-//       return { success: false, message: "Printer already exests!"}; 
-//     }
-
-//     // 
-//     const supplier = await Supplier.findOne({
-//       shipments: { $elemMatch: { _id: palletId } },
-//     });
-//     // 
-//     if (!supplier) {
-//       return { success: false, message: "Supplier not found!"}; 
-//     }
-
-
-
-//     let printerModel;
-
-//     const printerMake = await Makes.findOne({ productNumber: productNumber });  
-
-//       if(printerMake){
-//         printerModel = printerMake.name;
-
-//       } else {
-//         printerModel = "";
-//       }
-    
-//       // Creating a new printer with the _id of the pallet
-//     const newPrinter = await Printer.create({
-//       sn, 
-//       productNumber, 
-//       barcode,
-//       pallet: palletId, // Используем _id найденного паллета
-//       createdOn: Date.now(),
-//       ponumber: supplier.ponumber,
-//       name: printerModel,
-//     });  
-
-    
-
-//     // Используем _id нового Добавляем _id принтера для добавления в массив Makes
-//     const makes = await Makes.findOneAndUpdate(
-//       { productNumber: productNumber },
-//       { $set: { productNumber: productNumber }, $push: { printers: newPrinter._id } }, // Adding printer's produc number
-//       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
-//     );
-
-//     // Обновляем supplier, добавляя новый принтер в соответствующий pallet
-//     const updatedSupplier = await Supplier.findOneAndUpdate(
-//       {
-//         pallets: { $elemMatch: { _id: palletId } },
-//       },
-//       {
-//         $push: { "pallets.$.printers": newPrinter._id },
-//       },
-//       { new: true }
-//     );
-
-//     if (!updatedSupplier) {
-//       return { success: false, message: "Failed to update supplier with new printer!" };
-//     }
-
-//     revalidatePath(path);
-
-//     // Преобразование нового принтера в простой JavaScript объект
-//     const newPrinterPlain = JSON.parse(JSON.stringify(newPrinter));
-    
-//     // return newPrinterPlain;
-//     return { success: true, message: "Printer addet to pallet successfully!"}; 
-    
-//   } catch (error) {
-//     // Return an error message
-//     console.error("An error occurred while creating the printer:", error);
-//     return false;
-//   }
-// }
 
 export async function updateSupplierPalletCostAndPrinters(
   price: number,

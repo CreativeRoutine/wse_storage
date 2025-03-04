@@ -1,7 +1,7 @@
 "use server"
 import AssignName from "@/components/shared/parts/AssignName"
 import DeletePrinterPart from "@/components/shared/parts/DeletePrinterPart"
-import { getPartsByProductNumber } from "@/lib/actions/parts.action"
+import { getPartsByPrinterName} from "@/lib/actions/parts.action"
 import { getAllPartsList } from "@/lib/actions/partsList.action"
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/tw/description-list'
 import { Subheading } from '@/components/tw/heading'
@@ -10,38 +10,32 @@ import MaxPartsInput from "@/components/shared/forms/MaxPartsInput"
 import Title from "@/components/shared/Title"
 import Link from "next/link";
 
-const DisplayPartsSettings = async ({ params }: { params: { productNumber: string } }) => {
-  const { productNumber } = params;
-  const response:any = await getPartsByProductNumber({ productNumber });
-  // const printerResponse = JSON.parse(JSON.stringify(response));
-  // console.log(typeof response.parts)
+const DisplayPartsSettings = async ({ params }: { params: { printerName: string } }) => {
+  const { printerName } = params;
   
+  const response:any = await getPartsByPrinterName({ printerName });
   const parts = JSON.parse(JSON.stringify(response));
-  // console.log(parts._id)
 
   const partsListResponse = await getAllPartsList();
-  // const partsList = JSON.parse(JSON.stringify(partsListResponse));
-  // console.log("parts ====>",Object.entries(parts).length)
-  // console.log("partsList ====>",partsListResponse)
-  // console.log("response[0] ====>",response[0])
-  // console.log("parts ====>",parts[0])
-  // console.log("parts ====>",parts)
+
+  // const clearResponse = JSON.parse(JSON.stringify(response));
+
+  // console.log("========>>>>", response._id);
 
   return (
     <>
       <div className="flex gap-2">
-        
-        <Title text={`Printer parts for "${productNumber}"`}  link="/settings/printer-parts" linkText="Back" />
+        <Title text={`Printer parts for "${printerName}"`}  link="/settings/printer-parts" linkText="Back" />
       </div>
       {/* MAINTENANCE SETTINGS'S FUNCTIONS/INPUTs */}
-      {/* <div className="flex gap-3 bg-dark-600 rounded-xl p-4">
+      <div className="flex gap-3 bg-dark-600 rounded-xl p-4">
         <div className="w-1/3 bg-secondary-200 px-6 mb-1 py-6 rounded-xl border border-dark-350 shadow-lg">
-          <AssignName id={JSON.stringify(resp[0]._id)} />
+          <AssignName id={response._id} />
         </div>
         <div className="w-1/3 bg-secondary-200 px-6 mb-1 py-6 rounded-xl border border-dark-350 shadow-lg">
-          <DeletePrinterPart id={JSON.stringify(resp[0]._id)} />
+          <DeletePrinterPart id={parts._id} />
         </div>
-      </div> */}
+      </div>
 
       <div className="mt-4 flex flex-col lg:flex-row gap-3 bg-dark-600 rounded-xl border border-dark-350 p-4">
         {/* PRINTER PARTS SETTINGS */}
@@ -51,13 +45,7 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
             <DescriptionList className="mt-4" >
               <DescriptionTerm className="text-white">Printer name:</DescriptionTerm>
               <DescriptionDetails className="!text-white">
-                
                 {parts.printerName ? parts.printerName : <div className="text-red-500 ">Name not set</div>}
-              </DescriptionDetails>
-
-              <DescriptionTerm className="text-white">Printer's product number</DescriptionTerm>
-              <DescriptionDetails className="!text-white">
-                {parts.productNumber ? parts.productNumber : <span className="text-red-500">Not set</span>}
               </DescriptionDetails>
 
               <DescriptionTerm>Parts</DescriptionTerm>
@@ -77,11 +65,9 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
                     null)) :
                      "No parts added"
                   }
-                  
                 </ul>
               </DescriptionDetails>
             </DescriptionList>
-
         </div>
 
         {/* SWITCHERS */}
@@ -99,7 +85,8 @@ const DisplayPartsSettings = async ({ params }: { params: { productNumber: strin
                     <PartsSwitcher 
                       label={part}
                       state={state} 
-                      printerPN={parts.productNumber} 
+                      printerPN={parts.printerName} 
+                      // printerPN={parts.productNumber} 
                     />
                   </li>
                 );

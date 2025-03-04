@@ -177,7 +177,7 @@ export const deleteMakeSchema = z.object({
 
 // })
 export const addPartSchema = z.object({
-  productNumber: z.string().min(3).max(30),
+  // productNumber: z.string().min(3).max(30),
   make: z.string().min(5).max(30),
 })
 
@@ -245,6 +245,9 @@ export const addOptionSchema = z.object({
 
 export const partsChangedSchema = z.object({
   button: z.array(z.string().min(1).max(30)).min(1).max(30),
+})
+export const partsChangedSchemaNew = z.object({
+  name:  z.string().min(3).max(16),
 })
 
 export const totalPageCountSchema = z.object({

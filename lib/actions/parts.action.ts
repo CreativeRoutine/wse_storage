@@ -10,50 +10,51 @@ import Makes from "@/database/makes.model";
 import { Types } from "mongoose";
 import GenericPart from "@/database/genericPart.model";
 
-export async function createParts(printerId: string, parts: { barcode: string, name: string, location: string, quantity: number }[]) {
-  try {
-    await connectToDatabase(); // Подключаемся к базе данных
+// MayBe better to delete???
+// export async function createParts(printerId: string, parts: { barcode: string, name: string, location: string, quantity: number }[]) {
+//   try {
+//     await connectToDatabase(); // Подключаемся к базе данных
 
-    // Проверяем, существует ли принтер и имеет ли он name
-    const printer = await Printer.findById(printerId);
-    if (!printer) {
-      return { success: false, message: "Printer not found!" };
-    }
+//     // Проверяем, существует ли принтер и имеет ли он name
+//     const printer = await Printer.findById(printerId);
+//     if (!printer) {
+//       return { success: false, message: "Printer not found!" };
+//     }
 
-    if (!printer.name || printer.name.trim() === "") {
-      return { success: false, message: "The printer does not have a name assigned. Parts cannot be added." };
-    }
+//     if (!printer.name || printer.name.trim() === "") {
+//       return { success: false, message: "The printer does not have a name assigned. Parts cannot be added." };
+//     }
 
-    // Валидация данных перед вставкой
-    if (!Array.isArray(parts) || parts.length === 0) {
-      return { success: false, message: "No parts provided" };
-    }
+//     // Валидация данных перед вставкой
+//     if (!Array.isArray(parts) || parts.length === 0) {
+//       return { success: false, message: "No parts provided" };
+//     }
 
-    // Проверяем существование каждой запчасти для данного принтера по имени принтера и запчасти
-    const validatedParts = [];
-    for (const part of parts) {
-      const existingPart = await Parts.findOne({ name: part.name, barcode: part.barcode });
+//     // Проверяем существование каждой запчасти для данного принтера по имени принтера и запчасти
+//     const validatedParts = [];
+//     for (const part of parts) {
+//       const existingPart = await Parts.findOne({ name: part.name, barcode: part.barcode });
       
-      if (existingPart) {
-        // Если запчасть существует, обновляем количество
-        await Parts.updateOne({ _id: existingPart._id }, { $inc: { quantity: part.quantity } });
-      } else {
-        // Если запчасть не найдена, добавляем её в массив для создания
-        validatedParts.push(part);
-      }
-    }
+//       if (existingPart) {
+//         // Если запчасть существует, обновляем количество
+//         await Parts.updateOne({ _id: existingPart._id }, { $inc: { quantity: part.quantity } });
+//       } else {
+//         // Если запчасть не найдена, добавляем её в массив для создания
+//         validatedParts.push(part);
+//       }
+//     }
 
-    // Если есть валидные запчасти, добавляем их
-    if (validatedParts.length > 0) {
-      await Parts.insertMany(validatedParts);
-    }
+//     // Если есть валидные запчасти, добавляем их
+//     if (validatedParts.length > 0) {
+//       await Parts.insertMany(validatedParts);
+//     }
 
-    return { success: true, message: "Parts added or updated successfully" };
-  } catch (error) {
-    console.error("Error creating parts:", error);
-    return { success: false, message: "Error creating parts" };
-  }
-}
+//     return { success: true, message: "Parts added or updated successfully" };
+//   } catch (error) {
+//     console.error("Error creating parts:", error);
+//     return { success: false, message: "Error creating parts" };
+//   }
+// }
 
 
 
@@ -65,39 +66,72 @@ export async function createParts(printerId: string, parts: { barcode: string, n
 // 
 // 
 
+// export async function createPrinterPart__OLD(params: CreatePartParams){
+//   try{
+//     connectToDatabase(); // Connect to the database
+    
+//     const { 
+//       productNumber, 
+//       make} = params;
+
+//     const existingPart = await Parts.findOne({ productNumber: productNumber });
+    
+//     if(existingPart){
+//       return {success: false, message: "Part's model already exists"};
+//     }
+//     // create part with such productNumber
+//     const newPart = await Parts.create({
+//       productNumber: productNumber,
+//       printerName: make,
+//       partName: "",
+//       maxParts: 10, 
+//       parts: []
+//     });
+
+//       newPart.save();
+    
+
+//     const exestingPrinter = await Makes.findOne({productNumber: productNumber});
+
+//     if(!exestingPrinter){
+//       // Create new printer with _id of the pallet
+//       const newMake = await Makes.create({
+//         productNumber: productNumber,
+//         name: make, 
+//       });
+//     }
+
+//     return {success: true, message: "Part created successfully"};
+
+//   }catch(error){
+//     // Return an error message
+//     console.error("An error occurred while creating the printer:", error);
+//     return { success: false, message: "An error occurred while creating the part" };
+//   }
+// }
+
+
+// READY TO CREATE PARTS
 export async function createPrinterPart(params: CreatePartParams){
   try{
     connectToDatabase(); // Connect to the database
     
-    const { productNumber, make} = params;
+    const {
+      make
+    } = params;
 
-    const existingPart = await Parts.findOne({ productNumber: productNumber });
+    const existingPart = await Parts.findOne({ printerName: make });
     
     if(existingPart){
       return {success: false, message: "Part's model already exists"};
     }
     // create part with such productNumber
     const newPart = await Parts.create({
-      productNumber: productNumber,
       printerName: make,
-      partName: "",
-      maxParts: 10, 
       parts: []
     });
-
-      newPart.save();
+    newPart.save();
     
-
-    const exestingPrinter = await Makes.findOne({productNumber: productNumber});
-
-    if(!exestingPrinter){
-      // Create new printer with _id of the pallet
-      const newMake = await Makes.create({
-        productNumber: productNumber,
-        name: make, 
-      });
-    }
-
     return {success: true, message: "Part created successfully"};
 
   }catch(error){
@@ -107,12 +141,61 @@ export async function createPrinterPart(params: CreatePartParams){
   }
 }
 
+export async function getPartsByPrinterName(params: any) {
+  try {
+    const { printerName } = params;
+    
+    if (!printerName) {
+      return { success: false, message: "Printer name not found" };
+    } 
+    
+    connectToDatabase();
+
+    const partsResponse = await Parts.findOne({ printerName }).lean();
+    
+    const parts = JSON.parse(JSON.stringify(partsResponse));
+
+    return parts // Возвращаем объект напрямую
+
+  } catch (error) {
+    console.error("An error occurred while getting the part:", error);
+    return { success: false, message: "An error occurred while getting the part" };
+  }
+}
+
+export async function deletePrinterPart(params: any){
+  try{
+    connectToDatabase(); // Connect to the database
+
+    const {_id} = params;
+
+
+    const part = await Parts.findOne({_id:_id});
+    if(!part){
+      return {success: false, message: "Part not found!"};
+    }
+    console.log("ACTION PART++>",part)
+
+    if(part.parts.length > 0){
+      return { success: false, message: "Parts can't be deleted!", info: "Check if the printer's part has parts inside"}; 
+    }
+
+    await Parts.deleteOne({ _id: _id });
+    return { success: true, message: "Parts section deleted!"}; 
+
+  } catch(error){
+    console.error("An error occurred while assigning the name to the part:", error);
+    return {success: false, message: "An error occurred while assigning the name to the part"};
+  }
+}
+
 // Add part model to collection of parts
 export async function addPartModelToCollection (printerPN:string, label:string, checked:boolean){
   try{
     connectToDatabase(); // Connect to the database
-
-    const partModel = await Parts.findOne({ productNumber: printerPN });
+    
+    // const partModel = await Parts.findOne({ productNumber: printerPN });
+    const partModel = await Parts.findOne({ printerName: printerPN });
 
     if(partModel){
       if(partModel.parts.length > 0){
@@ -141,19 +224,9 @@ export async function addPartModelToCollection (printerPN:string, label:string, 
         return { success: true, message: "First part category added." };
       }
 
-
-
       return { success: true, message: "Part name added to parts model" };
     } else {
 
-      // const existingPrinter = await Makes.findOne({productNumber: printerPN});
-
-      // let makeName = "";
-      // if(existingPrinter && existingPrinter.name){
-      //   makeName = existingPrinter.name
-      // }
-
-      
       return { success: true, message: "Part model created and named" };
     }
   }catch(error){
@@ -168,7 +241,7 @@ export async function deletePartModelFromCollection(printerPN: string, label: st
     connectToDatabase(); // Подключаемся к базе данных
 
     // Находим модель запчастей по `productNumber`
-    const partModel = await Parts.findOne({ productNumber: printerPN });
+    const partModel = await Parts.findOne({ printerName: printerPN });
 
     if (!partModel) {
       return { success: false, message: "Part model not found." };
@@ -200,6 +273,17 @@ export async function deletePartModelFromCollection(printerPN: string, label: st
     return { success: false, message: "An error occurred while deleting the part section." };
   }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 // Adding part's qtyy
 export async function updatePartCategoryLimit(productNumber: string, label: string, newLimit: number) {
@@ -373,15 +457,15 @@ export async function addPartFromStorage(params: any) {
 
 export async function getPartsByProductNumberPlain(params: any) {
   try {
-    const { productNumber } = params;
+    const { printerName } = params;
 
-    if (!productNumber) throw new Error("Product number is missing");
+    if (!printerName) throw new Error("Product number is missing");
 
     connectToDatabase();
 
-    const partsResponse = await Parts.findOne({ productNumber }).lean();
+    const partsResponse = await Parts.findOne({ printerName }).lean();
 
-    console.log("DISPL PARTS DATA?? ",partsResponse)
+    console.log("DISPL PARTS DATA?? ", partsResponse)
 
     if (!partsResponse) {
       return { success: false, message: "No parts found" };
@@ -650,10 +734,14 @@ export async function getPartById(params: any){
 }
 
 export async function assignName(params:any){
+  console.log("ASSIGN NAME EMPTY");
+  
   try{
     connectToDatabase(); // Connect to the database
 
     const {_id, name} = params;
+
+    console.log("ASSIGN NAME", _id, name);
 
     const part = await Parts.findById(_id);
 
@@ -673,16 +761,6 @@ export async function assignName(params:any){
       return {success: false, message: "Part name not assigned!"};
     }
 
-    const makeName = await Makes.findOneAndUpdate({productNumber: part.printerProductNumber }, { name: name  });
-    if(!makeName){
-      return {success: false, message: "Make name not assigned! No printers with such product number"};
-    }
-
-    const printersNames = await Printer.updateMany(
-      { productNumber: part.printerProductNumber }, 
-      { $set: { name: name }}
-    );
-
 
     return {success: true, message: "Part name assigned successfully"};
 
@@ -692,28 +770,7 @@ export async function assignName(params:any){
   }
 }
 
-export async function deletePrinterPart(params: any){
-  try{
-    connectToDatabase(); // Connect to the database
 
-    const {_id} = params;
-
-    const part = await Parts.findOne({_id:_id});
-    if(!part){
-      return {success: false, message: "Part not found!"};
-    }
-
-    if(part.parts && part.parts.length > 0){
-      return { success: false, message: "Parts can't be deleted!", info: "Check if the printer's part has parts inside"}; 
-    }
-
-    await Parts.deleteOne({ _id: _id });
-
-  } catch(error){
-    console.error("An error occurred while assigning the name to the part:", error);
-    return {success: false, message: "An error occurred while assigning the name to the part"};
-  }
-}
 
 export async function takeOffPart(params:any){
   try{

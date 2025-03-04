@@ -30,6 +30,9 @@ interface Props {
 export default function DeletePrinterPart ({ id }: Props){
     const { toast } = useToast();
 
+    console.log("REG==>", id)
+
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
@@ -55,25 +58,32 @@ export default function DeletePrinterPart ({ id }: Props){
     try {
 
       const response:any = await deletePrinterPart({
-        _id: JSON.parse(id),
+        _id: id,
       })
 
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       // form.reset({}); // Reset form fields
-      router.push("/settings/printer-parts")
+      // router.push("/settings/printer-parts")
     //   router.refresh()
 
+    response.success ? router.push("/settings/printer-parts") : router.refresh()
+    
+
       return (
-        response.success ? toast({
+        response.success ? (
+
+          toast({
           title: response.message,
           variant: 'default',
-        }) : toast({
+        })
+      ) : toast({
           title: response.message,
           description: response.info,
           variant: 'custom',
         })
       )
+
       
       
     } catch (error) {
@@ -105,7 +115,7 @@ export default function DeletePrinterPart ({ id }: Props){
                         <div className="flex">
                           <Input
                             className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder={JSON.parse(id)}
+                            placeholder={id}
                             {...field}
                           />
                         </div>
@@ -125,7 +135,7 @@ export default function DeletePrinterPart ({ id }: Props){
                 </>
               ) : (
                 <>
-                {type === 'edit' ? 'Edit pallet' : 'Delete all parts'}
+                {type === 'edit' ? 'Edit pallet' : 'Delete parts model'}
                 </>
               )}
             </Button>

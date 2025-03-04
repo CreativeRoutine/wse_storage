@@ -18,7 +18,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   const mongoUserData = await getUserById({ userId });
   const mongoUser = JSON.parse(JSON.stringify(mongoUserData));
 
-  console.log(mongoUser.department)
+  // console.log(mongoUser.department)
 
 
   return (

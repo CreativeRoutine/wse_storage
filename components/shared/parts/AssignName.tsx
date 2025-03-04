@@ -32,6 +32,9 @@ interface Props {
 export default function AssignName ({ id }: Props){
     const { toast } = useToast();
 
+
+    console.log("THIS IS ID ====>",id)
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const usepathname = usePathname();
@@ -53,19 +56,19 @@ export default function AssignName ({ id }: Props){
   // assignNameSchema took from lib/validations.ts to validate the form
   async function onSubmit(values: z.infer<typeof assignNameSchema>) {
     setIsSubmitting(true);
-
+    
     try {
 
+
       const response:any = await assignName({
-        _id: JSON.parse(id),
+        _id: id,
         name: values.name,
-        
       })
 
       setIsSubmitting(false); // Reset isSubmitting state
       // defined as a hook
       form.reset({}); // Reset form fields
-      // router.push("/settings/parts")
+      router.push("/settings/printer-parts")
       router.refresh()
 
       return (
@@ -109,7 +112,7 @@ export default function AssignName ({ id }: Props){
                         <div className="flex">
                           <Input
                             className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="Type printer name"
+                            placeholder="Type new printer name"
                             {...field}
                           />
                         </div>

@@ -47,7 +47,7 @@ export default function AddPart ({ mongoUserId }: Props){
   const form = useForm<z.infer<typeof addPartSchema>>({
     resolver: zodResolver(addPartSchema),
     defaultValues: {
-      productNumber:"",
+      // productNumber:"",
       make:"",
     },
   });
@@ -65,7 +65,7 @@ export default function AddPart ({ mongoUserId }: Props){
 
 
       const response:any = await createPrinterPart({
-        productNumber: values.productNumber,
+        // productNumber: values.productNumber,
         make: values.make,
       })
 
@@ -84,8 +84,7 @@ export default function AddPart ({ mongoUserId }: Props){
           description: response.info,
           variant: 'custom',
         })
-      )
-      
+      )      
       
     } catch (error) {
       console.error("THIS IS AN ERROR", error); 
@@ -104,7 +103,7 @@ export default function AddPart ({ mongoUserId }: Props){
             <div className='flex gap-4 mb-4'>
               <div className="w-full">
                 {/* Make - Product Number */}
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="productNumber"
                   render={({ field }) => (
@@ -124,7 +123,7 @@ export default function AddPart ({ mongoUserId }: Props){
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
 
                 {/* Make - Product Number */}
                 <FormField
@@ -138,7 +137,7 @@ export default function AddPart ({ mongoUserId }: Props){
                         <div className="flex">
                           <Input
                             className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="Product number"
+                            placeholder="Printer's make e.g. HP404"
                             {...field}
                           />
                         </div>
@@ -149,89 +148,6 @@ export default function AddPart ({ mongoUserId }: Props){
                   )}
                 />
 
-                {/* Part Name */}
-                {/* <FormField
-                  control={form.control}
-                  name="printerName"
-                  render={({ field }) => (
-                    // First Input
-                    <FormItem>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Part name:</FormLabel>
-                      <FormControl>
-                        <div className="flex">
-                          <Select
-                            value={selectedOption} // Устанавливаем значение из состояния
-                            onValueChange={(value) => {
-                              setSelectedOption(value); // Обновляем состояние
-                              field.onChange(value); // Обновляем поле в форме
-                              // onSelect(value); // Передача выбранного значения в родительский компонент
-                            }}
-                          >
-                            <SelectTrigger className="w-full text-slate-400 focus:text-green-500 mt-0 focus:outline-none bg-dark-600 border-0 focus:outline-none focus:ring-0 focus:shadow-none focus:ring-offset-0 border-slate-300">
-                              <SelectValue placeholder={`Select part`}  />
-                            </SelectTrigger>
-                            <SelectContent className="bg-dark-400 text-white border-0">
-                              <SelectGroup>
-                                {options.map((option) => (
-                                  <SelectItem key={option} value={option} className='py-2 text-white hover:bg-dark-200'>{option}</SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                        </div>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-
-                {/* Barcode */}
-                {/* <FormField
-                  control={form.control}
-                  name="barcode"
-                  render={({ field }) => (
-                    // First Input
-                    <FormItem>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Barcode:</FormLabel>
-                      <FormControl>
-                        <div className="flex">
-                          <Input
-                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="Barcode"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-
-                {/* Location */}
-                {/* <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    // First Input
-                    <FormItem>
-                      <FormLabel className="mb-3 text-base text-slate-300 font-semibold">Part storage location:</FormLabel>
-                      <FormControl>
-                        <div className="flex">
-                          <Input
-                            className="w-full mb-4 ouline-none bg-dark-600 text-white border-0 rounded-lg no-focus"
-                            placeholder="Location"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
               </div>
             </div>
 

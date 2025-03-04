@@ -117,12 +117,12 @@ const PrinterParts = async ({searchParams}: SearchParamsProps) => {
                       >
                         Printer make
                       </th>
-                      <th 
+                      {/* <th 
                         scope="col" 
                         className=" py-3.5 pl-4 pr-3 text-left text-lg font-bold text-slate-100 sm:pl-0"
                       >
                         Product number
-                      </th>
+                      </th> */}
 
                       <th 
                         scope="col" 

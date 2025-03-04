@@ -142,12 +142,15 @@ export async function updateMake(params: UpdateMakeName) {
       { $set: { name: name } }
     );
 
+    // 
+    // DELETED BECAUSE SECOND OPTIONS APPLIED
+    // 
     // 3.
-    const parts = await Parts.findOneAndUpdate(
-      {productNumber: make.productNumber}, 
-      { $set: { printerName: name } },
-      {new: true}
-    );
+    // const parts = await Parts.findOneAndUpdate(
+    //   {productNumber: make.productNumber}, 
+    //   { $set: { printerName: name } },
+    //   {new: true}
+    // );
 
     revalidatePath(path);
     

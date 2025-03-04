@@ -12,7 +12,7 @@ import PagesNumberComponent from "@/components/shared/forms/PagesNumberComponent
 import ChangedPartsComponent from "@/components/shared/forms/ChangedPartsComponent";
 import AddPartFromPrinter from "@/components/shared/parts/AddPartFromPrinter";
 import { useToast } from "@/components/ui/use-toast";
-import { createParts } from '@/lib/actions/parts.action';
+// import { createParts } from '@/lib/actions/parts.action';
 
 import { useTimer } from "@/components/shared/hooks/useTimer";
 import moment from 'moment-timezone';
@@ -24,6 +24,7 @@ import TotalPageCount from "./TotalPageCount";
 import AdditionalInfoText from "./AdditionalInfoText";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import PartsChangedNew from "./PartsChangedNew";
 
 interface Props {
   users: any;
@@ -43,6 +44,7 @@ interface printerData {
 const TechWorkForm = ({ users, partsList }: Props) => {
   const { toast } = useToast();
   const [switchState, setSwitchState] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // MY NEW STATES -- START
 
@@ -83,7 +85,8 @@ const TechWorkForm = ({ users, partsList }: Props) => {
 
   const handleFormSubmit = async () => {
     setErrorMessage(null); // Очищаем ошибки перед началом проверки
-  
+    setIsSubmitting(true);
+
     // Проверка обязательных полей
     const requiredFields = [overallCondition, cleanliness, workable, afterRefurbish];
     if (requiredFields.some((field) => !field)) {
@@ -189,7 +192,10 @@ const TechWorkForm = ({ users, partsList }: Props) => {
             <div className="bg-dark-100 rounded-xl p-2 px-4 my-2">
               <div className="my-2 flex gap-4 flex-row justify-between">
                 <div className="font-bold text-normal text-white mb-2 flex flex-col ">
-                  <Image src={printerData.preview} width={100} height={100} className="object-contain max-w-[100px]" alt="Printer" />
+                  {
+                    printerData.preview ? (<Image src={printerData.preview} width={100} height={100} className="object-contain max-w-[100px]" alt="Printer" />) : <div className="text-sm font-light mb-2">No preview</div>
+                  }
+                  
                   <ul className="space-y-1 text-slate-400 font-normal text-sm">
                     <li>Make:<span className="text-white ml-2">{printerData.name}</span></li>
                     <li>Barcode:<span className="text-white ml-2">{printerData.barcode}</span></li>
@@ -294,14 +300,21 @@ const TechWorkForm = ({ users, partsList }: Props) => {
           {
             printerData && printerData._id ? (
               <div className="border-b border-slate-400 py-2 mt-2">
-                <PartsChanged 
+                <PartsChangedNew
+                  label={switchState ? "Замененные запчасти:" : "Parts changed:" }
+                  onSelect={setChangedParts}
+                  reset={resetForms}
+                />
+
+                {/* <DisplayPartsResults /> */}
+                {/* <PartsChanged
                   printerId={printerData._id} 
                   printerProductNumber={printerData.productNumber}
                   label={switchState ? "Замененные запчасти:" : "Parts changed:" }
                   onSelect={setChangedParts}
                   reset={resetForms}
                   // onResetComplete={resetAllStates}
-                />
+                /> */}
               </div>
 
             ) : null
@@ -343,16 +356,12 @@ const TechWorkForm = ({ users, partsList }: Props) => {
         </>
         )
       }
-      
 
       {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
 
-
-
-
       {/* ================ SUBMIT BUTTON ================ */}
-      <button onClick={handleFormSubmit} className="mt-4 bg-primary-500 text-white px-4 py-2 rounded">
-      {switchState ? "Отправить форму:" : "Submit Form!"  }
+      <button onClick={handleFormSubmit} disabled={isSubmitting} className="mt-4 bg-primary-500 text-white px-4 py-2 rounded">
+      {switchState ? (isSubmitting ? "Отправляю" : "Отправить форму") : isSubmitting ? "Submitting..." : "Submit Form!"  }
       </button>
     </div>
   );

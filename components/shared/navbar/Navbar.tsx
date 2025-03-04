@@ -65,7 +65,7 @@ const Navbar = ({role}:Props) => {
             </>
           );
 
-      case "admin":
+      case "owner":
         return (
           <>
             <Link href="/cleaner" className="hover:bg-primary-500 hover:border-0 border border-white bg-black rounded-lg px-4 py-2">

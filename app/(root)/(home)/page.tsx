@@ -1,49 +1,15 @@
 import React from "react";
-import Image from "next/image";
 import Title from "@/components/shared/Title";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import {auth} from "@clerk/nextjs"
 import { getUserById } from "@/lib/actions/user.action";
 import VisitorNotification from "@/components/shared/VisitorNotification";
-
-import DisplayPrinters from "@/components/shared/DisplayPrinters";
-import Loading from "./loading";
 import { getData } from "@/lib/actions/printer.action";
 import { SearchParamsProps } from "@/types";
-import LocalSearchbar from "@/components/shared/search/LocalSearchbar";
-import { PrintersFilters } from "@/components/printers/PrintersFilters";
-import dayjs from "dayjs";
+
 
 const Home = async ({searchParams}: SearchParamsProps) => {
+
   
     const { userId } = auth();
     if (!userId) redirect("/sign-in");
@@ -65,6 +31,8 @@ const Home = async ({searchParams}: SearchParamsProps) => {
       cleanedToday,
       cleanedThisWeek,
     } = printers;
+
+
   
     return (
       <>

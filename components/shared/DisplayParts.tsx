@@ -12,7 +12,7 @@ interface Props {
 
 const DisplayParts = async ({parts}:Props) => {
 
-  console.log("PARTS RECEIVED IN DP ===>",parts)
+  // console.log("PARTS RECEIVED IN DP ===>",parts)
     
   if(parts.length == 0){
     return(<tr><td className="pt-6 text-white text-left">"You didn't add any part yet!"</td></tr>)
@@ -24,8 +24,8 @@ const DisplayParts = async ({parts}:Props) => {
     return acc;
   }, {});
 
-  console.log('Количество элементов с одинаковыми productNumber:');
-  console.log(productCount); // { PN123456: 3, PN234567: 1 }
+  // console.log('Количество элементов с одинаковыми productNumber:');
+  // console.log(productCount); // { PN123456: 3, PN234567: 1 }
 
   // Подсчет уникальных комбинаций productNumber + partName
   const uniqueProductParts = parts.reduce((acc:any, item:any) => {
@@ -34,8 +34,8 @@ const DisplayParts = async ({parts}:Props) => {
     return acc;
   }, new Set());
 
-  console.log('Количество уникальных комбинаций productNumber + partName:');
-  console.log(uniqueProductParts.size); // Уникальное количество
+  // console.log('Количество уникальных комбинаций productNumber + partName:');
+  // console.log(uniqueProductParts.size); // Уникальное количество
 
   // Преобразование в объект для удобного просмотра
   // const uniqueCombinations = Array.from(uniqueProductParts).map((key: string): { productNumber: string; partName: string } => {
@@ -43,7 +43,7 @@ const DisplayParts = async ({parts}:Props) => {
   //   return { productNumber, partName };
   // });
 
-  console.log('Уникальные комбинации productNumber + partName:');
+  // console.log('Уникальные комбинации productNumber + partName:');
   // console.log(uniqueCombinations);
 
   return (
@@ -64,9 +64,9 @@ const DisplayParts = async ({parts}:Props) => {
             <div className="text-white">{printer.printerName ? printer.printerName : <span className="text-red-500">Not set</span> }</div>
           </td>
           {/* Parts types */}
-          <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+          {/* <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             <div className="text-white">{printer.productNumber ? <span className="font-bold text-lg" >{printer.productNumber}</span> : <span className="text-red-500">No parts added TYPES</span> }</div>
-          </td>
+          </td> */}
           {/* Parts qtty all */}
           <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
             <div className="text-white">{printer.parts ? printer.parts.length : <span className="text-red-500">To be added later</span> }</div>
@@ -81,7 +81,7 @@ const DisplayParts = async ({parts}:Props) => {
             {/* <a href={`/settings/printer-parts/${printer._id}`} className="text-white z-0 border border-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg px-8 py-3 mr-2">
               View
             </a> */}
-            <a href={`/settings/printer-parts/${printer.productNumber}`} className="text-indigo-600 z-0 border border-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg px-8 py-3">
+            <a href={`/settings/printer-parts/${printer.printerName}`} className="text-indigo-600 z-0 border border-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg px-8 py-3">
               Edit
             </a>
           </td>

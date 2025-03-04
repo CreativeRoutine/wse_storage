@@ -56,7 +56,7 @@ export default function FindPrinter ({ label, printer, reset }: Props){
 
       setIsSubmitting(false); // Reset isSubmitting state
 
-      console.log("Returns from form function",response.printer)
+      // console.log("Returns from form function",response.printer)
         
       response && response.success ? ( toast({
         title: "Printer found!",

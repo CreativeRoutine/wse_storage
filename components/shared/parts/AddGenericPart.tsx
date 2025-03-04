@@ -24,9 +24,6 @@ import { useToast } from "@/components/ui/use-toast";
 
 
 
-
-
-
 export default function AddPart({ parts }: any) {
   const { toast } = useToast();
 

@@ -85,13 +85,16 @@ export default function PartsChanged({
   async function getPrinterData() {
     try {
 
+      console.log("THIS IS THE PARTS CHANGED COMPONENT")
+
       const response: any = await getPartsByProductNumberPlain({
-        productNumber: printerProductNumber,
+        printerName: printerProductNumber,
       });
+
+      console.log("THIS IS RESPONSE FROM PARTS CHANGED ====>",response)
 
       const parts = JSON.parse(JSON.stringify(response));
       setPartsData(parts.parts || []); // Сохраняем детали
-
 
     } catch (error) {
       console.error("Error fetching printer data:", error);
@@ -124,7 +127,9 @@ export default function PartsChanged({
   
     // 
     // END OF NEW CODE
-    
+    // 
+
+
     // if(selectedParts.length > 0){
     //   setSelectedValue(false);
     // }

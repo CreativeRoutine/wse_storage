@@ -46,15 +46,18 @@ export async function createPrinter(params: CreatePrinterParams) {
       printerPreview = printerMake.preview || "";
     }
 
+    // 
+    // DELETED BECAUSE SECOND OPTIONS APPLIED
+    // 
     // Проверяем, существует ли запись в Parts
-    const printerPart = await Parts.findOne({ productNumber });
-    if (!printerPart) {
-      await Parts.create({
-        productNumber,
-        printerName: printerModel,
-        parts: [],
-      });
-    }
+    // const printerPart = await Parts.findOne({ productNumber });
+    // if (!printerPart) {
+    //   await Parts.create({
+    //     productNumber,
+    //     printerName: printerModel,
+    //     parts: [],
+    //   });
+    // }
 
     // Создаем новый принтер
     const newPrinter = await Printer.create({
@@ -66,13 +69,6 @@ export async function createPrinter(params: CreatePrinterParams) {
       name: printerModel,
       preview: printerPreview,
     });
-
-    // Обновляем Supplier
-    // await Supplier.findOneAndUpdate(
-    //   { ponumber },
-    //   { $push: { printers: newPrinter._id } },
-    //   { new: true, upsert: true }
-    // );
 
     // Обновляем или создаем запись в Makes
     await Makes.findOneAndUpdate(
@@ -1044,7 +1040,6 @@ export async function addPrinterComment(params: addPrinterCommentParams) {
     // Сохраняем изменения в базе данных
     await printer.save();
 
-    console.log("Updated last task:", lastTask);
 
     revalidatePath(path);
 
@@ -1105,18 +1100,11 @@ export async function addPrinterCost(
   try {
     await connectToDatabase();
 
-    
-
-    
-
     const printer = await Printer.findOneAndUpdate(
       { _id: id },
       { $set: {price: price } }, // Adding printer's produc number
       { new: true, upsert: true, setDefaultsOnInsert: true } // Создаем нового поставщика, если он не найден
     );
-
-
-
 
     // Обновить страницу, если требуется
     revalidatePath(path);
