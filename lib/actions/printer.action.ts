@@ -1186,6 +1186,8 @@ export async function deletePrinter(params: DeletePrinterParams) {
 
     const printerRaw = await Printer.find({ _id: id });
 
+    console.log(printerRaw);
+
     const printer = JSON.parse(JSON.stringify(printerRaw));
 
     let printerPallet;
@@ -1219,14 +1221,16 @@ export async function deletePrinter(params: DeletePrinterParams) {
       }
     );
 
-    console.log("Updated Supplier:", result);
+    // console.log("Updated Supplier:", result);
 
-    if (!result) {
-      return {
-        success: false,
-        message: "Printer not found in any shipment of the supplier!",
-      };
-    }
+    // может быть нужно вернуть и перепроверить
+    // удаляет тестовый принтер в которм ничего нет: ни паллеты, ни поставщика
+    // if (!result) {
+    //   return {
+    //     success: false,
+    //     message: "Printer not found in any shipment of the supplier!",
+    //   };
+    // }
 
     // Find Makes by printer id and delete printer from Makes
     await Makes.findOneAndUpdate(

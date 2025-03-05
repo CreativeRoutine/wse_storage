@@ -56,16 +56,13 @@ export default function FindPrinter({ label, printer, reset }: Props) {
 
       setIsSubmitting(false); // Reset isSubmitting state
 
-      console.log("Returns from form function", response.printer);
-
       response && response.success
         ? (toast({
             title: "Printer found!",
             variant: "default",
           }),
           setIsValidInput(true),
-          printer(response.printer),
-          console.log(111))
+          printer(response.printer))
         : toast({
             title: "Printer with such Barcode not found!",
             description: "Check the barcode.",
