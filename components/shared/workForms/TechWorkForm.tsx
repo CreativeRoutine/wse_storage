@@ -44,6 +44,7 @@ interface printerData {
 
 const TechWorkForm = ({ users, partsList }: Props) => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [switchState, setSwitchState] = useState(false);
 
   // MY NEW STATES -- START
@@ -480,8 +481,15 @@ const TechWorkForm = ({ users, partsList }: Props) => {
       <button
         onClick={handleFormSubmit}
         className="mt-4 bg-primary-500 text-white px-4 py-2 rounded"
+        disabled={isSubmitting}
       >
-        {switchState ? "Отправить форму:" : "Submit Form!"}
+        {switchState
+          ? isSubmitting
+            ? "Отправляю"
+            : "Отправить форму"
+          : isSubmitting
+          ? "Submitting..."
+          : "Submit Form!"}
       </button>
     </div>
   );

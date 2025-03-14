@@ -85,6 +85,7 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
   const handlePrinterChange = (value: string) => {
     setPrinterName(value); // Устанавливаем выбранное значение
     form.setValue("printers", value); // Устанавливаем значение в форму
+    console.log("Printer was choosed ==> ", value);
   };
 
   // 4. Когда 1е поле изменяется и есть конкретный принтер - получаем список всех деталей этого принтера
@@ -141,6 +142,8 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
         // Удаляем добавленную деталь из списка partsData
         // setPartsData((prevParts) => prevParts.filter((part) => part.partsName !== values.partName));
 
+        setInitialPartsList([]);
+        setPrinterName("");
         form.reset({});
       } else {
         toast({
@@ -245,15 +248,19 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
                                   className="py-2 text-white hover:bg-dark-200"
                                 >
                                   <div className="flex flex-row justify-around gap-4">
-                                    <div>{option.partsName}</div> /{" "}
+                                    <div className="font-semibold">
+                                      {option.partsName}
+                                    </div>{" "}
+                                    -{" "}
                                     <div>
                                       {option.part.length} / {option.maxParts}
-                                    </div>{" "}
-                                    /{" "}
-                                    <div>
+                                    </div>
+                                    {/* {" "} */}
+                                    {/* /{" "} */}
+                                    {/* <div>
                                       {option.part[0]?.location ||
                                         "No location"}
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </SelectItem>
                               ))
