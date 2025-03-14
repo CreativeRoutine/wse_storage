@@ -354,6 +354,7 @@ export async function getListOfAllPrinters() {
     const printerNames = Array.from(
       new Set(allParts.map((part: any) => part.printerName))
     );
+    console.log("Printer found in DB");
 
     return printerNames;
   } catch (error) {
@@ -425,6 +426,41 @@ export async function getPartsByName(params: any) {
     // Находим принтер
     const partsResponse = await Parts.findOne({
       printerName: printerName,
+    }).lean();
+    if (!partsResponse) {
+      return {
+        success: false,
+        message: "An error occurred while getting the parts",
+      };
+    }
+    const parts = JSON.parse(JSON.stringify(partsResponse));
+
+    return parts.parts; // Возвращаем массив названий частей
+  } catch (error) {
+    console.error("An error occurred while getting the part:", error);
+    return {
+      success: false,
+      message: "An error occurred while getting the part",
+    };
+  }
+}
+
+export async function getPartsByNameFromTechForm(params: any) {
+  try {
+    const { currentPrinter } = params;
+    // console.log("currentPrinter====>SERVER", currentPrinter);
+
+    if (!currentPrinter) {
+      return { success: false, message: "Product number not found" };
+    }
+
+    // console.log("CURRENT PRINTER NAME: ", currentPrinter);
+
+    await connectToDatabase();
+
+    // Находим принтер
+    const partsResponse = await Parts.findOne({
+      printerName: currentPrinter,
     }).lean();
     if (!partsResponse) {
       return {

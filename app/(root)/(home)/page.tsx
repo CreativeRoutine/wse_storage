@@ -72,7 +72,8 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
 
       <div className="w-full">
         <div className="text-4xl mb-4 font-bold text-white">
-          MAINTENANCE MODE!!!
+          <span className="text-green-600">MAINTENANCE MODE</span> - Mar 14,
+          2025
         </div>
       </div>
 

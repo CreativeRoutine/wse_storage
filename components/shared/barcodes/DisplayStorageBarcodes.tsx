@@ -19,11 +19,7 @@ const DisplayStorageBarcodes = ({ type, start, finish }: Props) => {
   const finishShelf = parseInt(finish, 10); // Конечное число (полка)
 
   // Проверяем корректность диапазона
-  if (
-    isNaN(startShelf) ||
-    isNaN(finishShelf) ||
-    finishShelf < startShelf
-  ) {
+  if (isNaN(startShelf) || isNaN(finishShelf) || finishShelf < startShelf) {
     return <div className="text-red-500">Invalid barcode range.</div>;
   }
 
@@ -38,7 +34,7 @@ const DisplayStorageBarcodes = ({ type, start, finish }: Props) => {
     <div>
       {barcodes.map((barcode, index) => (
         <div key={index} className="mb-4">
-          <Barcode value={barcode} width={3}/>
+          <Barcode value={barcode} width={5} fontSize={12} />
         </div>
       ))}
     </div>
