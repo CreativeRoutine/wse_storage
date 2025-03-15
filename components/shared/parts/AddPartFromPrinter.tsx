@@ -142,6 +142,7 @@ export default function AddPart({ printerId, printerProductNumber }: Props) {
         // Удаляем добавленную деталь из списка partsData
         // setPartsData((prevParts) => prevParts.filter((part) => part.partsName !== values.partName));
 
+        setInitialPrintersList([]);
         setInitialPartsList([]);
         setPrinterName("");
         form.reset({});
