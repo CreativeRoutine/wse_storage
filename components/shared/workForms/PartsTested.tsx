@@ -38,13 +38,13 @@ export default function ChangedPartsComponent({
     "Pressure roll",
     "Solenoid #1",
     "Solenoid #2",
+    "Fuser",
     "Fuser sleeve",
   ],
   onSelect,
   reset,
   onResetComplete,
 }: Props) {
-
   const [selectedValue, setSelectedValue] = useState(false); // Выбранное значение
   const [selectedParts, setSelectedParts] = useState<string[]>([]);
 
@@ -56,11 +56,10 @@ export default function ChangedPartsComponent({
   });
 
   const handlePartSelect = (part: string) => {
-    
     // if(selectedParts.length > 0){
     //   setSelectedValue(false);
     // }
-    setSelectedValue(true)
+    setSelectedValue(true);
     const updatedParts = selectedParts.includes(part)
       ? selectedParts.filter((p) => p !== part) // Убираем, если уже есть
       : [...selectedParts, part]; // Добавляем новую часть
@@ -70,16 +69,16 @@ export default function ChangedPartsComponent({
   };
 
   useEffect(() => {
-    if (selectedParts.length > 0){
-      setSelectedValue(true)
+    if (selectedParts.length > 0) {
+      setSelectedValue(true);
     } else {
-      setSelectedValue(false)
+      setSelectedValue(false);
     }
   }, [selectedParts]);
 
   useEffect(() => {
     if (reset) {
-      setSelectedValue(false)
+      setSelectedValue(false);
       setSelectedParts([]); // Сбрасываем выбранные части
       form.reset({ button: [] }); // Сбрасываем форму
       if (onResetComplete) {
@@ -96,11 +95,12 @@ export default function ChangedPartsComponent({
           name="button"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className={`block font-semibold w-2/3 mb-4 ${
-                        selectedValue ? "text-green-500" : "text-slate-300"
-                      }`}
-                    >
-                      {label}
+              <FormLabel
+                className={`block font-semibold w-2/3 mb-4 ${
+                  selectedValue ? "text-green-500" : "text-slate-300"
+                }`}
+              >
+                {label}
               </FormLabel>
 
               <FormControl>
