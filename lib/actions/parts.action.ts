@@ -413,11 +413,13 @@ export async function getPartsByProductNumber(params: any) {
 export async function getPartsByName(params: any) {
   try {
     const { currentPrinter } = params;
+
+    console.log("ACTION currentPrinter =====>>", currentPrinter);
     // console.log("currentPrinter====>SERVER", currentPrinter);
 
-    if (!currentPrinter) {
-      return { success: false, message: "Product number not found" };
-    }
+    // if (!currentPrinter) {
+    //   return { success: false, message: "Product number not found" };
+    // }
 
     // console.log("CURRENT PRINTER NAME: ", currentPrinter);
 
@@ -435,7 +437,7 @@ export async function getPartsByName(params: any) {
     }
     const parts = JSON.parse(JSON.stringify(partsResponse));
 
-    console.log("LIST OF PARTS BELONGS TO PRINTER ==> ", parts);
+    // console.log("LIST OF PARTS BELONGS TO PRINTER ==> ", parts);
 
     return parts.parts; // Возвращаем массив названий частей
   } catch (error) {

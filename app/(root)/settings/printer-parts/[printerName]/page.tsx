@@ -24,9 +24,10 @@ const DisplayPartsSettings = async ({
 }) => {
   const { printerName } = params;
 
-  // console.log("productNumber ===>", printerName);
+  console.log("PAGE productNumber ===>", printerName);
 
-  const response: any = await getPartsByName({ printerName });
+  const response: any = await getPartsByName({ currentPrinter: printerName });
+  console.log("PAGE Response", response);
   const parts = JSON.parse(JSON.stringify(response));
 
   // console.log("THIS IS getPartsByName ====>>", parts);
@@ -113,11 +114,9 @@ const DisplayPartsSettings = async ({
               partsListResponse.partName.map((part: string) => {
                 // Check if partName is in parts array
                 // console.log("THIS US STATE", parts?.parts);
-
                 const state = parts?.some(
                   (item: any) => item.partsName === part
                 );
-
                 return (
                   <li key={part} className="py-1">
                     <PartsSwitcher
