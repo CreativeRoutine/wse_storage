@@ -727,7 +727,7 @@ export async function getPrinters(params: GetPrintersParams) {
   }
 }
 
-export async function getData() {
+export async function getData__OLD() {
   try {
     await connectToDatabase();
 
@@ -774,6 +774,99 @@ export async function getData() {
       totalPrinters,
       totalPallets,
       refurbishedToday,
+      refurbishedThisWeek,
+      cleanedToday,
+      cleanedThisWeek,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw new Error("Error fetching data");
+  }
+}
+
+export async function getData() {
+  try {
+    await connectToDatabase();
+
+    // Определяем начало и конец текущего дня и недели
+    const todayStart = dayjs().startOf("day").toDate();
+    const todayEnd = dayjs().endOf("day").toDate();
+
+    const weekStart = dayjs().startOf("week").toDate();
+    const weekEnd = dayjs().endOf("week").toDate();
+
+    // Общее количество принтеров и паллет
+    const totalPrinters = await Printer.countDocuments();
+    const totalPallets = await Pallet.countDocuments();
+
+    // Общее количество принтеров с задачами "Refurbished" за сегодня
+    const refurbishedToday = await Printer.countDocuments({
+      "tasksPerformed.date": { $gte: todayStart, $lte: todayEnd },
+      "tasksPerformed.status": "Refurbished",
+    });
+
+    // Получаем разбивку по пользователям для задач "Refurbished" за сегодня и подключаем данные о пользователе
+    const refurbishedTodayByUser = await Printer.aggregate([
+      { $unwind: "$tasksPerformed" },
+      {
+        $match: {
+          "tasksPerformed.date": { $gte: todayStart, $lte: todayEnd },
+          "tasksPerformed.status": "Refurbished",
+        },
+      },
+      {
+        $group: {
+          _id: "$tasksPerformed.user", // Группируем по полю пользователя
+          count: { $sum: 1 },
+        },
+      },
+      // Подключаем данные о пользователе из коллекции "employees"
+      {
+        $lookup: {
+          from: "employees", // название коллекции (убедитесь, что оно корректное)
+          localField: "_id",
+          foreignField: "_id",
+          as: "userDetails",
+        },
+      },
+      { $unwind: "$userDetails" },
+      {
+        $project: {
+          _id: 1,
+          count: 1,
+          name: "$userDetails.name", // Добавляем имя пользователя
+          lastName: "$userDetails.lastName", // можно добавить и другие поля
+        },
+      },
+    ]);
+
+    // Общее количество "Refurbished" за неделю
+    const refurbishedThisWeek = await Printer.countDocuments({
+      "tasksPerformed.date": { $gte: weekStart, $lte: weekEnd },
+      "tasksPerformed.status": "Refurbished",
+    });
+
+    // Принтеры cleaned за сегодня
+    const cleanedToday = await Printer.countDocuments({
+      "tasksPerformed.performedCleaner.date": {
+        $gte: todayStart,
+        $lte: todayEnd,
+      },
+    });
+
+    // Принтеры cleaned за неделю
+    const cleanedThisWeek = await Printer.countDocuments({
+      "tasksPerformed.performedCleaner.date": {
+        $gte: weekStart,
+        $lte: weekEnd,
+      },
+    });
+
+    return {
+      totalPrinters,
+      totalPallets,
+      refurbishedToday,
+      refurbishedTodayByUser,
       refurbishedThisWeek,
       cleanedToday,
       cleanedThisWeek,

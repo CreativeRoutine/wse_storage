@@ -55,12 +55,13 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
   }
 
   const printers = await getData();
-  console.log(printers);
+  // console.log("PRINTERS===>", printers);
 
   const {
     totalPrinters,
     totalPallets,
     refurbishedToday,
+    refurbishedTodayByUser,
     refurbishedThisWeek,
     cleanedToday,
     cleanedThisWeek,
@@ -72,7 +73,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
 
       <div className="w-full">
         <div className="text-4xl mb-4 font-bold text-white">
-          <span className="text-green-600">MAINTENANCE MODE</span> - Apr 02,
+          <span className="text-green-600">MAINTENANCE MODE</span> - Apr 10,
           2025
         </div>
       </div>
@@ -116,6 +117,34 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
                 {refurbishedThisWeek}{" "}
                 <span className="text-base font-normal">printers</span>
               </div>
+            </div>
+          </div>
+          <div>
+            <div className="text-lg text-white font-semibold border-t border-slate-300 pt-3 mt-4">
+              By Users:
+            </div>
+            <div className="mt-2">
+              {refurbishedTodayByUser
+                ? refurbishedTodayByUser.map((user: any) => (
+                    <div
+                      key={user._id}
+                      className="flex justify-between text-white mt-1"
+                    >
+                      <div className="text-sm mb-2 text-slate-200">
+                        <Link
+                          href={`/employees/${user._id}`}
+                          className="hover:text-green-600"
+                        >
+                          {user.name}
+                        </Link>
+                      </div>
+                      <div>
+                        {user.count}{" "}
+                        <span className="text-base font-normal">printers</span>
+                      </div>
+                    </div>
+                  ))
+                : null}
             </div>
           </div>
         </div>
