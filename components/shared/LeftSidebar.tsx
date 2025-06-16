@@ -62,7 +62,7 @@ const LeftSidebar = () => {
                   alt={item.label}
                   width={20}
                   height={20}
-                  
+                  className="invert-colors"
                 />
                 <p className="base-bold hidden xl:block">{item.label}</p>
               </Link>
